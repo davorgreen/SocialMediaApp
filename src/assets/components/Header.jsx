@@ -7,7 +7,7 @@ function Header() {
         <div className="flex justify-start gap-5 h-36 container mx-auto items-center shadow-xl shadow-blue-200">
             <img src={image} alt='dogs' className='w-1/5 h-full rounded-xl' />
             <p className='text-5xl font-bold text-blue-500'>PAWConnect</p>
-            <div className="flex items-center w-1/3 bg-white border-2 border-blue-500 rounded-full px-8 py-4">
+            <div className="flex items-center w-1/3 bg-white border-2 border-blue-500 rounded-full px-4 py-2">
                 <FaSearch size={30} className="text-blue-500 mr-2 font-bold" />
                 <input
                     type="text"
