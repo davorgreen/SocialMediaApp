@@ -31,19 +31,19 @@ function Post() {
                     <div className="relative" >
                         {dropDownMenu && (
                             <div className="absolute right-0 bg-white shadow-lg rounded-md p-5">
-                                <p className="flex gap-2 mt-2 items-center text-xl font-semibold text-blue-500 hover:cursor-pointer">
+                                <p className="flex items-center gap-3 mt-2 text-xl font-semibold text-blue-500 hover:text-blue-600 focus:text-blue-600 transition-all transform hover:scale-110  focus:scale-105 cursor-pointer">
                                     <FaSave size={30} color="#6495ED" />
                                     Saved Posts
                                 </p>
-                                <p className="flex gap-2 mt-2 items-center text-xl font-semibold text-blue-500 hover:cursor-pointer">
+                                <p className="flex items-center gap-3 mt-2 text-xl font-semibold text-blue-500 hover:text-blue-600 focus:text-blue-600 transition-all transform hover:scale-110  focus:scale-105 cursor-pointer">
                                     <IoIosNotifications size={30} color="#6495ED" />
                                     Notifications
                                 </p>
-                                <p className="flex gap-2 mt-2 items-center text-xl font-semibold text-blue-500 hover:cursor-pointer">
+                                <p className="flex items-center gap-3 mt-2 text-xl font-semibold text-blue-500 hover:text-blue-600 focus:text-blue-600 transition-all transform hover:scale-110  focus:scale-105 cursor-pointer">
                                     <BiHide size={30} color="#6495ED" />
                                     Hide Post
                                 </p>
-                                <p className="flex gap-2 mt-2 items-center text-xl font-semibold text-blue-500 hover:cursor-pointer">
+                                <p className="flex items-center gap-3 mt-2 text-xl font-semibold text-blue-500 hover:text-blue-600 focus:text-blue-600 transition-all transform hover:scale-110  focus:scale-105 cursor-pointer">
                                     <FaRegTrashAlt size={30} color="#6495ED" />
                                     Delete Post
                                 </p>
