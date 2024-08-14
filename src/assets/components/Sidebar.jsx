@@ -6,13 +6,28 @@ import { IoLogOutSharp } from "react-icons/io5";
 
 function Sidebar() {
     return (
-        <div className="flex flex-col  items-start gap-3 bg-white shadow-lg rounded-md shadow-gray-300 p-6 mb-6">
-            <h2 className="text-3xl font-bold text-blue-500">Navigation</h2>
-            <p className="flex gap-2 items-center text-xl font-semibold text-blue-500 focus: underline hover:cursor-pointer"><FaHome size={30} color="#6495ED" />Home</p>
-            <p className="flex gap-2 items-center text-xl font-semibold text-blue-500 focus: underline hover:cursor-pointer"><FaUserFriends size={30} color="#6495ED" />Friends</p>
-            <p className="flex gap-2 items-center text-xl font-semibold text-blue-500 focus: underline hover:cursor-pointer"><FaSave size={30} color="#6495ED" />Saved Posts</p>
-            <p className="flex gap-2 items-center text-xl font-semibold text-blue-500 focus: underline hover:cursor-pointer"><IoIosNotifications size={30} color="#6495ED" /> Notifications</p>
-            <p className="flex gap-2 items-center text-xl font-semibold text-blue-500 focus: underline hover:cursor-pointer"><IoLogOutSharp size={30} color="#6495ED" />Logout</p>
+        <div className="flex flex-col items-start gap-4 bg-white shadow-lg rounded-md shadow-gray-300 p-6 mb-6">
+            <h2 className="text-3xl font-bold text-blue-600 mb-4">Navigation</h2>
+            <p className="flex items-center gap-3 text-xl font-semibold text-blue-500 hover:text-blue-600 focus:text-blue-600 transition-all transform hover:scale-110 focus:scale-105 cursor-pointer">
+                <FaHome size={30} />
+                Home
+            </p>
+            <p className="flex items-center gap-3 text-xl font-semibold text-blue-500 hover:text-blue-600 focus:text-blue-600 transition-all transform hover:scale-110 focus:scale-105 cursor-pointer">
+                <FaUserFriends size={30} />
+                Friends
+            </p>
+            <p className="flex items-center gap-3 text-xl font-semibold text-blue-500 hover:text-blue-600 focus:text-blue-600 transition-all transform hover:scale-110  focus:scale-105 cursor-pointer">
+                <FaSave size={30} />
+                Saved Posts
+            </p>
+            <p className="flex items-center gap-3 text-xl font-semibold text-blue-500 hover:text-blue-600 focus:text-blue-600 transition-all transform hover:scale-110 focus:scale-105 cursor-pointer">
+                <IoIosNotifications size={30} />
+                Notifications
+            </p>
+            <p className="flex items-center gap-3 text-xl font-semibold text-blue-500 hover:text-blue-600 focus:text-blue-600 transition-all transform hover:scale-110 focus:scale-105 cursor-pointer">
+                <IoLogOutSharp size={30} />
+                Logout
+            </p>
         </div>
     )
 }

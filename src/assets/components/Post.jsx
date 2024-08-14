@@ -1,21 +1,22 @@
-import ProfileImage from '../components//ProfileImage.jsx'
+//images
 import image1 from '../images/golden-retriever-177213599-2000-a30830f4d2b24635a5d01b3c5c64b9ef.jpg'
+//icons
 import { IoIosMore } from 'react-icons/io';
 import { FaSave, FaRegTrashAlt, FaRegHeart, FaRegCommentAlt } from 'react-icons/fa';
 import { IoIosNotifications } from 'react-icons/io';
 import { BiHide } from 'react-icons/bi';
 import { TbShare3 } from 'react-icons/tb';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { IoImagesOutline } from 'react-icons/io5';
+
+import ProfileImage from '../components//ProfileImage.jsx'
 
 function Post() {
     const [dropDownMenu, setDropDownMenu] = useState(false);
-    const drdMenu = useRef(null);
 
     function openDropDownMenu() {
         setDropDownMenu(!dropDownMenu);
     }
-
 
     return (
         <div className="flex flex-col gap-5 bg-white shadow-lg rounded-lg p-6 mb-6">
@@ -27,7 +28,7 @@ function Post() {
                 </div>
                 <div className="absolute right-10">
                     <button onClick={openDropDownMenu}><IoIosMore size={40} /></button>
-                    <div className="relative" ref={drdMenu}>
+                    <div className="relative" >
                         {dropDownMenu && (
                             <div className="absolute right-0 bg-white shadow-lg rounded-md p-5">
                                 <p className="flex gap-2 mt-2 items-center text-xl font-semibold text-blue-500 hover:cursor-pointer">
