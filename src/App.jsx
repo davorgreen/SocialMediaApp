@@ -2,6 +2,7 @@ import './App.css'
 import Card from './assets/components/Card'
 import CreatePost from './assets/components/CreatePost'
 import Header from './assets/components/Header'
+import Post from './assets/components/Post'
 import Sidebar from './assets/components/Sidebar'
 
 
@@ -15,9 +16,9 @@ function App() {
         <div className="w-1/4">
           <Sidebar />
         </div>
-        <div className="grow">
+        <div className="w-3/4">
           <CreatePost />
-          <Card>first post here</Card>
+          <Post />
         </div>
       </div>
     </div>
