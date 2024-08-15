@@ -3,6 +3,7 @@ import { FaHome, FaUserFriends } from "react-icons/fa";
 import { FaSave } from "react-icons/fa";
 import { IoIosNotifications } from "react-icons/io";
 import { IoLogOutSharp } from "react-icons/io5";
+import SponsorshipsMember from "./SponsorshipsMember";
 
 function Sidebar() {
     return (
@@ -28,6 +29,7 @@ function Sidebar() {
                 <IoLogOutSharp size={30} />
                 Logout
             </p>
+            <SponsorshipsMember />
         </div>
     )
 }
