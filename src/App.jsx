@@ -1,27 +1,13 @@
 import './App.css'
-import Card from './assets/components/Card'
-import CreatePost from './assets/components/CreatePost'
-import Header from './assets/components/Header'
-import Post from './assets/components/Post'
-import Sidebar from './assets/components/Sidebar'
+import HomePage from './assets/pages/HomePage'
+
 
 
 function App() {
 
 
   return (
-    <div>
-      <Header />
-      <div className="flex max-w-7xl mx-auto mt-5 gap-8">
-        <div className="w-1/4">
-          <Sidebar />
-        </div>
-        <div className="w-3/4">
-          <CreatePost />
-          <Post />
-        </div>
-      </div>
-    </div>
+    <HomePage />
   )
 }
 

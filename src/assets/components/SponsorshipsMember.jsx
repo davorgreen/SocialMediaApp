@@ -23,7 +23,7 @@ function SponsorshipsMember() {
         {
             id: 4,
             brand: "Purina Pro Plan",
-            image: "https://m.media-amazon.com/images/I/81-JmwroOOS._AC_UF1000,1000_QL80_.jpg"
+            image: "https://cdn.renspets.com/product_images/pro-plan-adult-dog-shredded-blend-salmon-rice-15-2-kg/15-kg/5f7f3592b38d1b2907827b0c/pdp_zoom.jpg?c=1709270257"
         },
         {
             id: 5,
@@ -53,16 +53,16 @@ function SponsorshipsMember() {
     return (
         <div className="flex flex-col justify-center items-center mt-8">
             <div className="bg-blue-200 p-6 rounded-xl shadow-lg">
-                <h2 className="text-center text-blue-800 text-xl font-semibold mb-4">Sponsorships</h2>
+                <h2 className="text-center text-blue-600 text-xl font-bold mb-4">Sponsorships</h2>
                 <div
                     style={{ width: `${progressBrands()}%` }}
-                    className="h-2 bg-blue-600 rounded-full mb-6 transition-all  ease-in-out"
+                    className="h-2 bg-blue-600 rounded-full mb-6 transition-all duration-500  ease-in-out"
                 ></div>
-                <div className="flex justify-center">
+                <div className="flex justify-center items-center">
                     <img
                         src={data.image}
                         alt="sponsorships"
-                        className="h-60 w-60 object-contain rounded-full shadow-lg"
+                        className="h-60 w-60 object-contain shadow-lg"
                     />
                 </div>
             </div>
