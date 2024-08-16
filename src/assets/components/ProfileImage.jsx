@@ -1,4 +1,5 @@
 //image
+import { Link } from 'react-router-dom';
 import image from '../images/golden-retriever-tongue-out.jpg'
 
 function ProfileImage({ size }) {
@@ -9,11 +10,12 @@ function ProfileImage({ size }) {
         height = 'h-36'
     }
     return (
-        <div><img
+        <Link to={'/profile'}> <div><img
             src={image}
             alt="goldenret"
             className={`${width} ${height} rounded-full object-cover`}
         /></div>
+        </Link>
     )
 }
 
