@@ -31,10 +31,10 @@ function ProfilePage() {
                     <p className="text-xl font-bold text-white text-shadow">London, UK</p>
                 </div>
                 <div className="flex m-5 gap-10">
-                    <Link className="flex items-center gap-3 text-xl font-semibold text-blue-500 "><MdPostAdd size={30} />Posts</Link>
-                    <Link className="flex items-center gap-3 text-xl font-semibold text-blue-500 "><IoIosInformationCircleOutline size={30} />About</Link>
-                    <Link className="flex items-center gap-3 text-xl font-semibold text-blue-500 "><FaUserFriends size={30} />Friends</Link>
-                    <Link className="flex items-center gap-3 text-xl font-semibold text-blue-500 "><TbPhotoSquareRounded size={30} />Photos</Link>
+                    <Link to={'/posts'} className="flex items-center gap-3 text-xl font-semibold text-blue-500 pb-1 border-b-4 border-transparent hover:border-blue-600 hover:translate transition-all duration-300 "><MdPostAdd size={30} />Posts</Link>
+                    <Link to={'/about'} className="flex items-center gap-3 text-xl font-semibold text-blue-500 pb-1 border-b-4 border-transparent hover:border-blue-600 hover:translate transition-all duration-300 "><IoIosInformationCircleOutline size={30} />About</Link>
+                    <Link to={'/friends'} className="flex items-center gap-3 text-xl font-semibold text-blue-500 pb-1 border-b-4 border-transparent hover:border-blue-600 hover:translate transition-all duration-300 "><FaUserFriends size={30} />Friends</Link>
+                    <Link to={'/photos'} className="flex items-center gap-3 text-xl font-semibold text-blue-500 pb-1 border-b-4 border-transparent hover:border-blue-600 hover:translate transition-all duration-300 "><TbPhotoSquareRounded size={30} />Photos</Link>
                 </div>
                 <Post />
             </div>
