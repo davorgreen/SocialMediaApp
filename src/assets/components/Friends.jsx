@@ -1,4 +1,4 @@
-import Friend from "../components/Friend"
+import Friend from "./Friend"
 
 function Friends() {
     return (

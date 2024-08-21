@@ -15,15 +15,15 @@ function Sidebar() {
                 Home
             </p>
             </Link>
-            <Link> <p className="flex items-center gap-3 text-xl font-semibold text-blue-500 hover:text-blue-600 focus:text-blue-600 transition-all transform hover:scale-110 focus:scale-105 cursor-pointer">
+            <Link to="/profile/friends"> <p className="flex items-center gap-3 text-xl font-semibold text-blue-500 hover:text-blue-600 focus:text-blue-600 transition-all transform hover:scale-110 focus:scale-105 cursor-pointer">
                 <FaUserFriends size={30} />
                 Friends
             </p></Link>
-            <Link><p className="flex items-center gap-3 text-xl font-semibold text-blue-500 hover:text-blue-600 focus:text-blue-600 transition-all transform hover:scale-110  focus:scale-105 cursor-pointer">
+            <Link to={'/savedposts'}><p className="flex items-center gap-3 text-xl font-semibold text-blue-500 hover:text-blue-600 focus:text-blue-600 transition-all transform hover:scale-110  focus:scale-105 cursor-pointer">
                 <FaSave size={30} />
                 Saved Posts
             </p></Link>
-            <Link><p className="flex items-center gap-3 text-xl font-semibold text-blue-500 hover:text-blue-600 focus:text-blue-600 transition-all transform hover:scale-110 focus:scale-105 cursor-pointer">
+            <Link to={'/notifications'}><p className="flex items-center gap-3 text-xl font-semibold text-blue-500 hover:text-blue-600 focus:text-blue-600 transition-all transform hover:scale-110 focus:scale-105 cursor-pointer">
                 <IoIosNotifications size={30} />
                 Notifications
             </p></Link>

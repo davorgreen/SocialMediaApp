@@ -3,19 +3,21 @@ import { useState } from "react";
 import Sidebar from '../components/Sidebar';
 import ProfileImage from '../components/ProfileImage';
 import Post from '../components/Post';
-import Photos from './Photos';
-import Friends from './Friends';
-import About from './About';
-// Icons
+import Photos from '../components/Photos';
+import Friends from '../components/Friends';
+import About from '../components/About';
+// icons
 import { MdPostAdd } from "react-icons/md";
 import { IoIosInformationCircleOutline } from "react-icons/io";
 import { FaUserFriends } from "react-icons/fa";
 import { TbPhotoSquareRounded } from "react-icons/tb";
-// Image
+// image
 import img from '../images/6e0vct73g0n91.jpg';
+import { useParams } from "react-router-dom";
 
 function ProfilePage() {
-    const [activeComponent, setActiveComponent] = useState('posts');
+    const { component } = useParams();
+    const [activeComponent, setActiveComponent] = useState(component || 'posts');
 
     const renderComponent = () => {
         switch (activeComponent) {
