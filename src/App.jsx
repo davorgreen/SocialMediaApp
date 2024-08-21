@@ -18,6 +18,7 @@ function App() {
     <Router>
       <Routes>
         <Route path='/' element={<HomePage />} />
+        <Route path="/profile" element={<ProfilePage />} />
         <Route path="/profile/:component" element={<ProfilePage />} />
         <Route path='/*' element={<NotFoundPage />} />
         <Route path='/photos' element={<Photos />} />
