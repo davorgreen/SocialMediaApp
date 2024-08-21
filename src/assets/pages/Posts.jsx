@@ -1,7 +1,7 @@
 
 function Posts() {
     return (
-        <div>Posts</div>
+        <div>aaa</div>
     )
 }
 

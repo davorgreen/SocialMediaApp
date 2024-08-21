@@ -1,17 +1,35 @@
-import { Link } from "react-router-dom"
-import ProfileImage from "../components/ProfileImage"
-import Sidebar from "../components/Sidebar"
-import Post from '../components/Post'
-//image
-import img from '../images/6e0vct73g0n91.jpg'
-//icons
+import { useState } from "react";
+//components
+import Sidebar from '../components/Sidebar';
+import ProfileImage from '../components/ProfileImage';
+import Post from '../components/Post';
+import Photos from './Photos';
+import Friends from './Friends';
+import About from './About';
+// Icons
 import { MdPostAdd } from "react-icons/md";
 import { IoIosInformationCircleOutline } from "react-icons/io";
 import { FaUserFriends } from "react-icons/fa";
 import { TbPhotoSquareRounded } from "react-icons/tb";
-
+// Image
+import img from '../images/6e0vct73g0n91.jpg';
 
 function ProfilePage() {
+    const [activeComponent, setActiveComponent] = useState('posts');
+
+    const renderComponent = () => {
+        switch (activeComponent) {
+            case 'photos':
+                return <Photos />;
+            case 'friends':
+                return <Friends />;
+            case 'about':
+                return <About />;
+            default:
+                return <Post />;
+        }
+    };
+
     return (
         <div className="flex max-w-7xl mx-auto mt-5 gap-8">
             <div className="w-1/4">
@@ -31,15 +49,35 @@ function ProfilePage() {
                     <p className="text-xl font-bold text-white text-shadow">London, UK</p>
                 </div>
                 <div className="flex m-5 gap-10">
-                    <Link to={'/posts'} className="flex items-center gap-3 text-xl font-semibold text-blue-500 pb-1 border-b-4 border-transparent hover:border-blue-600 hover:translate transition-all duration-300 "><MdPostAdd size={30} />Posts</Link>
-                    <Link to={'/about'} className="flex items-center gap-3 text-xl font-semibold text-blue-500 pb-1 border-b-4 border-transparent hover:border-blue-600 hover:translate transition-all duration-300 "><IoIosInformationCircleOutline size={30} />About</Link>
-                    <Link to={'/friends'} className="flex items-center gap-3 text-xl font-semibold text-blue-500 pb-1 border-b-4 border-transparent hover:border-blue-600 hover:translate transition-all duration-300 "><FaUserFriends size={30} />Friends</Link>
-                    <Link to={'/photos'} className="flex items-center gap-3 text-xl font-semibold text-blue-500 pb-1 border-b-4 border-transparent hover:border-blue-600 hover:translate transition-all duration-300 "><TbPhotoSquareRounded size={30} />Photos</Link>
+                    <button
+                        onClick={() => setActiveComponent('posts')}
+                        className="flex items-center gap-3 text-xl font-semibold text-blue-500 pb-1 border-b-4 border-transparent hover:border-blue-600 transition-all duration-300"
+                    >
+                        <MdPostAdd size={30} />Posts
+                    </button>
+                    <button
+                        onClick={() => setActiveComponent('about')}
+                        className="flex items-center gap-3 text-xl font-semibold text-blue-500 pb-1 border-b-4 border-transparent hover:border-blue-600 transition-all duration-300"
+                    >
+                        <IoIosInformationCircleOutline size={30} />About
+                    </button>
+                    <button
+                        onClick={() => setActiveComponent('friends')}
+                        className="flex items-center gap-3 text-xl font-semibold text-blue-500 pb-1 border-b-4 border-transparent hover:border-blue-600 transition-all duration-300"
+                    >
+                        <FaUserFriends size={30} />Friends
+                    </button>
+                    <button
+                        onClick={() => setActiveComponent('photos')}
+                        className="flex items-center gap-3 text-xl font-semibold text-blue-500 pb-1 border-b-4 border-transparent hover:border-blue-600 transition-all duration-300"
+                    >
+                        <TbPhotoSquareRounded size={30} />Photos
+                    </button>
                 </div>
-                <Post />
+                {renderComponent()}
             </div>
         </div>
-    )
+    );
 }
 
-export default ProfilePage
+export default ProfilePage;
