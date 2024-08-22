@@ -8,6 +8,7 @@ import Friends from './assets/components/Friends'
 import About from './assets/components/About'
 import SavedPosts from './assets/pages/SavedPosts'
 import Notification from './assets/pages/Notification'
+import Register from './assets/pages/Register'
 
 
 
@@ -26,6 +27,7 @@ function App() {
         <Route path='/about' element={<About />} />
         <Route path='/savedposts' element={<SavedPosts />} />
         <Route path='/notifications' element={<Notification />} />
+        <Route path='/register' element={<Register />} />
       </Routes>
     </Router>
   )
