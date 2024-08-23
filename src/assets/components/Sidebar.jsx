@@ -14,7 +14,7 @@ function Sidebar() {
 
     return (
 
-        <div className="flex flex-col items-start gap-4 bg-white shadow-lg rounded-md shadow-gray-300 p-6 mb-6">
+        <div className="flex flex-col items-start text-center ml-20 gap-4 bg-white shadow-lg rounded-md shadow-gray-300 p-6 mb-6 md:w-auto md:ml-0">
             <h2 className="text-3xl font-bold text-blue-600 mb-4">Navigation</h2>
             <Link to={'/'}>  <p className={`${currentPath === '/' ? active : nonActive}`}>
                 <FaHome size={30} />

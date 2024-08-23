@@ -51,14 +51,14 @@ function SponsorshipsMember() {
     };
 
     return (
-        <div className="flex flex-col justify-center items-center mt-8">
+        <div className="flex flex-col justify-center items-center mt-8 w-72">
             <div className="bg-blue-200 p-6 rounded-xl shadow-lg">
                 <h2 className="text-center text-blue-600 text-xl font-bold mb-4">Sponsorships</h2>
                 <div
                     style={{ width: `${progressBrands()}%` }}
-                    className="h-2 bg-blue-600 rounded-full mb-6 transition-all duration-500  ease-in-out"
+                    className="h-2 bg-blue-600 rounded-full mb-6 transition-all duration-500 ease-in-out"
                 ></div>
-                <div className="flex justify-center items-center">
+                <div className="flex justify-center items-center p-2 bg-white rounded-lg">
                     <img
                         src={data.image}
                         alt="sponsorships"
@@ -67,6 +67,7 @@ function SponsorshipsMember() {
                 </div>
             </div>
         </div>
+
     );
 }
 
