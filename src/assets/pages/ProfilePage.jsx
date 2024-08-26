@@ -33,11 +33,11 @@ function ProfilePage() {
     };
 
     return (
-        <div className="flex max-w-7xl mx-auto mt-5 gap-8">
+        <div className="flex flex-col md:flex-row max-w-7xl mx-auto mt-5 gap-8">
             <div className="w-1/4">
                 <Sidebar />
             </div>
-            <div className="w-3/4 h-32 pb-10 mt-5 relative">
+            <div className="md:w-3/4 h-32 pb-10 mt-5 relative">
                 <div className="h-48 shadow-xl shadow-gray-400 rounded-md overflow-hidden flex justify-center items-center">
                     <img src={img} alt="dogsfamily" />
                 </div>
@@ -47,10 +47,10 @@ function ProfilePage() {
                 <div className="p-4 absolute top-0 left-0">
                     <h1 className="text-xl font-bold text-white text-shadow">Bob Smith</h1>
                 </div>
-                <div className="absolute top-0 right-2">
+                <div className="absolute top-2 md:top-0 right-2">
                     <p className="text-xl font-bold text-white text-shadow">London, UK</p>
                 </div>
-                <div className="flex m-5 gap-10">
+                <div className="flex-row md:flex m-5 gap-10">
                     <button
                         onClick={() => setActiveComponent('posts')}
                         className="flex items-center gap-3 text-xl font-semibold text-blue-500 pb-1 border-b-4 border-transparent hover:border-blue-600 transition-all duration-300"
