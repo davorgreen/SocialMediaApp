@@ -1,24 +1,29 @@
-import { useState } from 'react';
+
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Registration = () => {
-    const [isLogin, setIsLogin] = useState(false);
     const navigate = useNavigate();
 
     const initialValues = {
-        name: '',
+        firstName: '',
+        lastName: '',
         email: '',
         password: '',
-        confirmPassword: '',
-        phoneNumber: '',
+        phone: '',
         gender: '',
+        city: '',
+        countryCode: '',
         termsAndConditions: false,
     };
 
     const validationSchema = Yup.object({
-        name: Yup.string()
+        firstName: Yup.string()
+            .min(3, "Name should be at least 3 characters long")
+            .required('Name is required'),
+        lastName: Yup.string()
             .min(3, "Name should be at least 3 characters long")
             .required('Name is required'),
         email: Yup.string()
@@ -30,7 +35,7 @@ const Registration = () => {
         confirmPassword: Yup.string()
             .oneOf([Yup.ref('password')], 'Passwords must match')
             .required('Confirm your password'),
-        phoneNumber: Yup.string()
+        phone: Yup.string()
             .matches(/^[0-9]+$/, "Phone number is not valid")
             .min(10, 'Phone number should be at least 10 digits long')
             .required('Phone number is required'),
@@ -39,27 +44,38 @@ const Registration = () => {
             .required('Gender is required'),
         termsAndConditions: Yup.boolean()
             .oneOf([true], 'You must accept the terms and conditions'),
+        city: Yup.string()
+            .min(2, 'City must be at least 2 characters long')
+            .max(50, 'City can be at most 50 characters long')
+            .required('City is required'),
+        countryCode: Yup.string()
+            .matches(/^[A-Z]{2}$/, 'Country code must be exactly 2 uppercase letters')
+            .required('Country code is required'),
     });
 
-    const onSubmit = (values, { resetForm }) => {
-        alert(JSON.stringify(values, null, 2));
-        resetForm();
-        navigate('/');
-
+    const onSubmit = async (values, { resetForm }) => {
+        try {
+            const response = await axios.post('/api/users/register', values);
+            console.log(response.data);
+            resetForm();
+            navigate('/login');
+        } catch (error) {
+            console.error('Error during registration', error);
+        }
     };
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-100">
             <div className="bg-white shadow-lg rounded-md p-8 w-full max-w-md">
                 <div className="flex justify-between mb-6">
-                    <h1 className="text-2xl font-bold text-blue-600">{isLogin ? 'Log In' : 'Register'}</h1>
                     <button
                         className="text-blue-500 hover:underline"
-                        onClick={() => setIsLogin(!isLogin)}
+                        onClick={() => navigate('/login')}
                     >
-                        {isLogin ? 'Need an account? Register' : 'Already have an account? Log In'}
+                        Already have an account? Log In
                     </button>
                 </div>
+                <h1 className="text-2xl font-bold text-blue-600 mb-6">Register</h1>
                 <Formik
                     initialValues={initialValues}
                     validationSchema={validationSchema}
@@ -67,17 +83,24 @@ const Registration = () => {
                 >
                     {({ isSubmitting }) => (
                         <Form className="space-y-4">
-                            {!isLogin && (
-                                <div>
-                                    <Field
-                                        type="text"
-                                        name="name"
-                                        placeholder="Enter your name"
-                                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    />
-                                    <ErrorMessage name="name" component="div" className="text-red-500 text-sm mt-1" />
-                                </div>
-                            )}
+                            <div>
+                                <Field
+                                    type="text"
+                                    name="firstName"
+                                    placeholder="Enter your first name"
+                                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                />
+                                <ErrorMessage name="firstName" component="div" className="text-red-500 text-sm mt-1" />
+                            </div>
+                            <div>
+                                <Field
+                                    type="text"
+                                    name="lastName"
+                                    placeholder="Enter your last name"
+                                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                />
+                                <ErrorMessage name="lastName" component="div" className="text-red-500 text-sm mt-1" />
+                            </div>
                             <div>
                                 <Field
                                     type="email"
@@ -96,64 +119,74 @@ const Registration = () => {
                                 />
                                 <ErrorMessage name="password" component="div" className="text-red-500 text-sm mt-1" />
                             </div>
-                            {!isLogin && (
-                                <div>
-                                    <Field
-                                        type="password"
-                                        name="confirmPassword"
-                                        placeholder="Confirm your password"
-                                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    />
-                                    <ErrorMessage name="confirmPassword" component="div" className="text-red-500 text-sm mt-1" />
-                                </div>
-                            )}
-                            {!isLogin && (
-                                <div>
-                                    <Field
-                                        type="text"
-                                        name="phoneNumber"
-                                        placeholder="Enter your phone number"
-                                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    />
-                                    <ErrorMessage name="phoneNumber" component="div" className="text-red-500 text-sm mt-1" />
-                                </div>
-                            )}
-                            {!isLogin && (
-                                <div>
-                                    <label className="block mb-2 text-sm font-bold text-blue-700 underline">Gender</label>
-                                    <div className="flex items-center space-x-4 font-semibold text-blue-500">
-                                        <label className="flex items-center">
-                                            <Field type="radio" name="gender" value="Male" className="mr-2" />
-                                            Male
-                                        </label>
-                                        <label className="flex items-center">
-                                            <Field type="radio" name="gender" value="Female" className="mr-2" />
-                                            Female
-                                        </label>
-                                        <label className="flex items-center">
-                                            <Field type="radio" name="gender" value="Undeclared" className="mr-2" />
-                                            Undeclared
-                                        </label>
-                                    </div>
-                                    <ErrorMessage name="gender" component="div" className="text-red-500 text-sm mt-1" />
-                                </div>
-                            )}
-                            {!isLogin && (
-                                <div>
+                            <div>
+                                <Field
+                                    type="password"
+                                    name="confirmPassword"
+                                    placeholder="Confirm your password"
+                                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                />
+                                <ErrorMessage name="confirmPassword" component="div" className="text-red-500 text-sm mt-1" />
+                            </div>
+                            <div>
+                                <Field
+                                    type="text"
+                                    name="phone"
+                                    placeholder="Enter your phone number"
+                                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                />
+                                <ErrorMessage name="phone" component="div" className="text-red-500 text-sm mt-1" />
+                            </div>
+                            <div>
+                                <Field
+                                    type="text"
+                                    name="city"
+                                    placeholder="Enter your city"
+                                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                />
+                                <ErrorMessage name="city" component="div" className="text-red-500 text-sm mt-1" />
+                            </div>
+                            <div>
+                                <Field
+                                    type="text"
+                                    name="countryCode"
+                                    placeholder="Enter your country code"
+                                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                />
+                                <ErrorMessage name="countryCode" component="div" className="text-red-500 text-sm mt-1" />
+                            </div>
+                            <div>
+                                <label className="block mb-2 text-sm font-bold text-blue-700 underline">Gender</label>
+                                <div className="flex items-center space-x-4 font-semibold text-blue-500">
                                     <label className="flex items-center">
-                                        <Field type="checkbox" name="termsAndConditions" className="mr-2" />
-                                        I accept the terms and conditions
+                                        <Field type="radio" name="gender" value="Male" className="mr-2" />
+                                        Male
                                     </label>
-                                    <ErrorMessage name="termsAndConditions" component="div" className="text-red-500 text-sm mt-1" />
+                                    <label className="flex items-center">
+                                        <Field type="radio" name="gender" value="Female" className="mr-2" />
+                                        Female
+                                    </label>
+                                    <label className="flex items-center">
+                                        <Field type="radio" name="gender" value="Undeclared" className="mr-2" />
+                                        Undeclared
+                                    </label>
                                 </div>
-                            )}
+                                <ErrorMessage name="gender" component="div" className="text-red-500 text-sm mt-1" />
+                            </div>
+                            <div>
+                                <label className="flex items-center">
+                                    <Field type="checkbox" name="termsAndConditions" className="mr-2" />
+                                    I accept the terms and conditions
+                                </label>
+                                <ErrorMessage name="termsAndConditions" component="div" className="text-red-500 text-sm mt-1" />
+                            </div>
                             <div>
                                 <button
                                     type="submit"
                                     disabled={isSubmitting}
                                     className="w-full p-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
                                 >
-                                    {isSubmitting ? 'Submitting...' : isLogin ? 'Log In' : 'Register'}
+                                    {isSubmitting ? 'Submitting...' : 'Register'}
                                 </button>
                             </div>
                         </Form>

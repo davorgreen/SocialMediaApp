@@ -9,6 +9,7 @@ import About from './assets/components/About'
 import SavedPosts from './assets/pages/SavedPosts'
 import Notification from './assets/pages/Notification'
 import Register from './assets/pages/Register'
+import Login from './assets/pages/Login'
 
 
 
@@ -28,6 +29,7 @@ function App() {
         <Route path='/savedposts' element={<SavedPosts />} />
         <Route path='/notifications' element={<Notification />} />
         <Route path='/register' element={<Register />} />
+        <Route path='/login' element={<Login />} />
       </Routes>
     </Router>
   )
