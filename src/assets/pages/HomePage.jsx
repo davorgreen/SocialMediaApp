@@ -8,7 +8,7 @@ import Story from '../components/Story'
 function HomePage() {
     return (
         <div>
-            <Header />+
+            <Header />
             <Story />
             <div className="flex flex-col max-w-7xl mx-auto mt-5 gap-8 md:flex-row">
                 <div className="md:w-1/4 w-[420px]">
