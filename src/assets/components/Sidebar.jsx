@@ -5,9 +5,12 @@ import { IoIosNotifications } from "react-icons/io";
 import { IoLogOutSharp } from "react-icons/io5";
 import SponsorshipsMember from "./SponsorshipsMember";
 import { Link, useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logout } from "../../slices/UserSlice";
 
 function Sidebar() {
     const location = useLocation();
+    const dispatch = useDispatch();
     const currentPath = location.pathname;
     const nonActive = "flex items-center gap-3 text-xl font-semibold text-blue-500 hover:text-blue-600 focus:text-blue-600 transition-all transform hover:scale-110 hover:scale-105 cursor-pointer"
     const active = " flex text-xl gap-3 font-semibold w-64 cursor-pointer bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md ring-2 ring-blue-500 ring-offset-2 transform scale-105 transition-transform duration-300";
@@ -33,7 +36,7 @@ function Sidebar() {
                 <IoIosNotifications size={30} />
                 Notifications
             </p></Link>
-            <Link><p className={`${currentPath === '/logout' ? active : nonActive}`}>
+            <Link onClick={() => dispatch(logout())}><p className={`${nonActive} hover:flex hover:text-xl hover:gap-3 hover:font-semibold hover:w-64 hover:cursor-pointer hover:bg-blue-500 hover:text-white hover:px-4 hover:py-2 hover:rounded-lg hover:shadow-md hover:ring-2 hover:ring-blue-500 hover:ring-offset-2 hover:transform hover:scale-105 hover:transition-transform hover:duration-300`}>
                 <IoLogOutSharp size={30} />
                 Logout
             </p> </Link>
