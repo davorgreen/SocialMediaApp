@@ -3,11 +3,13 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { login } from '../../slices/UserSlice';
 
 const Login = () => {
-    const [token, setToken] = useState([])
     const [error, setError] = useState('');
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const initialValues = {
         email: '',
@@ -26,7 +28,8 @@ const Login = () => {
     const onSubmit = async (values) => {
         try {
             const response = await axios.post('/api/users/login', values);
-            setToken(response.data.token);
+            const { token, user } = response.data;
+            dispatch(login({ token, user }))
             navigate('/');
         } catch (error) {
             setError('Invalid email or password');
