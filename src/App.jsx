@@ -1,4 +1,4 @@
-import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { Route, BrowserRouter as Router, Routes, useLocation } from 'react-router-dom';
 import HomePage from './assets/pages/HomePage';
 import ProfilePage from './assets/pages/ProfilePage';
 import NotFoundPage from './assets/pages/NotFoundPage';
@@ -10,10 +10,26 @@ import Notification from './assets/pages/Notification';
 import Register from './assets/pages/Register';
 import Login from './assets/pages/Login';
 import ProtectedRoute from './assets/pages/ProtectedRoute';
+import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { checkAuth } from './slices/UserSlice';
 
 function App() {
+  function AuthChecker() {
+    const dispatch = useDispatch();
+    const location = useLocation();
+
+    useEffect(() => {
+      dispatch(checkAuth());
+    }, [dispatch, location]);
+
+    return null;
+  }
+
+
   return (
     <Router>
+      <AuthChecker />
       <Routes>
         <Route path='/' element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
         <Route path='/profile' element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />

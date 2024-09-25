@@ -7,7 +7,7 @@ const UserSlice = createSlice({
     name: 'user',
     initialState: {
         token: localStorage.getItem('token') || null,
-        isAuth: false,
+        isAuth: localStorage.getItem('token') || false,
         user: null,
     },
     reducers: {
@@ -25,22 +25,25 @@ const UserSlice = createSlice({
         },
         userData: (state, action) => {
             state.user = action.payload;
-        }
-    },
-    checkAuth: (state) => {
-        if (state.token) {
-            const decoded = jwtDecode(state.token);
-            const currentTime = Date.now() / 1000;
-            if (decoded.exp < currentTime) {
-                state.isAuth = false;
-                state.token = null;
-                localStorage.removeItem('token');
-            } else {
-                state.isAuth = true;
+        },
+        checkAuth: (state) => {
+            if (state.token) {
+                const decoded = jwtDecode(state.token);
+                console.log(decoded)
+                const currentTime = Date.now() / 1000;
+                if (decoded.exp < currentTime) {
+                    state.isAuth = false;
+                    state.token = null;
+                    localStorage.removeItem('token');
+                } else {
+                    state.isAuth = true;
+                }
             }
         }
-    }
+    },
+
 })
+
 
 export const { login, logout, userData, checkAuth } = UserSlice.actions;
 export default UserSlice.reducer;
