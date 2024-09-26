@@ -10,9 +10,13 @@ import { useState } from 'react';
 import { IoImagesOutline } from 'react-icons/io5';
 
 import ProfileImage from '../components//ProfileImage.jsx'
+import { useSelector } from 'react-redux';
+
 
 function Post() {
     const [dropDownMenu, setDropDownMenu] = useState(false);
+    const { user } = useSelector((state) => state.userStore);
+
 
     function openDropDownMenu() {
         setDropDownMenu(!dropDownMenu);
@@ -23,7 +27,7 @@ function Post() {
             <div className="flex gap-3 mb-3 relative">
                 < ProfileImage />
                 <div>
-                    <p><span className="font-bold text-blue-600 text-xl">Owner</span> shared a post</p>
+                    <p><span className="font-bold text-blue-600 text-xl">{user.firstName} {user.lastName}</span> shared a post</p>
                     <p className="text-lg font-semibold">2 hours ago</p>
                 </div>
                 <div className="absolute right-10">

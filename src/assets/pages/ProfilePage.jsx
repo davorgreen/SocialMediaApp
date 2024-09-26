@@ -14,10 +14,13 @@ import { TbPhotoSquareRounded } from "react-icons/tb";
 // image
 import img from '../images/6e0vct73g0n91.jpg';
 import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 function ProfilePage() {
     const { component } = useParams();
     const [activeComponent, setActiveComponent] = useState(component || 'posts');
+    const { user } = useSelector((state) => state.userStore);
+
 
     const renderComponent = () => {
         switch (activeComponent) {
@@ -44,11 +47,11 @@ function ProfilePage() {
                 <div className="absolute top-11 left-1">
                     <ProfileImage size={'big'} />
                 </div>
-                <div className="p-4 absolute top-0 left-0">
-                    <h1 className="text-xl font-bold text-white text-shadow">Bob Smith</h1>
+                <div className="p-1 absolute top-0 left-0">
+                    <h1 className="text-xl font-bold text-white text-shadow">{user.firstName} {user.lastName}</h1>
                 </div>
                 <div className="absolute top-2 md:top-0 right-2">
-                    <p className="text-xl font-bold text-white text-shadow">London, UK</p>
+                    <p className="text-xl font-bold text-white text-shadow">{user.city}, {user.countryCode}</p>
                 </div>
                 <div className="flex-row md:flex m-5 gap-10">
                     <button

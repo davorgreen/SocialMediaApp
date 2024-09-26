@@ -16,6 +16,7 @@ const Registration = () => {
         gender: '',
         city: '',
         countryCode: '',
+        aboutMe: '',
         termsAndConditions: false,
     };
 
@@ -155,6 +156,16 @@ const Registration = () => {
                                 />
                                 <ErrorMessage name="countryCode" component="div" className="text-red-500 text-sm mt-1" />
                             </div>
+                            <div>
+                                <Field
+                                    as="textarea"
+                                    name="aboutMe"
+                                    placeholder="Tell us about yourself (optional)"
+                                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                />
+                                <ErrorMessage name="aboutMe" component="div" className="text-red-500 text-sm mt-1" />
+                            </div>
+
                             <div>
                                 <label className="block mb-2 text-sm font-bold text-blue-700 underline">Gender</label>
                                 <div className="flex items-center space-x-4 font-semibold text-blue-500">
