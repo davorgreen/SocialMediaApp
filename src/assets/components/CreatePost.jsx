@@ -5,12 +5,7 @@ import { MdEmojiEmotions } from "react-icons/md";
 import ProfileImage from "./ProfileImage";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import {
-    GetCountries,
-    GetState,
-    GetCity,
-} from "react-country-state-city";
-
+import countries from '/src/data/countries.js'
 
 
 function CreatePost() {
@@ -20,43 +15,30 @@ function CreatePost() {
     const [showLocation, setShowLocation] = useState(false);
     const [error, setError] = useState('');
     const [countryId, setCountryId] = useState("");
-    const [stateId, setStateId] = useState("");
-    const [cityId, setCityId] = useState("");
-
-    const [countriesList, setCountriesList] = useState([]);
-    const [stateList, setStateList] = useState([]);
-    const [cityList, setCityList] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [users, setUSers] = useState([]);
 
 
     useEffect(() => {
-        GetCountries().then((result) => {
-            setCountriesList(result);
-        });
-    }, []);
+        const fetchUsers = async () => {
+            setLoading(true);
+            try {
+                const response = await axios.get('/api/users/user');
+                setUSers(response);
+                console.log(users)
+            } catch (error) {
+                setError('Error', error);
+            }
+        }
+        fetchUsers();
+    }, [])
 
-    const handleCountryChange = (e) => {
-        const selectedCountry = countriesList[e.target.value]; // get full country object
-        setCountryId(selectedCountry.id);
-        setStateId(""); // reset state and city selections
-        setCityId("");
-        GetState(selectedCountry.id).then((result) => {
-            setStateList(result);
-        });
-    };
+    function handleCountryChange(e) {
+        const selectedCountryCode = e.target.value;
+        setCountryId(selectedCountryCode);
+    }
 
-    const handleStateChange = (e) => {
-        const selectedState = stateList[e.target.value]; // get full state object
-        setStateId(selectedState.id);
-        setCityId(""); // reset city selection
-        GetCity(countryId, selectedState.id).then((result) => {
-            setCityList(result);
-        });
-    };
 
-    const handleCityChange = (e) => {
-        const selectedCity = cityList[e.target.value]; // get full city object
-        setCityId(selectedCity.id);
-    };
 
     function handleOpenFeelings() {
         setShowFeelings(!showFeelings);
@@ -131,38 +113,8 @@ function CreatePost() {
                             className="block w-1/3 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                             <option value="">Select Country</option>
-                            {countriesList.map((item, index) => (
-                                <option key={index} value={index}>
-                                    {item.name}
-                                </option>
-                            ))}
-                        </select>
-
-                        <h6 className="font-semibold mt-4">State</h6>
-                        <select
-                            onChange={handleStateChange}
-                            value={stateId}
-                            disabled={!countryId}
-                            className="block w-1/3 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        >
-                            <option value="">Select State</option>
-                            {stateList.map((item, index) => (
-                                <option key={index} value={index}>
-                                    {item.name}
-                                </option>
-                            ))}
-                        </select>
-
-                        <h6 className="font-semibold mt-4">City</h6>
-                        <select
-                            onChange={handleCityChange}
-                            value={cityId}
-                            disabled={!stateId}
-                            className="block w-1/3 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        >
-                            <option value="">Select City</option>
-                            {cityList.map((item, index) => (
-                                <option key={index} value={index}>
+                            {countries.map((item, index) => (
+                                <option key={index}>
                                     {item.name}
                                 </option>
                             ))}
