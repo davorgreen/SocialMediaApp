@@ -3,9 +3,10 @@ import { FaPeopleGroup } from "react-icons/fa6";
 import { IoLocationSharp } from "react-icons/io5";
 import { MdEmojiEmotions } from "react-icons/md";
 import ProfileImage from "./ProfileImage";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import countries from '/src/data/countries.js'
+
 
 
 function CreatePost() {
@@ -15,23 +16,10 @@ function CreatePost() {
     const [showLocation, setShowLocation] = useState(false);
     const [error, setError] = useState('');
     const [countryId, setCountryId] = useState("");
-    const [loading, setLoading] = useState(true);
-    const [users, setUSers] = useState([]);
 
 
-    useEffect(() => {
-        const fetchUsers = async () => {
-            setLoading(true);
-            try {
-                const response = await axios.get('/api/users/user');
-                setUSers(response);
-                console.log(users)
-            } catch (error) {
-                setError('Error', error);
-            }
-        }
-        fetchUsers();
-    }, [])
+
+
 
     function handleCountryChange(e) {
         const selectedCountryCode = e.target.value;

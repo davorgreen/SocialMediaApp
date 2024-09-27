@@ -1,6 +1,38 @@
+import { useEffect, useState } from "react";
 import Friend from "./Friend"
+import axios from "axios";
+import { useSelector } from "react-redux";
+import ProfileImage from "./ProfileImage";
 
 function Friends() {
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
+    const [friends, setFriends] = useState([]);
+    const { token } = useSelector((state) => state.userStore);
+    const { user } = useSelector((state) => state.userStore);
+    const filteredUsers = friends.filter(friend => friend._id !== user._id);
+
+
+    useEffect(() => {
+        const fetchUsers = async () => {
+            setLoading(true);
+            try {
+                const response = await axios.get('/api/users', {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                setFriends(response.data);
+                console.log(response.data)
+            } catch (error) {
+                setError('Error', error);
+            }
+            setLoading(false);
+        }
+        fetchUsers();
+    }, [])
+
+
     return (
         <div className="flex flex-col gap-5 items-center md:items-start bg-white shadow-lg rounded-lg p-6 mb-6">
             <h2 className="text-2xl mb-2 font-bold text-blue-500">Friends</h2>
@@ -16,6 +48,23 @@ function Friends() {
                 <Friend />
                 <Friend />
             </div>
+            <div className="flex flex-col items-center mt-8 gap-8">
+                <h2 className="text-2xl mb-2 font-bold text-blue-500">Suggested Friends</h2>
+                <div className="flex justify-center gap-6 flex-wrap">
+                    {filteredUsers.map((el, index) => (
+                        <div key={index} className="w-40 h-60 flex flex-col items-center gap-2 bg-blue-200 shadow-lg rounded-lg p-4 transition-transform transform hover:scale-105">
+                            <ProfileImage />
+                            <p className="text-xl font-semibold text-blue-500 text-center">{el.firstName} {el.lastName}</p>
+                            <p className="text-lg font-semibold text-blue-500 text-center">{el.city}, {el.countryCode}</p>
+                            <div className="mt-auto"> {/* Dodan mt-auto za ravnanje dugmeta */}
+                                <button className="px-4 py-2 font-bold bg-blue-700 text-white rounded-lg w-full">Add Friend</button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+
         </div>
     )
 }

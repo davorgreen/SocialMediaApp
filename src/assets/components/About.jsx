@@ -9,7 +9,7 @@ function About() {
             <p className="text-lg font-semibold text-gray-700">E-mail: {user.email}</p>
             <p className="text-lg font-semibold text-gray-700">Phone-number: {user.phone}</p>
             <p className="text-lg font-semibold text-gray-700">Gender: {user.gender}</p>
-            <p className="text-lg font-semibold text-blue-700">About me:</p>
+            <p className="text-lg font-semibold text-blue-700">About me: {user.aboutMe || 'Nothing'}</p>
         </div>
     )
 }
