@@ -20,10 +20,14 @@ const FriendsSlice = createSlice({
             state.suggestedFriends = action.payload;
 
         },
+        saveFriends: (state, action) => {
+            state.addedFriends = action.payload;
+            console.log(state.addedFriends)
+        }
 
 
     }
 })
 
-export const { friendsData, suggestedUsers } = FriendsSlice.actions;
+export const { friendsData, suggestedUsers, saveFriends } = FriendsSlice.actions;
 export default FriendsSlice.reducer;

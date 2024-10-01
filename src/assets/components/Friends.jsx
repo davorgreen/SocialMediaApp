@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Friend from "./Friend"
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,8 +12,17 @@ function Friends() {
     const { token } = useSelector((state) => state.userStore);
     const { user } = useSelector((state) => state.userStore);
     const { suggestedFriends } = useSelector((state) => state.friendsStore);
-    const filteredUsers = suggestedFriends.filter(friend => friend._id !== user._id);
+    const { addedFriends } = useSelector((state) => state.friendsStore);
 
+
+    const filteredUsers = useMemo(() => {
+        return suggestedFriends.filter(friend =>
+            friend._id !== user._id &&
+            !addedFriends.some(addedFriend =>
+                addedFriend._id === friend._id
+            )
+        );
+    }, [suggestedFriends, user._id, addedFriends]);
 
     useEffect(() => {
         const fetchUsers = async () => {
