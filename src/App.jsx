@@ -3,7 +3,6 @@ import HomePage from './assets/pages/HomePage';
 import ProfilePage from './assets/pages/ProfilePage';
 import NotFoundPage from './assets/pages/NotFoundPage';
 import Photos from './assets/components/Photos';
-import Friends from './assets/components/Friends';
 import About from './assets/components/About';
 import SavedPosts from './assets/pages/SavedPosts';
 import Notification from './assets/pages/Notification';
@@ -13,6 +12,7 @@ import ProtectedRoute from './assets/pages/ProtectedRoute';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { checkAuth } from './slices/UserSlice';
+import FriendsPage from './assets/pages/FriendsPage';
 
 function App() {
   function AuthChecker() {
@@ -35,7 +35,7 @@ function App() {
         <Route path='/profile' element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
         <Route path='/profile/:component' element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
         <Route path='/photos' element={<ProtectedRoute><Photos /></ProtectedRoute>} />
-        <Route path='/friends' element={<ProtectedRoute><Friends /></ProtectedRoute>} />
+        <Route path='/friends' element={<ProtectedRoute><FriendsPage /></ProtectedRoute>} />
         <Route path='/about' element={<ProtectedRoute><About /></ProtectedRoute>} />
         <Route path='/savedposts' element={<ProtectedRoute><SavedPosts /></ProtectedRoute>} />
         <Route path='/notifications' element={<ProtectedRoute><Notification /></ProtectedRoute>} />

@@ -6,6 +6,7 @@ import ProfileImage from "./ProfileImage";
 import { useState } from "react";
 import axios from "axios";
 import countries from '/src/data/countries.js'
+import { useSelector } from "react-redux";
 
 
 
@@ -14,18 +15,16 @@ function CreatePost() {
     const [feelings, setFeelings] = useState(['😊', '😢', '😡', '😄', '😮', '😴', '😕', '😨', '😍', '😬', '😎', '😳', '🤒', '😌', '😐']);
     const [showFeelings, setShowFeelings] = useState(false);
     const [showLocation, setShowLocation] = useState(false);
+    const [showPeople, setShowPeople] = useState(false);
     const [error, setError] = useState('');
     const [countryId, setCountryId] = useState("");
-
-
-
+    const { addedFriends } = useSelector((state) => state.friendsStore);
 
 
     function handleCountryChange(e) {
         const selectedCountryCode = e.target.value;
         setCountryId(selectedCountryCode);
     }
-
 
 
     function handleOpenFeelings() {
@@ -39,6 +38,11 @@ function CreatePost() {
 
     function handleCheckIn() {
         setShowLocation(!showLocation);
+    }
+
+    function handlePeople(friend) {
+        setPost(prevPost => prevPost + 'Friend' + friend);
+        setShowPeople(false);
     }
 
     const handleSharePost = async (post) => {
@@ -66,7 +70,7 @@ function CreatePost() {
                 <button onClick={() => handleSharePost(post)} className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 font-bold">Share</button>
             </div>
             <div className="flex flex-col gap-3 justify-center mt-4 md:flex-row">
-                <button className="flex items-center gap-2 bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 font-bold">
+                <button onClick={() => setShowPeople(!showPeople)} className="flex items-center gap-2 bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 font-bold">
                     <FaPeopleGroup size={30} /> People
                 </button>
                 <button onClick={handleCheckIn} className="flex items-center gap-2 bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 font-bold">
@@ -110,6 +114,31 @@ function CreatePost() {
                     </div>
                 </div>
             )}
+
+
+            {showPeople && (
+                <div className="mt-4">
+                    <h6 className="font-semibold">Friends</h6>
+                    <div className="grid grid-cols-5 gap-4">
+                        {addedFriends && addedFriends.length > 0 ? (
+                            addedFriends.map((friend, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => handlePeople(friend)}
+                                    className="text-lg p-3 bg-gray-100 hover:bg-gray-200 rounded-lg shadow-sm flex items-center justify-center"
+                                >
+                                    <div className="text-center">
+                                        <p className="font-medium text-gray-800">{friend.firstName} {friend.lastName}</p>
+                                    </div>
+                                </button>
+                            ))
+                        ) : (
+                            <p className="text-gray-500 col-span-5">No friends</p>
+                        )}
+                    </div>
+                </div>
+            )}
+
         </div>
 
     );

@@ -4,7 +4,6 @@ import Sidebar from '../components/Sidebar';
 import ProfileImage from '../components/ProfileImage';
 import Post from '../components/Post';
 import Photos from '../components/Photos';
-import Friends from '../components/Friends';
 import About from '../components/About';
 // icons
 import { MdPostAdd } from "react-icons/md";
@@ -15,6 +14,7 @@ import { TbPhotoSquareRounded } from "react-icons/tb";
 import img from '../images/6e0vct73g0n91.jpg';
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import FriendsPage from "./FriendsPage";
 
 function ProfilePage() {
     const { component } = useParams();
@@ -27,7 +27,7 @@ function ProfilePage() {
             case 'photos':
                 return <Photos />;
             case 'friends':
-                return <Friends />;
+                return <FriendsPage />;
             case 'about':
                 return <About />;
             default:

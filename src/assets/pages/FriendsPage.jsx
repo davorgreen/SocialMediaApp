@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
-import Friend from "./Friend"
+
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import ProfileImage from "./ProfileImage";
+import ProfileImage from "../components/ProfileImage";
 import { suggestedUsers } from "../../slices/FriendsSlice";
+import Friend from "../components/Friend";
 
-function Friends() {
+function FriendsPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const dispatch = useDispatch();
@@ -81,4 +82,4 @@ function Friends() {
     )
 }
 
-export default Friends
+export default FriendsPage;
