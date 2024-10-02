@@ -1,4 +1,3 @@
-
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
@@ -12,11 +11,12 @@ const Registration = () => {
         lastName: '',
         email: '',
         password: '',
+        confirmPassword: '',
         phone: '',
         gender: '',
         city: '',
         countryCode: '',
-        aboutMe: '',
+        AboutMe: '',
         termsAndConditions: false,
     };
 
@@ -37,11 +37,10 @@ const Registration = () => {
             .oneOf([Yup.ref('password')], 'Passwords must match')
             .required('Confirm your password'),
         phone: Yup.string()
-            .matches(/^[0-9]+$/, "Phone number is not valid")
-            .min(10, 'Phone number should be at least 10 digits long')
+            .matches(/^\+\d{1,3}\d{9,}$/, "Phone number must be in the format +[country code][number]")
             .required('Phone number is required'),
         gender: Yup.string()
-            .oneOf(['Male', 'Female', 'Undeclared'], 'Invalid Gender')
+            .oneOf(['male', 'female', 'undeclared'], 'Invalid Gender')
             .required('Gender is required'),
         termsAndConditions: Yup.boolean()
             .oneOf([true], 'You must accept the terms and conditions'),
@@ -52,11 +51,17 @@ const Registration = () => {
         countryCode: Yup.string()
             .matches(/^[A-Z]{2}$/, 'Country code must be exactly 2 uppercase letters')
             .required('Country code is required'),
+        AboutMe: Yup.string()
+            .max(500, 'About me can be at most 200 characters long'),
     });
 
     const onSubmit = async (values, { resetForm }) => {
+        const dataToSend = {
+            ...values,
+            gender: values.gender.toLowerCase(),
+        };
         try {
-            const response = await axios.post('/api/users/register', values);
+            const response = await axios.post('/api/users/register', dataToSend);
             console.log(response.data);
             resetForm();
             navigate('/login');
@@ -159,7 +164,7 @@ const Registration = () => {
                             <div>
                                 <Field
                                     as="textarea"
-                                    name="aboutMe"
+                                    name="AboutMe"
                                     placeholder="Tell us about yourself (optional)"
                                     className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 />
@@ -170,15 +175,15 @@ const Registration = () => {
                                 <label className="block mb-2 text-sm font-bold text-blue-700 underline">Gender</label>
                                 <div className="flex items-center space-x-4 font-semibold text-blue-500">
                                     <label className="flex items-center">
-                                        <Field type="radio" name="gender" value="Male" className="mr-2" />
+                                        <Field type="radio" name="gender" value="male" className="mr-2" />
                                         Male
                                     </label>
                                     <label className="flex items-center">
-                                        <Field type="radio" name="gender" value="Female" className="mr-2" />
+                                        <Field type="radio" name="gender" value="female" className="mr-2" />
                                         Female
                                     </label>
                                     <label className="flex items-center">
-                                        <Field type="radio" name="gender" value="Undeclared" className="mr-2" />
+                                        <Field type="radio" name="gender" value="undeclared" className="mr-2" />
                                         Undeclared
                                     </label>
                                 </div>
@@ -191,15 +196,13 @@ const Registration = () => {
                                 </label>
                                 <ErrorMessage name="termsAndConditions" component="div" className="text-red-500 text-sm mt-1" />
                             </div>
-                            <div>
-                                <button
-                                    type="submit"
-                                    disabled={isSubmitting}
-                                    className="w-full p-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
-                                >
-                                    {isSubmitting ? 'Submitting...' : 'Register'}
-                                </button>
-                            </div>
+                            <button
+                                type="submit"
+                                className="w-full p-3 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
+                                disabled={isSubmitting}
+                            >
+                                Register
+                            </button>
                         </Form>
                     )}
                 </Formik>
