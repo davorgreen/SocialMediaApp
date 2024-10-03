@@ -10,7 +10,6 @@ const FriendsSlice = createSlice({
         friends: [],
         suggestedFriends: [],
         addedFriends: [],
-        friendRequests: [],
     },
     reducers: {
         friendsData: (state, action) => {
@@ -25,11 +24,6 @@ const FriendsSlice = createSlice({
             state.addedFriends = action.payload;
             console.log(state.addedFriends)
         },
-        requestSent: (state, action) => {
-            state.friendRequests = action.payload;
-        }
-
-
     }
 })
 

@@ -14,7 +14,6 @@ function FriendsPage() {
     const { user } = useSelector((state) => state.userStore);
     const { suggestedFriends } = useSelector((state) => state.friendsStore);
     const { addedFriends } = useSelector((state) => state.friendsStore);
-    const { friendRequests } = useSelector((state) => state.friendsStore);
 
 
     const filteredUsers = useMemo(() => {
@@ -51,7 +50,6 @@ function FriendsPage() {
                     Authorization: `Bearer ${token}`
                 }
             });
-            dispatch(requestSent(friend));
         } catch (error) {
             setError('Error', error)
         }
@@ -72,7 +70,7 @@ function FriendsPage() {
                             <p className="text-xl font-semibold text-blue-500 text-center">{el.firstName} {el.lastName}</p>
                             <p className="text-sm font-semibold text-blue-500 text-center">{el.city}, {el.countryCode}</p>
                             <div className="mt-auto">
-                                <button onClick={() => handleAddFriend(el)} className="px-4 py-2 font-bold bg-blue-700 text-white rounded-lg w-full"> {friendRequests.includes(el._id) ? 'Request Sent' : 'Add Friend'}</button>
+                                <button onClick={() => handleAddFriend(el)} className="px-4 py-2 font-bold bg-blue-700 text-white rounded-lg w-full"> {friendRequests.map}</button>
                             </div>
                         </div>
                     ))}
