@@ -70,7 +70,7 @@ function FriendsPage() {
                             <p className="text-xl font-semibold text-blue-500 text-center">{el.firstName} {el.lastName}</p>
                             <p className="text-sm font-semibold text-blue-500 text-center">{el.city}, {el.countryCode}</p>
                             <div className="mt-auto">
-                                <button onClick={() => handleAddFriend(el)} className="px-4 py-2 font-bold bg-blue-700 text-white rounded-lg w-full"> {friendRequests.map}</button>
+                                <button onClick={() => handleAddFriend(el)} className="px-4 py-2 font-bold bg-blue-700 text-white rounded-lg w-full">Add Friend</button>
                             </div>
                         </div>
                     ))}
