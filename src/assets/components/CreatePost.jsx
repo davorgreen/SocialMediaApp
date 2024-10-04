@@ -2,8 +2,10 @@
 import { FaPeopleGroup } from "react-icons/fa6";
 import { IoLocationSharp } from "react-icons/io5";
 import { MdEmojiEmotions } from "react-icons/md";
+import { MdOutlineAddAPhoto } from "react-icons/md";
+import { FaRegTimesCircle } from "react-icons/fa";
 import ProfileImage from "./ProfileImage";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import axios from "axios";
 import countries from '/src/data/countries.js'
 import { useSelector } from "react-redux";
@@ -16,23 +18,25 @@ function CreatePost() {
     const [showFeelings, setShowFeelings] = useState(false);
     const [showLocation, setShowLocation] = useState(false);
     const [showPeople, setShowPeople] = useState(false);
+    const [showInput, setShowInput] = useState(false);
+    const [selectedPhoto, setSelectedPhoto] = useState(null);
     const [error, setError] = useState('');
-    const [countryId, setCountryId] = useState("");
     const { addedFriends } = useSelector((state) => state.friendsStore);
+    const fileInputRef = useRef(null);
 
 
-    function handleCountryChange(e) {
-        const selectedCountryCode = e.target.value;
-        setCountryId(selectedCountryCode);
+
+    function handlePeople(friend) {
+        setPost(prevPost => prevPost + ` With ${friend.firstName} ${friend.lastName}`);
+        setShowPeople(false);
     }
-
 
     function handleOpenFeelings() {
         setShowFeelings(!showFeelings);
     }
 
     function handleSelectFeeling(feeling) {
-        setPost(prevPost => prevPost + 'Feeling' + feeling);
+        setPost(prevPost => prevPost + ' Feeling' + feeling + '');
         setShowFeelings(false);
     }
 
@@ -40,9 +44,34 @@ function CreatePost() {
         setShowLocation(!showLocation);
     }
 
-    function handlePeople(friend) {
-        setPost(prevPost => prevPost + 'Friend' + friend);
-        setShowPeople(false);
+    function handleCountryChange(e) {
+        const selectedCountryCode = e.target.value;
+        setPost(prevPost => prevPost + ' In ' + selectedCountryCode + '');
+    }
+    const toggleInput = () => {
+        setShowInput(prev => {
+            if (prev) {
+                handleRemovePhoto();
+            }
+            return !prev;
+        });
+    };
+    const handlePhotoChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            setSelectedPhoto(URL.createObjectURL(file));
+            setPost(prevPost => ({
+                ...prevPost,
+                selectedPhoto
+            }));
+
+        }
+
+    };
+
+    const handleRemovePhoto = () => {
+        setSelectedPhoto(null);
+        fileInputRef.current.value = '';
     }
 
     const handleSharePost = async (post) => {
@@ -79,6 +108,10 @@ function CreatePost() {
                 <button onClick={handleOpenFeelings} className="flex items-center gap-2 bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 font-bold">
                     <MdEmojiEmotions size={30} /> Feelings
                 </button>
+                <button onClick={toggleInput
+                } className="flex items-center gap-2 bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 font-bold">
+                    <MdOutlineAddAPhoto size={30} /> Add Photo
+                </button>
             </div>
 
             {showFeelings && (
@@ -97,11 +130,10 @@ function CreatePost() {
 
             {showLocation && (
                 <div className="mt-4">
-                    <div>
+                    <div className="flex gap-2">
                         <h6 className="font-semibold">Country</h6>
                         <select
                             onChange={handleCountryChange}
-                            value={countryId}
                             className="block w-1/3 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                             <option value="">Select Country</option>
@@ -139,7 +171,32 @@ function CreatePost() {
                 </div>
             )}
 
-        </div>
+            {
+                showInput && (
+                    <div className="flex gap-2 mt-2">
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            accept="image/*"
+                            onChange={handlePhotoChange}
+                        />
+                    </div>
+                )}
+            {selectedPhoto && (
+                <div className="relative mt-2 flex">
+                    <img src={selectedPhoto} className="w-96 h-64 object-cover rounded-lg" />
+                    <button
+                        onClick={handleRemovePhoto}
+                        className="absolute top-0 right-0 bg-red-500 text-white p-2 rounded-full"
+                    >
+                        <FaRegTimesCircle size={15} />
+                    </button>
+                </div>
+            )
+            }
+
+
+        </div >
 
     );
 }
