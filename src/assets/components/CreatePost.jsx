@@ -88,7 +88,7 @@ function CreatePost() {
 
         const postData = {
             title: "status",
-            description: "jajajajja",
+            description: status,
         };
         setLoading(true);
         try {
@@ -112,11 +112,6 @@ function CreatePost() {
             setLoading(false);
         }
     };
-
-
-
-
-
 
     return (
         <div className="flex flex-col bg-white shadow-lg rounded-lg p-6 mb-6">
