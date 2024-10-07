@@ -16,15 +16,19 @@ function Post() {
     const [dropDownMenu, setDropDownMenu] = useState(false);
     const { user } = useSelector((state) => state.userStore);
     const { posts } = useSelector((state) => state.postsStore);
+    const { suggestedFriends } = useSelector((state) => state.friendsStore);
+
 
     function openDropDownMenu() {
         setDropDownMenu(!dropDownMenu);
     }
 
+
+
     return (
         <div className="flex flex-col gap-5 bg-white shadow-lg rounded-lg p-6 mb-6">
             {posts.map((post, index) => {
-                const { createdAt, createdBy, description, likes, shares, _id, __v } = post;
+                const { createdAt, createdBy, description, likes, shares, _id, } = post;
                 const formattedDate = new Date(createdAt).toLocaleString('en-GB', {
                     day: '2-digit',
                     month: '2-digit',
@@ -32,6 +36,9 @@ function Post() {
                     hour: '2-digit',
                     minute: '2-digit',
                 });
+                const postUser = suggestedFriends.find(user => user._id === createdBy);
+                console.log(postUser)
+                const { firstName, lastName } = postUser;
 
                 return (
                     <div key={_id}>
@@ -40,7 +47,7 @@ function Post() {
                             <div>
                                 <p>
                                     <span className="font-bold text-blue-600 text-xl">
-                                        {user.firstName} {user.lastName}
+                                        {firstName} {lastName}
                                     </span>
                                     {''} shared a post
                                 </p>

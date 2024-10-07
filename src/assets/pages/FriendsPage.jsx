@@ -36,6 +36,7 @@ function FriendsPage() {
                     },
                 });
                 dispatch(suggestedUsers(response.data));
+                console.log(response.data)
             } catch (error) {
                 setError('Error', error);
             }
