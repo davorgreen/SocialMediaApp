@@ -25,7 +25,6 @@ function CreatePost() {
     const { addedFriends } = useSelector((state) => state.friendsStore);
     const { token } = useSelector((state) => state.userStore);
     const fileInputRef = useRef(null);
-    console.log(emoji, people, location)
 
     function handleOpenFeelings() {
         setShowFeelings(!showFeelings);
@@ -75,7 +74,7 @@ function CreatePost() {
         fileInputRef.current.value = '';
     };
 
-    const handleSharePost = async () => {
+    const handleSharePost = async (status) => {
         if (!status.trim()) {
             setError('Status cannot be empty');
             return;
@@ -87,12 +86,11 @@ function CreatePost() {
         }
 
         const postData = {
-            title: "status",
             description: status,
         };
         setLoading(true);
         try {
-            const response = await axios.post('/api/posts', JSON.stringify(postData), {
+            const response = await axios.post('/api/posts', postData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 }
@@ -124,7 +122,7 @@ function CreatePost() {
                     value={status}
                     onChange={(e) => setStatus(e.target.value)}
                 />
-                <button onClick={handleSharePost} className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 font-bold">Share</button>
+                <button onClick={() => handleSharePost(status)} className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 font-bold">Share</button>
             </div>
             <div className="flex flex-col gap-3 justify-center mt-4 md:flex-row">
                 <button onClick={() => setShowPeople(!showPeople)} className="flex items-center gap-2 bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 font-bold">

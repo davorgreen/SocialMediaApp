@@ -1,8 +1,9 @@
 //image
 import { Link } from 'react-router-dom';
-import image from '../images/golden-retriever-tongue-out.jpg'
+import { useSelector } from 'react-redux';
 
 function ProfileImage({ size }) {
+    const { user } = useSelector((state) => state.userStore);
     let width = 'w-12';
     let height = 'h-14';
     if (size === 'big') {
@@ -10,12 +11,15 @@ function ProfileImage({ size }) {
         height = 'h-36'
     }
     return (
-        <Link to={'/profile'}> <div><img
-            src={image}
-            alt="goldenret"
-            className={`${width} ${height} rounded-full object-cover`}
-        /></div>
-        </Link>
+        <Link to={'/profile'}> <div>
+            {user.profileImage ? (<img
+                src={user.ProfileImage}
+                alt="goldenret"
+                className={`${width} ${height} rounded-full object-cover`}
+            />) : (<div className={`${width} ${height} rounded-full object-cover bg-gray-400`}></div>
+
+            )} </div>
+        </Link >
     )
 }
 
