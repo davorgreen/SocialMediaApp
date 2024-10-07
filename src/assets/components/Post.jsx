@@ -36,9 +36,6 @@ function Post() {
                     hour: '2-digit',
                     minute: '2-digit',
                 });
-                const postUser = suggestedFriends.find(user => user._id === createdBy);
-                console.log(postUser)
-                const { firstName, lastName } = postUser;
 
                 return (
                     <div key={_id}>
@@ -47,7 +44,7 @@ function Post() {
                             <div>
                                 <p>
                                     <span className="font-bold text-blue-600 text-xl">
-                                        {firstName} {lastName}
+                                        {user.firstName} {user.lastName}
                                     </span>
                                     {''} shared a post
                                 </p>
