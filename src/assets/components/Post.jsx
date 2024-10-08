@@ -16,7 +16,6 @@ function Post() {
     const [dropDownMenu, setDropDownMenu] = useState(false);
     const { user } = useSelector((state) => state.userStore);
     const { posts } = useSelector((state) => state.postsStore);
-    const { suggestedFriends } = useSelector((state) => state.friendsStore);
 
 
     function openDropDownMenu() {

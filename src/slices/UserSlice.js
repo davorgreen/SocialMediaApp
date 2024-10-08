@@ -10,7 +10,9 @@ const UserSlice = createSlice({
         token: localStorage.getItem('token') || null,
         isAuth: localStorage.getItem('token') || false,
         user: JSON.parse(localStorage.getItem('user')) || null,
-        users: [],
+        users: JSON.parse(localStorage.getItem('users')) || [],
+        friends: JSON.parse(localStorage.getItem('friends')) || [],
+        suggestedFriends: JSON.parse(localStorage.getItem('suggestedFriends')) || [],
     },
     reducers: {
         login: (state, action) => {
@@ -27,12 +29,6 @@ const UserSlice = createSlice({
             state.user = null;
             localStorage.removeItem('user');
         },
-        allUsers: (state, action) => {
-            state.users = action.payload;
-        },
-        userData: (state, action) => {
-            state.user = action.payload;
-        },
         checkAuth: (state) => {
             if (state.token) {
                 const decoded = jwtDecode(state.token);
@@ -46,11 +42,41 @@ const UserSlice = createSlice({
                     state.isAuth = true;
                 }
             }
+        },
+        allUsers: (state, action) => {
+            state.users = action.payload;
+            let filteredUseres = state.users.filter(user => user._id !== state.user._id)
+            state.users = filteredUseres;
+            localStorage.setItem('users', JSON.stringify(filteredUseres));
+        },
+        mySuggestedFriends: (state, action) => {
+            let allSuggestedFriends = action.payload.filter(user => {
+                return (
+                    user._id !== state.user._id &&
+                    !state.friends.some(friend => friend._id === user._id)
+                );
+            });
+
+            state.suggestedFriends = allSuggestedFriends;
+            localStorage.setItem('suggestedFriends', JSON.stringify(state.suggestedFriends));
+        },
+        myFriends: (state, action) => {
+
+            let filteredFriends = action.payload.map(friend => {
+                return friend.userOneId === state.user._id ? friend.userTwoId : friend.userOneId;
+            });
+            filteredFriends = filteredFriends.filter((value, index, self) => {
+                return self.indexOf(value) === index;
+            });
+
+            let result = state.users.filter(user => filteredFriends.includes(user._id));
+            state.friends = result;
+            localStorage.setItem('friends', JSON.stringify(state.friends));
         }
     },
 
 })
 
 
-export const { login, logout, userData, checkAuth, allUsers } = UserSlice.actions;
+export const { login, logout, checkAuth, allUsers, myFriends, mySuggestedFriends } = UserSlice.actions;
 export default UserSlice.reducer;

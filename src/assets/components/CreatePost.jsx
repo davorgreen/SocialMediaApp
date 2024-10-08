@@ -22,8 +22,8 @@ function CreatePost() {
     const [people, setPeople] = useState('');
     const [showInput, setShowInput] = useState(false);
     const [selectedPhoto, setSelectedPhoto] = useState(null);
-    const { addedFriends } = useSelector((state) => state.friendsStore);
     const { token } = useSelector((state) => state.userStore);
+    const { friends } = useSelector((state) => state.userStore);
     const fileInputRef = useRef(null);
 
     function handleOpenFeelings() {
@@ -85,6 +85,7 @@ function CreatePost() {
             return;
         }
 
+        //share post
         const postData = {
             description: status,
         };
@@ -178,8 +179,8 @@ function CreatePost() {
                     <div className="mt-4">
                         <h6 className="font-semibold">Friends</h6>
                         <div className="grid grid-cols-5 gap-4">
-                            {addedFriends && addedFriends.length > 0 ? (
-                                addedFriends.map((friend, index) => (
+                            {friends && friends.length > 0 ? (
+                                friends.map((friend, index) => (
                                     <button
                                         key={index}
                                         onClick={() => handlePeople(friend)}
@@ -197,6 +198,7 @@ function CreatePost() {
                     </div>
                 )
             }
+
 
             {
                 showInput && (

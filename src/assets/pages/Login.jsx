@@ -33,7 +33,7 @@ const Login = () => {
             dispatch(login({ token, user }))
             navigate('/');
         } catch (error) {
-            setError('Invalid email or password');
+            setError(error.response.data.message);
             console.error('Error during login', error);
         }
     };

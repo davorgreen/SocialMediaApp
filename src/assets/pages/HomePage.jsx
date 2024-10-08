@@ -7,6 +7,8 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { AllPosts } from '../../slices/PostsSlice'
 import axios from 'axios'
+import { allUsers, myFriends, mySuggestedFriends } from '../../slices/UserSlice'
+
 
 
 function HomePage() {
@@ -16,6 +18,51 @@ function HomePage() {
     const { token } = useSelector((state) => state.userStore);
 
 
+    //get friends
+    useEffect(() => {
+        const friendsList = async () => {
+            setLoading(true);
+            try {
+                const response = await axios.get('/api/friends', {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    },
+                });
+                dispatch(myFriends(response.data))
+            } catch (error) {
+                setError('Error', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        friendsList();
+    }, []);
+
+
+
+    //get all users
+    useEffect(() => {
+        const usersList = async () => {
+            setLoading(true);
+            try {
+                const response = await axios.get('/api/users', {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    },
+                });
+                dispatch(allUsers(response.data));
+                dispatch(mySuggestedFriends(response.data));
+            } catch (error) {
+                setError('Error', error);
+            }
+            setLoading(false);
+        }
+        usersList();
+    }, []);
+
+
+
+    //get all posts
     useEffect(() => {
         const getAllPosts = async () => {
             setLoading(true);
