@@ -14,7 +14,7 @@ import { useSelector } from 'react-redux';
 
 function Post() {
     const [dropDownMenu, setDropDownMenu] = useState(false);
-    const { user } = useSelector((state) => state.userStore);
+    const { users } = useSelector((state) => state.userStore);
     const { posts } = useSelector((state) => state.postsStore);
 
 
@@ -28,6 +28,7 @@ function Post() {
         <div className="flex flex-col gap-5 bg-white shadow-lg rounded-lg p-6 mb-6">
             {posts.map((post, index) => {
                 const { createdAt, createdBy, description, likes, shares, _id, } = post;
+                let filteredPerson = users.filter(user => user._id === createdBy);
                 const formattedDate = new Date(createdAt).toLocaleString('en-GB', {
                     day: '2-digit',
                     month: '2-digit',
@@ -43,7 +44,7 @@ function Post() {
                             <div>
                                 <p>
                                     <span className="font-bold text-blue-600 text-xl">
-                                        {user.firstName} {user.lastName}
+                                        {filteredPerson.map(user => `${user.firstName} ${user.lastName}`)}
                                     </span>
                                     {''} shared a post
                                 </p>
