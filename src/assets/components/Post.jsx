@@ -1,4 +1,3 @@
-// images
 import image1 from '../images/golden-retriever-177213599-2000-a30830f4d2b24635a5d01b3c5c64b9ef.jpg';
 // icons
 import { IoIosMore } from 'react-icons/io';
@@ -14,21 +13,26 @@ import { useSelector } from 'react-redux';
 
 function Post() {
     const [dropDownMenu, setDropDownMenu] = useState(false);
+    const { user } = useSelector((state) => state.userStore);
     const { users } = useSelector((state) => state.userStore);
     const { posts } = useSelector((state) => state.postsStore);
-
+    const { friends } = useSelector((state) => state.userStore);
 
     function openDropDownMenu() {
         setDropDownMenu(!dropDownMenu);
     }
 
+    const filteredPosts = posts.filter(post =>
+        post.createdBy === user._id || friends.some(friend => friend._id === post.createdBy)
+    ).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-
+    console.log(filteredPosts)
     return (
         <div className="flex flex-col gap-5 bg-white shadow-lg rounded-lg p-6 mb-6">
-            {posts.map((post, index) => {
-                const { createdAt, createdBy, description, likes, shares, _id, } = post;
-                let filteredPerson = users.filter(user => user._id === createdBy);
+            {filteredPosts.length > 0 ? filteredPosts.map((post) => {
+                const { createdAt, createdBy, description, likes, shares, _id } = post;
+                const matchingUser = users.find(user => user._id === createdBy);
+                console.log(matchingUser)
                 const formattedDate = new Date(createdAt).toLocaleString('en-GB', {
                     day: '2-digit',
                     month: '2-digit',
@@ -44,7 +48,7 @@ function Post() {
                             <div>
                                 <p>
                                     <span className="font-bold text-blue-600 text-xl">
-                                        {filteredPerson.map(user => `${user.firstName} ${user.lastName}`)}
+                                        {matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'Unknown User'}
                                     </span>
                                     {''} shared a post
                                 </p>
@@ -117,7 +121,7 @@ function Post() {
                         </div>
                     </div>
                 );
-            })}
+            }) : <p>No posts available</p>}
         </div>
     );
 }
