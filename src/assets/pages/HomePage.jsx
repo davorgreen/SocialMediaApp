@@ -3,7 +3,7 @@ import Sidebar from '../components/Sidebar'
 import CreatePost from '../components//CreatePost'
 import Post from '../components/Post'
 import Story from '../components/Story'
-import { useEffect, useState } from 'react'
+import { useMemo, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { AllPosts } from '../../slices/PostsSlice'
 import axios from 'axios'
@@ -16,6 +16,20 @@ function HomePage() {
     const [error, setError] = useState('');
     const dispatch = useDispatch();
     const { token } = useSelector((state) => state.userStore);
+    const { user } = useSelector((state) => state.userStore);
+    const { posts } = useSelector((state) => state.postsStore);
+    const { friends } = useSelector((state) => state.userStore);
+
+
+    //filtered posts
+    const filteredPosts = useMemo(() => {
+        return posts
+            .filter(post =>
+                post.createdBy === user._id ||
+                friends.some(friend => friend._id === post.createdBy)
+            )
+            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    }, [user, friends, posts]);
 
 
     //get friends
@@ -91,7 +105,7 @@ function HomePage() {
                 </div>
                 <div className="w-3/4 ml-20 md:ml-0">
                     <CreatePost />
-                    <Post />
+                    <Post filteredPosts={filteredPosts} />
                 </div>
             </div>
         </div>

@@ -59,7 +59,6 @@ const UserSlice = createSlice({
             localStorage.setItem('suggestedFriends', JSON.stringify(state.suggestedFriends));
         },
         myFriends: (state, action) => {
-
             let filteredFriends = action.payload.map(friend => {
                 return friend.userOneId === state.user._id ? friend.userTwoId : friend.userOneId;
             });

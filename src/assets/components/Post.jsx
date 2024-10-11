@@ -1,38 +1,37 @@
-import image1 from '../images/golden-retriever-177213599-2000-a30830f4d2b24635a5d01b3c5c64b9ef.jpg';
-// icons
-import { IoIosMore } from 'react-icons/io';
-import { FaSave, FaRegTrashAlt, FaRegHeart, FaRegCommentAlt } from 'react-icons/fa';
-import { IoIosNotifications } from 'react-icons/io';
-import { BiHide } from 'react-icons/bi';
-import { TbShare3 } from 'react-icons/tb';
-import { useState } from 'react';
-import { IoImagesOutline } from 'react-icons/io5';
+import { useDispatch, useSelector } from "react-redux";
+import { postsForSave } from "../../slices/PostsSlice";
+import ProfileImage from "./ProfileImage";
+import { useState } from "react";
+import { IoIosMore, IoIosNotifications } from "react-icons/io";
+import { FaRegCommentAlt, FaRegHeart, FaRegTrashAlt, FaSave } from "react-icons/fa";
+import { BiHide } from "react-icons/bi";
+import { TbShare3 } from "react-icons/tb";
+import { IoImagesOutline } from "react-icons/io5";
+import image1 from '../images/golden-retriever-177213599-2000-a30830f4d2b24635a5d01b3c5c64b9ef.jpg'
+import { useLocation } from "react-router-dom";
 
-import ProfileImage from '../components/ProfileImage';
-import { useSelector } from 'react-redux';
 
-function Post() {
+function Post({ filteredPosts = [], savedPosts = [] }) {
     const [dropDownMenu, setDropDownMenu] = useState(false);
-    const { user } = useSelector((state) => state.userStore);
+    const dispatch = useDispatch();
     const { users } = useSelector((state) => state.userStore);
-    const { posts } = useSelector((state) => state.postsStore);
-    const { friends } = useSelector((state) => state.userStore);
+    const location = useLocation();
+
 
     function openDropDownMenu() {
         setDropDownMenu(!dropDownMenu);
     }
 
-    const filteredPosts = posts.filter(post =>
-        post.createdBy === user._id || friends.some(friend => friend._id === post.createdBy)
-    ).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    const handleSendPost = (post) => {
+        dispatch(postsForSave(post));
+    }
+    const postsToDisplay = location.pathname === '/savedposts' ? savedPosts : filteredPosts;
 
-    console.log(filteredPosts)
     return (
         <div className="flex flex-col gap-5 bg-white shadow-lg rounded-lg p-6 mb-6">
-            {filteredPosts.length > 0 ? filteredPosts.map((post) => {
+            {postsToDisplay.length > 0 ? postsToDisplay.map((post) => {
                 const { createdAt, createdBy, description, likes, shares, _id } = post;
                 const matchingUser = users.find(user => user._id === createdBy);
-                console.log(matchingUser)
                 const formattedDate = new Date(createdAt).toLocaleString('en-GB', {
                     day: '2-digit',
                     month: '2-digit',
@@ -50,7 +49,7 @@ function Post() {
                                     <span className="font-bold text-blue-600 text-xl">
                                         {matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'Unknown User'}
                                     </span>
-                                    {''} shared a post
+                                    {' '}shared a post
                                 </p>
                                 <p className="text-md font-semibold text-gray-500">{formattedDate}</p>
                             </div>
@@ -61,22 +60,22 @@ function Post() {
                                 <div className="relative">
                                     {dropDownMenu && (
                                         <div className="absolute right-0 bg-white shadow-lg rounded-md p-5">
-                                            <p className="flex items-center gap-3 mt-2 text-xl font-semibold text-blue-500 hover:text-blue-600 transition-all transform hover:scale-110 cursor-pointer">
+                                            <button onClick={() => handleSendPost(post)} className="flex items-center gap-3 mt-2 text-xl font-semibold text-blue-500 hover:text-blue-600 transition-all transform hover:scale-110 cursor-pointer">
                                                 <FaSave size={30} color="#6495ED" />
                                                 Saved Posts
-                                            </p>
-                                            <p className="flex items-center gap-3 mt-2 text-xl font-semibold text-blue-500 hover:text-blue-600 transition-all transform hover:scale-110 cursor-pointer">
+                                            </button>
+                                            <button className="flex items-center gap-3 mt-2 text-xl font-semibold text-blue-500 hover:text-blue-600 transition-all transform hover:scale-110 cursor-pointer">
                                                 <IoIosNotifications size={30} color="#6495ED" />
                                                 Notifications
-                                            </p>
-                                            <p className="flex items-center gap-3 mt-2 text-xl font-semibold text-blue-500 hover:text-blue-600 transition-all transform hover:scale-110 cursor-pointer">
+                                            </button>
+                                            <button className="flex items-center gap-3 mt-2 text-xl font-semibold text-blue-500 hover:text-blue-600 transition-all transform hover:scale-110 cursor-pointer">
                                                 <BiHide size={30} color="#6495ED" />
                                                 Hide Post
-                                            </p>
-                                            <p className="flex items-center gap-3 mt-2 text-xl font-semibold text-blue-500 hover:text-blue-600 transition-all transform hover:scale-110 cursor-pointer">
+                                            </button>
+                                            <button className="flex items-center gap-3 mt-2 text-xl font-semibold text-blue-500 hover:text-blue-600 transition-all transform hover:scale-110 cursor-pointer">
                                                 <FaRegTrashAlt size={30} color="#6495ED" />
                                                 Delete Post
-                                            </p>
+                                            </button>
                                         </div>
                                     )}
                                 </div>
