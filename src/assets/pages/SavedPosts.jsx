@@ -1,10 +1,19 @@
-import { useSelector } from "react-redux";
+import { useSelector } from "react-redux"
 import Post from "../components/Post"
 import Sidebar from "../components/Sidebar"
+import { useMemo } from "react";
 
 
 function SavedPosts() {
-    const { savedPosts } = useSelector((state) => state.postsStore);
+    const { posts } = useSelector((state) => state.postsStore);
+    console.log(posts)
+    const { user } = useSelector((state) => state.userStore);
+
+    const savedPosts = useMemo(() => {
+        return posts.filter((post) => post.savedBy.includes(user._id));
+    }, [posts, user._id]);
+
+    console.log(savedPosts)
 
     return (
         <div className="flex-row md:flex gap-10 w-full mt-10">
