@@ -15,7 +15,7 @@ function FriendsPage() {
     const handleAddFriend = async (friend) => {
         setLoading(true);
         try {
-            const response = await axios.post('/api/friends', { userId: friend._id }, {
+            const response = await axios.post('https://green-api-nu.vercel.app/api/friends', { userId: friend._id }, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }

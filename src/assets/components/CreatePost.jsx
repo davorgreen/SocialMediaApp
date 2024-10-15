@@ -91,7 +91,7 @@ function CreatePost() {
         };
         setLoading(true);
         try {
-            const response = await axios.post('/api/posts', postData, {
+            const response = await axios.post('https://green-api-nu.vercel.app/api/posts', postData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 }

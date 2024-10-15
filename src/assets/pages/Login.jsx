@@ -28,7 +28,7 @@ const Login = () => {
 
     const onSubmit = async (values) => {
         try {
-            const response = await axios.post('/api/users/login', values);
+            const response = await axios.post('https://green-api-nu.vercel.app/api/users/login', values);
             const { token, user } = response.data;
             dispatch(login({ token, user }))
             navigate('/');

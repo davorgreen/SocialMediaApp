@@ -37,7 +37,7 @@ function HomePage() {
         const friendsList = async () => {
             setLoading(true);
             try {
-                const response = await axios.get('/api/friends', {
+                const response = await axios.get('https://green-api-nu.vercel.app/api/friends', {
                     headers: {
                         Authorization: `Bearer ${token}`
                     },
@@ -59,7 +59,7 @@ function HomePage() {
         const usersList = async () => {
             setLoading(true);
             try {
-                const response = await axios.get('/api/users', {
+                const response = await axios.get('https://green-api-nu.vercel.app/api/users', {
                     headers: {
                         Authorization: `Bearer ${token}`
                     },
@@ -81,7 +81,7 @@ function HomePage() {
         const getAllPosts = async () => {
             setLoading(true);
             try {
-                const response = await axios.get('/api/posts?offset=0&limit=20', {
+                const response = await axios.get('https://green-api-nu.vercel.app/api/posts?offset=0&limit=20', {
                     headers: {
                         Authorization: `Bearer ${token}`
                     },

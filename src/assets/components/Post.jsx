@@ -28,7 +28,7 @@ function Post({ filteredPosts = [], savedPosts = [] }) {
     const handleSendPost = async (post, token) => {
         setLoading(true);
         try {
-            const response = await axios.put(`/api/posts/${post._id}/save`, {}, {
+            const response = await axios.put(`https://green-api-nu.vercel.app/api/posts/${post._id}/save`, {}, {
                 headers: { Authorization: `Bearer ${token}` }
             })
         } catch (error) {

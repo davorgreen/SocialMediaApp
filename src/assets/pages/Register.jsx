@@ -61,7 +61,7 @@ const Registration = () => {
             gender: values.gender.toLowerCase(),
         };
         try {
-            const response = await axios.post('/api/users/register', dataToSend);
+            const response = await axios.post('https://green-api-nu.vercel.app/api/users/register', dataToSend);
             console.log(response.data);
             resetForm();
             navigate('/login');
