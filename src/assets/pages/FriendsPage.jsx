@@ -1,8 +1,9 @@
 import { useState } from "react";
 import axios from "axios";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ProfileImage from "../components/ProfileImage";
 import Friend from "../components/Friend";
+import { addFriendToList, removeSuggestedFriend } from "../../slices/UserSlice";
 
 function FriendsPage() {
     const [loading, setLoading] = useState(true);
@@ -10,6 +11,7 @@ function FriendsPage() {
     const { token } = useSelector((state) => state.userStore);
     const { users } = useSelector((state) => state.userStore);
     const { suggestedFriends } = useSelector((state) => state.userStore);
+    const dispatch = useDispatch();
 
     //adding new friends
     const handleAddFriend = async (friend) => {
@@ -20,6 +22,8 @@ function FriendsPage() {
                     Authorization: `Bearer ${token}`
                 }
             });
+            dispatch(addFriendToList(friend));
+            dispatch(removeSuggestedFriend(friend._id));
         } catch (error) {
             setError('Error', error)
         }

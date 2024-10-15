@@ -33,18 +33,22 @@ function SponsorshipsMember() {
     ];
 
     useEffect(() => {
+        if (sponsorships.length) {
+            setData(sponsorships[index]);
+        }
         let startBrand = setInterval(() => {
             setIndex(prevIndex => {
                 const newIndex = (prevIndex + 1) % sponsorships.length;
                 setData(sponsorships[newIndex]);
                 return newIndex;
-            })
+            });
         }, 2000);
 
         return () => {
             clearInterval(startBrand);
         };
     }, []);
+
 
     const progressBrands = () => {
         return ((index + 1) / sponsorships.length) * 100;

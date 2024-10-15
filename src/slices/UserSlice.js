@@ -69,11 +69,23 @@ const UserSlice = createSlice({
             let result = state.users.filter(user => filteredFriends.includes(user._id));
             state.friends = result;
             localStorage.setItem('friends', JSON.stringify(state.friends));
-        }
+        },
+        addFriendToList: (state, action) => {
+            const newFriend = action.payload;
+            if (!state.friends.some(friend => friend._id === newFriend._id)) {
+                state.friends.push(newFriend);
+                localStorage.setItem('friends', JSON.stringify(state.friends));
+            }
+        },
+        removeSuggestedFriend: (state, action) => {
+            const friendId = action.payload;
+            state.suggestedFriends = state.suggestedFriends.filter(friend => friend._id !== friendId);
+            localStorage.setItem('suggestedFriends', JSON.stringify(state.suggestedFriends));
+        },
     },
 
 })
 
 
-export const { login, logout, checkAuth, allUsers, myFriends, mySuggestedFriends } = UserSlice.actions;
+export const { login, logout, checkAuth, allUsers, myFriends, mySuggestedFriends, addFriendToList, removeSuggestedFriend } = UserSlice.actions;
 export default UserSlice.reducer;

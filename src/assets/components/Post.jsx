@@ -7,22 +7,26 @@ import { BiHide } from "react-icons/bi";
 import { TbShare3 } from "react-icons/tb";
 import { IoImagesOutline } from "react-icons/io5";
 import image1 from '../images/golden-retriever-177213599-2000-a30830f4d2b24635a5d01b3c5c64b9ef.jpg'
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { savePost } from "../../slices/PostsSlice";
+
 
 
 function Post({ filteredPosts = [], savedPosts = [] }) {
-    const [dropDownMenu, setDropDownMenu] = useState(false);
+    const [dropDownMenu, setDropDownMenu] = useState(null);
     const dispatch = useDispatch();
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const { users } = useSelector((state) => state.userStore);
     const { token } = useSelector((state) => state.userStore);
+    const { user } = useSelector((state) => state.userStore);
     const location = useLocation();
+    const navigate = useNavigate();
 
 
-    function openDropDownMenu() {
-        setDropDownMenu(!dropDownMenu);
+    function openDropDownMenu(id) {
+        setDropDownMenu(dropDownMenu === id ? null : id);
     }
 
     const handleSendPost = async (post, token) => {
@@ -30,12 +34,14 @@ function Post({ filteredPosts = [], savedPosts = [] }) {
         try {
             const response = await axios.put(`https://green-api-nu.vercel.app/api/posts/${post._id}/save`, {}, {
                 headers: { Authorization: `Bearer ${token}` }
-            })
+            });
+            dispatch(savePost({ ...post, savedBy: [user._id] }));
         } catch (error) {
             setError('Error', error);
+        } finally {
+            setLoading(false);
+            navigate('/savedposts');
         }
-
-        setLoading(false);
     };
 
 
@@ -69,11 +75,11 @@ function Post({ filteredPosts = [], savedPosts = [] }) {
                                 <p className="text-md font-semibold text-gray-500">{formattedDate}</p>
                             </div>
                             <div className="absolute right-10">
-                                <button onClick={openDropDownMenu}>
+                                <button onClick={() => openDropDownMenu(_id)}>
                                     <IoIosMore size={40} />
                                 </button>
                                 <div className="relative">
-                                    {dropDownMenu && (
+                                    {dropDownMenu === post._id && (
                                         <div className="absolute right-0 bg-white shadow-lg rounded-md p-5">
                                             <button onClick={() => handleSendPost(post, token)} className="flex items-center gap-3 mt-2 text-xl font-semibold text-blue-500 hover:text-blue-600 transition-all transform hover:scale-110 cursor-pointer">
                                                 <FaSave size={30} color="#6495ED" />
