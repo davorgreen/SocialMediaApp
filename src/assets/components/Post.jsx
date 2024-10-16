@@ -12,9 +12,6 @@ import axios from "axios";
 import { savePost } from "../../slices/PostsSlice";
 
 
-
-
-
 function Post({ filteredPosts, savedPosts }) {
     const [dropDownMenu, setDropDownMenu] = useState(null);
     const dispatch = useDispatch();
@@ -44,7 +41,7 @@ function Post({ filteredPosts, savedPosts }) {
         } catch (error) {
             setError('Error', error);
         } finally {
-            //  setLoading(false);
+            setLoading(false);
             navigate('/savedposts');
         }
     };
