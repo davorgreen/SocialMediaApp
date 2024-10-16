@@ -36,8 +36,8 @@ function ProfilePage() {
     };
 
     return (
-        <div className="flex flex-col md:flex-row max-w-7xl mx-auto mt-5 gap-8">
-            <div className="w-1/4">
+        <div className="flex flex-col  lg:flex-row mx-auto mt-5 mr-5 gap-8">
+            <div className="w-1/4 ml-5">
                 <Sidebar />
             </div>
             <div className="md:w-3/4 h-32 pb-10 mt-5 relative">

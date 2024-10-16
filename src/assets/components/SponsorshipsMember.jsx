@@ -55,7 +55,7 @@ function SponsorshipsMember() {
     };
 
     return (
-        <div className="flex flex-col justify-center items-center mt-8 w-72">
+        <div className="flex flex-col justify-center items-center mt-8 w-60 xl:w-72">
             <div className="bg-blue-200 p-6 rounded-xl shadow-lg">
                 <h2 className="text-center text-blue-600 text-xl font-bold mb-4">Sponsorships</h2>
                 <div

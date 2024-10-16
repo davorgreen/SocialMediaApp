@@ -16,14 +16,15 @@ function SavedPosts() {
     console.log(savedPosts)
 
     return (
-        <div className="flex-row md:flex gap-10 w-full mt-10">
-            <div className="ml-4 w-2/3">
+        <div className="flex flex-col lg:flex-row gap-6 w-full mt-10 px-4">
+            <div className="w-full lg:w-1/4 md:w-1/4 md:ml-10">
                 <Sidebar />
             </div>
-            <div>
+            <div className="w-full md:w-3/4">
                 <Post savedPosts={savedPosts} />
             </div>
         </div>
+
     )
 }
 

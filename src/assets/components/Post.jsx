@@ -51,7 +51,7 @@ function Post({ filteredPosts, savedPosts }) {
     const displayedPosts = location.pathname === '/savedposts' ? savedPosts : filteredPosts;
 
     return (
-        <div className="flex flex-col gap-5 bg-white shadow-lg rounded-lg p-6 mb-6">
+        <div className="flex flex-col gap-5">
             {displayedPosts.length > 0 ? displayedPosts.map((post) => {
                 const { createdAt, createdBy, description, likes, shares, _id } = post;
                 const matchingUser = users.find(user => user._id === createdBy);
@@ -64,7 +64,7 @@ function Post({ filteredPosts, savedPosts }) {
                 });
 
                 return (
-                    <div key={_id}>
+                    <div className="mt-2 bg-white shadow-lg rounded-lg p-8 mb-6 " key={_id}>
                         <div className="flex gap-3 mb-3 relative">
                             <ProfileImage />
                             <div>

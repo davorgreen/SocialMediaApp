@@ -5,7 +5,7 @@ import ProfileImage from "../components/ProfileImage"
 
 function Notification() {
     return (
-        <div className="flex flex-col md:flex-row gap-10 w-full mt-10">
+        <div className="flex flex-col md:flex-row gap-5 w-full mt-10">
             <div className="ml-4 w-1/3">
                 <Sidebar />
             </div>
