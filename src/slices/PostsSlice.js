@@ -1,7 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-
-
 const PostsSlice = createSlice({
     name: 'post',
     initialState: {
@@ -13,13 +11,12 @@ const PostsSlice = createSlice({
             state.posts = action.payload;
         },
         savePost: (state, action) => {
-            const postToSave = action.payload;
-            console.log(postToSave);
-
-            if (!state.savedPosts.some(post => post._id === postToSave._id)) {
-                state.savedPosts.push(postToSave); // Dodajte post u savedPosts
-                localStorage.setItem('savedPosts', JSON.stringify(state.savedPosts)); // Čuvanje sačuvanih postova u localStorage
-            }
+            const updatedPosts = state.posts.map(post => {
+                return post._id === action.payload.post._id
+                    ? { ...post, savedBy: [...post.savedBy, action.payload.userId] }
+                    : post;
+            });
+            state.posts = updatedPosts;
         },
     }
 });

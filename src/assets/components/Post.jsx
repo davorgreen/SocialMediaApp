@@ -13,7 +13,9 @@ import { savePost } from "../../slices/PostsSlice";
 
 
 
-function Post({ filteredPosts = [], savedPosts = [] }) {
+
+
+function Post({ filteredPosts, savedPosts }) {
     const [dropDownMenu, setDropDownMenu] = useState(null);
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
@@ -21,6 +23,7 @@ function Post({ filteredPosts = [], savedPosts = [] }) {
     const { users } = useSelector((state) => state.userStore);
     const { token } = useSelector((state) => state.userStore);
     const { user } = useSelector((state) => state.userStore);
+    const { posts } = useSelector((state) => state.postsStore);
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -30,16 +33,18 @@ function Post({ filteredPosts = [], savedPosts = [] }) {
     }
 
     const handleSendPost = async (post, token) => {
+        setDropDownMenu(null);
         setLoading(true);
         try {
             const response = await axios.put(`https://green-api-nu.vercel.app/api/posts/${post._id}/save`, {}, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            dispatch(savePost({ ...post, savedBy: [user._id] }));
+            console.log(response.data)
+            dispatch(savePost({ post: response.data, userId: user._id }));
         } catch (error) {
             setError('Error', error);
         } finally {
-            setLoading(false);
+            //  setLoading(false);
             navigate('/savedposts');
         }
     };

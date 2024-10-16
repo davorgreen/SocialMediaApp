@@ -10,6 +10,7 @@ import axios from 'axios';
 import { allUsers, myFriends, mySuggestedFriends } from '../../slices/UserSlice';
 import { ThreeCircles } from 'react-loader-spinner';
 
+
 function HomePage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -94,25 +95,23 @@ function HomePage() {
         <div>
             <Header />
             <Story />
-            {loading ? (<div className="flex items-center justify-center min-h-screen"><ThreeCircles
-                visible={loading}
-                height="100"
-                width="100"
-                color="#4fa94d"
-                ariaLabel="three-circles-loading"
-                wrapperStyle={{}}
-                wrapperClass=""
-            /></div>) : (
-                <div className="flex flex-col max-w-7xl mx-auto mt-5 gap-8 md:flex-row">
-                    <div className="md:w-1/4 w-[420px]">
-                        <Sidebar />
-                    </div>
-                    <div className="w-3/4 ml-20 md:ml-0">
-                        <CreatePost />
-                        <Post filteredPosts={filteredPosts} />
-                    </div>
+            <div className="flex flex-col max-w-7xl mx-auto mt-5 gap-8 md:flex-row">
+                <div className="md:w-1/4 w-[420px]">
+                    <Sidebar />
                 </div>
-            )}
+                <div className="w-3/4 ml-20 md:ml-0">
+                    <CreatePost />
+                    {loading ? (<div className="flex items-center justify-center min-h-screen"><ThreeCircles
+                        visible={loading}
+                        height="100"
+                        width="100"
+                        color="#4fa94d"
+                        ariaLabel="three-circles-loading"
+                        wrapperStyle={{}}
+                        wrapperClass=""
+                    /></div>) : (filteredPosts.length > 0 && <Post filteredPosts={filteredPosts} />)}
+                </div>
+            </div>
         </div>
     );
 }
