@@ -21,6 +21,7 @@ function Post({ filteredPosts, savedPosts }) {
     const { token } = useSelector((state) => state.userStore);
     const { user } = useSelector((state) => state.userStore);
     const { posts } = useSelector((state) => state.postsStore);
+    const [comment, setComment] = useState({});
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -28,7 +29,7 @@ function Post({ filteredPosts, savedPosts }) {
     function openDropDownMenu(id) {
         setDropDownMenu(dropDownMenu === id ? null : id);
     }
-
+    //send post
     const handleSendPost = async (post, token) => {
         setDropDownMenu(null);
         setLoading(true);
@@ -46,6 +47,39 @@ function Post({ filteredPosts, savedPosts }) {
         }
     };
 
+    //send comment
+    const handleShareComment = async (comment, post, token) => {
+        const addedComment = comment[post._id];
+        const data = {
+            description: addedComment,
+            entityId: post._id,
+            type: 'post'
+        };
+
+        // Proveri da li komentar postoji
+        if (!addedComment) {
+            console.error("Comment is empty or undefined for post:", post._id);
+            return;
+        }
+
+        setLoading(true);
+        try {
+            console.log('Sending data:', data);
+            const response = await axios.post('https://green-api-nu.vercel.app/api/comments', data, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            console.log('Server response:', response.data);
+        } catch (error) {
+            console.error('Error response:', error.response);
+            setError('error', error);
+        } finally {
+            setLoading(false);
+            setComment(prevState => ({
+                ...prevState,
+                [post._id]: ''
+            }));
+        }
+    };
 
 
     const displayedPosts = location.pathname === '/savedposts' ? savedPosts : filteredPosts;
@@ -117,7 +151,7 @@ function Post({ filteredPosts, savedPosts }) {
                             </button>
                             <button className="flex items-center gap-2">
                                 <FaRegCommentAlt size={30} className="text-blue-500 hover:text-blue-600" />
-                                <span className="font-semibold">30</span>
+                                <span className="font-semibold">0</span>
                             </button>
                             <button className="flex items-center gap-2">
                                 <TbShare3 size={30} className="text-blue-500 hover:text-blue-600" />
@@ -127,15 +161,16 @@ function Post({ filteredPosts, savedPosts }) {
                         <div className="flex items-start gap-5 mt-4">
                             <ProfileImage />
                             <div className="flex flex-col flex-grow">
-                                <textarea
-                                    placeholder="Leave a comment..."
-                                    className="border w-full h-14 rounded-full bg-gray-100 p-4 resize-none outline-none focus:ring-2 focus:ring-blue-500 overflow-hidden"
-                                ></textarea>
+                                <input value={comment[post._id] || ''} onChange={(e) => setComment(prevState => ({
+                                    ...prevState,
+                                    [post._id]: e.target.value
+                                }))} className="border w-full h-14 rounded-full bg-gray-100 p-4 resize-none outline-none focus:ring-2 focus:ring-blue-500 overflow-hidden"
+                                    placeholder="Leave a comment..." />
                                 <div className="flex justify-end gap-4 items-center mt-2">
                                     <button>
                                         <IoImagesOutline size={35} className="text-blue-500 hover:text-blue-600" />
                                     </button>
-                                    <button className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 font-bold">
+                                    <button onClick={() => handleShareComment(comment, post, token)} className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 font-bold">
                                         Comment
                                     </button>
                                 </div>

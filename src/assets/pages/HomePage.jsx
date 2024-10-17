@@ -106,13 +106,19 @@ function HomePage() {
                         <CreatePost />
                     </div>
                     <div className="">
-                        <Post filteredPosts={filteredPosts} />
+                        {loading ? (<div className="flex items-center justify-center min-h-screen"><ThreeCircles
+                            visible={loading}
+                            height="100"
+                            width="100"
+                            color="#4fa94d"
+                            ariaLabel="three-circles-loading"
+                            wrapperStyle={{}}
+                            wrapperClass=""
+                        /></div>) : (<Post filteredPosts={filteredPosts} />)}
                     </div>
                 </div>
             </div>
         </div>
-
-
     );
 }
 
