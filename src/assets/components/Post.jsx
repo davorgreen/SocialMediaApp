@@ -66,7 +66,7 @@ function Post({ filteredPosts, savedPosts }) {
             const response = await axios.post('https://green-api-nu.vercel.app/api/comments', data, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            console.log('Server response:', response.data);
+            console.log('response:', response.data);
         } catch (error) {
             console.error('Error response:', error.response);
             setError('error', error);
