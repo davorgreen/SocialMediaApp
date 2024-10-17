@@ -55,8 +55,6 @@ function Post({ filteredPosts, savedPosts }) {
             entityId: post._id,
             type: 'post'
         };
-
-        // Proveri da li komentar postoji
         if (!addedComment) {
             console.error("Comment is empty or undefined for post:", post._id);
             return;
