@@ -12,6 +12,8 @@ import axios from "axios";
 import { savePost } from "../../slices/PostsSlice";
 
 
+
+
 function Post({ filteredPosts, savedPosts }) {
     const [dropDownMenu, setDropDownMenu] = useState(null);
     const dispatch = useDispatch();
@@ -20,8 +22,10 @@ function Post({ filteredPosts, savedPosts }) {
     const { users } = useSelector((state) => state.userStore);
     const { token } = useSelector((state) => state.userStore);
     const { user } = useSelector((state) => state.userStore);
-    const { posts } = useSelector((state) => state.postsStore);
+    const { posts } = useSelector((state) => state.postsStore);;
     const [comment, setComment] = useState({});
+    const [commentsByPostId, setCommentsByPostId] = useState({});
+    const [commentData, setCommentData] = useState([]);
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -29,6 +33,7 @@ function Post({ filteredPosts, savedPosts }) {
     function openDropDownMenu(id) {
         setDropDownMenu(dropDownMenu === id ? null : id);
     }
+
     //send post
     const handleSendPost = async (post, token) => {
         setDropDownMenu(null);
@@ -48,15 +53,15 @@ function Post({ filteredPosts, savedPosts }) {
     };
 
     //send comment
-    const handleShareComment = async (comment, post, token) => {
-        const addedComment = comment[post._id];
+    const handleShareComment = async (comment, postId, token) => {
+        const addedComment = comment[postId];
         const data = {
             description: addedComment,
-            entityId: post._id,
+            entityId: postId,
             type: 'post'
         };
         if (!addedComment) {
-            console.error("Comment is empty or undefined for post:", post._id);
+            console.error("Comment is empty or undefined for post:", postId);
             return;
         }
 
@@ -66,6 +71,7 @@ function Post({ filteredPosts, savedPosts }) {
             const response = await axios.post('https://green-api-nu.vercel.app/api/comments', data, {
                 headers: { Authorization: `Bearer ${token}` }
             });
+
             console.log('response:', response.data);
         } catch (error) {
             console.error('Error response:', error.response);
@@ -74,10 +80,32 @@ function Post({ filteredPosts, savedPosts }) {
             setLoading(false);
             setComment(prevState => ({
                 ...prevState,
-                [post._id]: ''
+                [postId]: ''
             }));
         }
     };
+
+    //get comments 
+    const handleGetComments = async (id, token) => {
+        setLoading(true);
+        try {
+            const response = await axios.get(`https://green-api-nu.vercel.app/api/comments/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            console.log(response.data)
+            setCommentsByPostId((prevComments) => ({
+                ...prevComments,
+                [id]: response.data,
+            }));
+        }
+        catch (error) {
+            setError('error', error)
+        } finally {
+            setLoading(false);
+        }
+    }
 
 
     const displayedPosts = location.pathname === '/savedposts' ? savedPosts : filteredPosts;
@@ -147,10 +175,11 @@ function Post({ filteredPosts, savedPosts }) {
                                 <FaRegHeart size={30} className="text-blue-500 hover:text-blue-600" />
                                 <span className="font-semibold">{likes}</span>
                             </button>
-                            <button className="flex items-center gap-2">
+                            <button onClick={() => handleGetComments(post._id, token)} className="flex items-center gap-2">
                                 <FaRegCommentAlt size={30} className="text-blue-500 hover:text-blue-600" />
-                                <span className="font-semibold">0</span>
+                                <span className="font-semibold">Load Comment</span>
                             </button>
+
                             <button className="flex items-center gap-2">
                                 <TbShare3 size={30} className="text-blue-500 hover:text-blue-600" />
                                 <span className="font-semibold">{shares}</span>
@@ -168,12 +197,36 @@ function Post({ filteredPosts, savedPosts }) {
                                     <button>
                                         <IoImagesOutline size={35} className="text-blue-500 hover:text-blue-600" />
                                     </button>
-                                    <button onClick={() => handleShareComment(comment, post, token)} className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 font-bold">
+                                    <button onClick={() => handleShareComment(comment, post._id, token)} className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 font-bold">
                                         Comment
                                     </button>
                                 </div>
                             </div>
                         </div>
+                        {commentsByPostId[post._id] && commentsByPostId[post._id].length > 0 && (
+                            <div className="mt-4 space-y-4">
+                                {commentsByPostId[post._id].map((el) => {
+                                    const user = users.find(user => user._id === el.createdBy);
+                                    return (
+                                        <div key={el._id} className="flex gap-4 bg-white shadow-md rounded-lg p-4 border border-gray-200">
+                                            <div className="flex-row ml-4">
+                                                <ProfileImage />
+                                                <p className="font-bold text-blue-600 text-xl">
+                                                    {user.firstName} {user.lastName}
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <p className="text-xl text-blue-700">
+                                                    {el.description}
+                                                </p>
+                                                <p className=" mt-4 text-md text-gray-700">{new Date(el.createdAt).toLocaleString()}</p>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
+
                     </div>
                 );
             }) : <p>No posts available</p>}

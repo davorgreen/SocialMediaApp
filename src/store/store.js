@@ -8,6 +8,7 @@ const store = configureStore({
     reducer: {
         userStore: UserSlice,
         postsStore: PostsSlice,
+
     },
 })
 
