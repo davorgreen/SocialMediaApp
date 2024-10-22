@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import ProfileImage from "./ProfileImage";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { IoIosMore, IoIosNotifications } from "react-icons/io";
 import { FaRegCommentAlt, FaRegHeart, FaRegTrashAlt, FaSave } from "react-icons/fa";
 import { BiHide } from "react-icons/bi";

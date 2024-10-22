@@ -15,6 +15,7 @@ import img from '../images/6e0vct73g0n91.jpg';
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import FriendsPage from "./FriendsPage";
+import MyPostPage from "./MyPostPage";
 
 function ProfilePage() {
     const { component } = useParams();
@@ -31,7 +32,7 @@ function ProfilePage() {
             case 'about':
                 return <About />;
             default:
-                return <Post />;
+                return <MyPostPage />;
         }
     };
 

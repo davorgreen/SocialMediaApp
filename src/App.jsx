@@ -13,6 +13,7 @@ import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { checkAuth } from './slices/UserSlice';
 import FriendsPage from './assets/pages/FriendsPage';
+import MyPostPage from './assets/pages/MyPostPage';
 
 function App() {
   function AuthChecker() {
@@ -31,6 +32,7 @@ function App() {
     <Router>
       <AuthChecker />
       <Routes>
+        <Route path='posts' element={<ProtectedRoute><MyPostPage /></ProtectedRoute>} />
         <Route path='/' element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
         <Route path='/profile' element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
         <Route path='/profile/:component' element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
