@@ -2,7 +2,6 @@ import { useState } from "react";
 //components
 import Sidebar from '../components/Sidebar';
 import ProfileImage from '../components/ProfileImage';
-import Post from '../components/Post';
 import Photos from '../components/Photos';
 import About from '../components/About';
 // icons
