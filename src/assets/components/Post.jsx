@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import ProfileImage from "./ProfileImage";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoIosMore, IoIosNotifications } from "react-icons/io";
 import { FaRegCommentAlt, FaRegHeart, FaRegTrashAlt, FaSave } from "react-icons/fa";
 import { BiHide } from "react-icons/bi";
@@ -25,7 +25,6 @@ function Post({ filteredPosts, savedPosts }) {
     const { posts } = useSelector((state) => state.postsStore);;
     const [comment, setComment] = useState({});
     const [commentsByPostId, setCommentsByPostId] = useState({});
-    const [commentData, setCommentData] = useState([]);
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -33,6 +32,7 @@ function Post({ filteredPosts, savedPosts }) {
     function openDropDownMenu(id) {
         setDropDownMenu(dropDownMenu === id ? null : id);
     }
+
 
     //send post
     const handleSendPost = async (post, token) => {
@@ -111,126 +111,130 @@ function Post({ filteredPosts, savedPosts }) {
     const displayedPosts = location.pathname === '/savedposts' ? savedPosts : filteredPosts;
 
     return (
-        <div className="flex flex-col gap-5">
-            {displayedPosts.length > 0 ? displayedPosts.map((post) => {
-                const { createdAt, createdBy, description, likes, shares, _id } = post;
-                const matchingUser = users.find(user => user._id === createdBy);
-                const formattedDate = new Date(createdAt).toLocaleString('en-GB', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                });
+        <div className="flex flex-col gap-5" >
+            {
+                displayedPosts.length > 0 ? displayedPosts.map((post) => {
+                    const { createdAt, createdBy, description, likes, shares, _id } = post;
+                    const matchingUser = users.find(user => user._id === createdBy);
+                    const formattedDate = new Date(createdAt).toLocaleString('en-GB', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                    });
 
-                return (
-                    <div className="mt-2 bg-white shadow-lg rounded-lg p-8 mb-6 " key={_id}>
-                        <div className="flex gap-3 mb-3 relative">
-                            <ProfileImage />
+                    return (
+                        <div className="mt-2 bg-white shadow-lg rounded-lg p-8 mb-6 " key={_id}>
+                            <div className="flex gap-3 mb-3 relative">
+                                <ProfileImage />
+                                <div>
+                                    <p>
+                                        <span className="font-bold text-blue-600 text-xl">
+                                            {matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'Unknown User'}
+                                        </span>
+                                        {' '}shared a post
+                                    </p>
+                                    <p className="text-md font-semibold text-gray-500">{formattedDate}</p>
+                                </div>
+                                <div className="absolute right-10">
+                                    <button onClick={() => openDropDownMenu(_id)}>
+                                        <IoIosMore size={40} />
+                                    </button>
+                                    <div className="relative">
+                                        {dropDownMenu === post._id && (
+                                            <div className="absolute right-0 bg-white shadow-lg rounded-md p-5">
+                                                <button onClick={() => handleSendPost(post, token)} className="flex items-center gap-3 mt-2 text-xl font-semibold text-blue-500 hover:text-blue-600 transition-all transform hover:scale-110 cursor-pointer">
+                                                    <FaSave size={30} color="#6495ED" />
+                                                    {post.savedBy.includes(user._id) ? 'Saved Post' : 'Save Post'}
+                                                </button>
+                                                <button className="flex items-center gap-3 mt-2 text-xl font-semibold text-blue-500 hover:text-blue-600 transition-all transform hover:scale-110 cursor-pointer">
+                                                    <IoIosNotifications size={30} color="#6495ED" />
+                                                    Notifications
+                                                </button>
+                                                <button className="flex items-center gap-3 mt-2 text-xl font-semibold text-blue-500 hover:text-blue-600 transition-all transform hover:scale-110 cursor-pointer">
+                                                    <BiHide size={30} color="#6495ED" />
+                                                    Hide Post
+                                                </button>
+                                                <button className="flex items-center gap-3 mt-2 text-xl font-semibold text-blue-500 hover:text-blue-600 transition-all transform hover:scale-110 cursor-pointer">
+                                                    <FaRegTrashAlt size={30} color="#6495ED" />
+                                                    Delete Post
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
                             <div>
-                                <p>
-                                    <span className="font-bold text-blue-600 text-xl">
-                                        {matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'Unknown User'}
-                                    </span>
-                                    {' '}shared a post
-                                </p>
-                                <p className="text-md font-semibold text-gray-500">{formattedDate}</p>
+                                <p className="text-lg">{description}</p>
+                                <div className="rounded-lg overflow-hidden mt-4">
+                                    <img src={image1} alt="dog" className="w-full h-auto object-cover" />
+                                </div>
                             </div>
-                            <div className="absolute right-10">
-                                <button onClick={() => openDropDownMenu(_id)}>
-                                    <IoIosMore size={40} />
+                            <div className="flex gap-8 items-center mt-6">
+                                <button className="flex items-center gap-2">
+                                    <FaRegHeart size={30} className="text-blue-500 hover:text-blue-600" />
+                                    <span className="font-semibold">{likes}</span>
                                 </button>
-                                <div className="relative">
-                                    {dropDownMenu === post._id && (
-                                        <div className="absolute right-0 bg-white shadow-lg rounded-md p-5">
-                                            <button onClick={() => handleSendPost(post, token)} className="flex items-center gap-3 mt-2 text-xl font-semibold text-blue-500 hover:text-blue-600 transition-all transform hover:scale-110 cursor-pointer">
-                                                <FaSave size={30} color="#6495ED" />
-                                                Save Post
-                                            </button>
-                                            <button className="flex items-center gap-3 mt-2 text-xl font-semibold text-blue-500 hover:text-blue-600 transition-all transform hover:scale-110 cursor-pointer">
-                                                <IoIosNotifications size={30} color="#6495ED" />
-                                                Notifications
-                                            </button>
-                                            <button className="flex items-center gap-3 mt-2 text-xl font-semibold text-blue-500 hover:text-blue-600 transition-all transform hover:scale-110 cursor-pointer">
-                                                <BiHide size={30} color="#6495ED" />
-                                                Hide Post
-                                            </button>
-                                            <button className="flex items-center gap-3 mt-2 text-xl font-semibold text-blue-500 hover:text-blue-600 transition-all transform hover:scale-110 cursor-pointer">
-                                                <FaRegTrashAlt size={30} color="#6495ED" />
-                                                Delete Post
-                                            </button>
-                                        </div>
-                                    )}
+                                <button onClick={() => handleGetComments(post._id, token)} className="flex items-center gap-2">
+                                    <FaRegCommentAlt size={30} className="text-blue-500 hover:text-blue-600" />
+                                    <span className="font-semibold">
+                                        {commentsByPostId[post._id] ? commentsByPostId[post._id].length : 0}
+                                    </span>
+                                </button>
+
+                                <button className="flex items-center gap-2">
+                                    <TbShare3 size={30} className="text-blue-500 hover:text-blue-600" />
+                                    <span className="font-semibold">{shares}</span>
+                                </button>
+                            </div>
+                            <div className="flex items-start gap-5 mt-4">
+                                <ProfileImage />
+                                <div className="flex flex-col flex-grow">
+                                    <input value={comment[post._id] || ''} onChange={(e) => setComment(prevState => ({
+                                        ...prevState,
+                                        [post._id]: e.target.value
+                                    }))} className="border w-full h-14 rounded-full bg-gray-100 p-4 resize-none outline-none focus:ring-2 focus:ring-blue-500 overflow-hidden"
+                                        placeholder="Leave a comment..." />
+                                    <div className="flex justify-end gap-4 items-center mt-2">
+                                        <button>
+                                            <IoImagesOutline size={35} className="text-blue-500 hover:text-blue-600" />
+                                        </button>
+                                        <button onClick={() => handleShareComment(comment, post._id, token)} className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 font-bold">
+                                            Comment
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div>
-                            <p className="text-lg">{description}</p>
-                            <div className="rounded-lg overflow-hidden mt-4">
-                                <img src={image1} alt="dog" className="w-full h-auto object-cover" />
-                            </div>
-                        </div>
-                        <div className="flex gap-8 items-center mt-6">
-                            <button className="flex items-center gap-2">
-                                <FaRegHeart size={30} className="text-blue-500 hover:text-blue-600" />
-                                <span className="font-semibold">{likes}</span>
-                            </button>
-                            <button onClick={() => handleGetComments(post._id, token)} className="flex items-center gap-2">
-                                <FaRegCommentAlt size={30} className="text-blue-500 hover:text-blue-600" />
-                                <span className="font-semibold">Load Comment</span>
-                            </button>
-
-                            <button className="flex items-center gap-2">
-                                <TbShare3 size={30} className="text-blue-500 hover:text-blue-600" />
-                                <span className="font-semibold">{shares}</span>
-                            </button>
-                        </div>
-                        <div className="flex items-start gap-5 mt-4">
-                            <ProfileImage />
-                            <div className="flex flex-col flex-grow">
-                                <input value={comment[post._id] || ''} onChange={(e) => setComment(prevState => ({
-                                    ...prevState,
-                                    [post._id]: e.target.value
-                                }))} className="border w-full h-14 rounded-full bg-gray-100 p-4 resize-none outline-none focus:ring-2 focus:ring-blue-500 overflow-hidden"
-                                    placeholder="Leave a comment..." />
-                                <div className="flex justify-end gap-4 items-center mt-2">
-                                    <button>
-                                        <IoImagesOutline size={35} className="text-blue-500 hover:text-blue-600" />
-                                    </button>
-                                    <button onClick={() => handleShareComment(comment, post._id, token)} className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 font-bold">
-                                        Comment
-                                    </button>
+                            {commentsByPostId[post._id] && commentsByPostId[post._id].length > 0 && (
+                                <div className="mt-4 space-y-4">
+                                    {commentsByPostId[post._id].map((el) => {
+                                        const user = users.find(user => user._id === el.createdBy);
+                                        return (
+                                            <div key={el._id} className="flex gap-4 bg-white shadow-md rounded-lg p-4 border border-gray-200">
+                                                <div className="flex-row ml-4">
+                                                    <ProfileImage />
+                                                    <p className="font-bold text-blue-600 text-xl">
+                                                        {user.firstName} {user.lastName}
+                                                    </p>
+                                                </div>
+                                                <div>
+                                                    <p className="text-xl text-black">
+                                                        {el.description}
+                                                    </p>
+                                                    <p className=" mt-4 text-md text-gray-700">{new Date(el.createdAt).toLocaleString()}</p>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
                                 </div>
-                            </div>
-                        </div>
-                        {commentsByPostId[post._id] && commentsByPostId[post._id].length > 0 && (
-                            <div className="mt-4 space-y-4">
-                                {commentsByPostId[post._id].map((el) => {
-                                    const user = users.find(user => user._id === el.createdBy);
-                                    return (
-                                        <div key={el._id} className="flex gap-4 bg-white shadow-md rounded-lg p-4 border border-gray-200">
-                                            <div className="flex-row ml-4">
-                                                <ProfileImage />
-                                                <p className="font-bold text-blue-600 text-xl">
-                                                    {user.firstName} {user.lastName}
-                                                </p>
-                                            </div>
-                                            <div>
-                                                <p className="text-xl text-blue-700">
-                                                    {el.description}
-                                                </p>
-                                                <p className=" mt-4 text-md text-gray-700">{new Date(el.createdAt).toLocaleString()}</p>
-                                            </div>
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        )}
+                            )}
 
-                    </div>
-                );
-            }) : <p>No posts available</p>}
-        </div>
+                        </div>
+                    );
+                }) : <p>No posts available</p>
+            }
+        </div >
     );
 }
 
