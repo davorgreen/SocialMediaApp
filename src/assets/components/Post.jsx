@@ -14,7 +14,7 @@ import { savePost } from "../../slices/PostsSlice";
 
 
 
-function Post({ filteredPosts, savedPosts }) {
+function Post({ filteredPosts, savedPosts, myPosts }) {
     const [dropDownMenu, setDropDownMenu] = useState(null);
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
@@ -107,8 +107,12 @@ function Post({ filteredPosts, savedPosts }) {
         }
     }
 
+    const displayedPosts = location.pathname === '/savedposts'
+        ? savedPosts
+        : location.pathname === '/'
+            ? filteredPosts
+            : myPosts;
 
-    const displayedPosts = location.pathname === '/savedposts' ? savedPosts : filteredPosts;
 
     return (
         <div className="flex flex-col gap-5" >
