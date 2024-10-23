@@ -9,6 +9,12 @@ const PostsSlice = createSlice({
         AllPosts: (state, action) => {
             state.posts = action.payload;
         },
+        sharePost: (state, action) => {
+            const postExists = state.posts.some(post => post._id === action.payload._id);
+            if (!postExists) {
+                state.posts.push(action.payload);
+            }
+        },
         savePost: (state, action) => {
             const updatedPosts = state.posts.map(post => {
                 return post._id === action.payload.post._id
@@ -20,5 +26,5 @@ const PostsSlice = createSlice({
     }
 });
 
-export const { AllPosts, savePost } = PostsSlice.actions;
+export const { AllPosts, sharePost, savePost } = PostsSlice.actions;
 export default PostsSlice.reducer;

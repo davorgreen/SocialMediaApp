@@ -7,7 +7,8 @@ import ProfileImage from "./ProfileImage";
 import { useRef, useState } from "react";
 import axios from "axios";
 import countries from '/src/data/countries.js';
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { sharePost } from "../../slices/PostsSlice";
 
 function CreatePost() {
     const [status, setStatus] = useState('');
@@ -25,6 +26,7 @@ function CreatePost() {
     const { token } = useSelector((state) => state.userStore);
     const { friends } = useSelector((state) => state.userStore);
     const fileInputRef = useRef(null);
+    const dispatch = useDispatch();
 
     function handleOpenFeelings() {
         setShowFeelings(!showFeelings);
@@ -96,6 +98,7 @@ function CreatePost() {
                     Authorization: `Bearer ${token}`,
                 }
             });
+            dispatch(sharePost(response.data))
             console.log(response.data)
             console.log('Post shared successfully:', response.data);
             setStatus('');
