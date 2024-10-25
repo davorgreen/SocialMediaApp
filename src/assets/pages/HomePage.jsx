@@ -93,6 +93,8 @@ function HomePage() {
         getAllPosts();
     }, [dispatch, token]);
 
+
+
     return (
         <div className="bg-gray-100 w-full mt-5">
             <Header />

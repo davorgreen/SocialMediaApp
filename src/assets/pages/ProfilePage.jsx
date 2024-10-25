@@ -15,11 +15,16 @@ import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import FriendsPage from "./FriendsPage";
 import MyPostPage from "./MyPostPage";
+import axios from "axios";
 
 function ProfilePage() {
     const { component } = useParams();
+    const [image, setImage] = useState('');
     const [activeComponent, setActiveComponent] = useState(component || 'posts');
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
     const { user } = useSelector((state) => state.userStore);
+    const { token } = useSelector((state) => state.userStore);
 
 
     const renderComponent = () => {
@@ -35,6 +40,63 @@ function ProfilePage() {
         }
     };
 
+    //store cover photo
+
+    const handleImage = (e) => {
+        console.log(e.target.files[0]);
+        setImage(e.target.files[0]);
+    }
+
+    // function that converts a file (image) to Base64 format using FileReader API
+
+    const convertToBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+
+            reader.onload = () => {
+                resolve(reader.result);
+            };
+
+            reader.onerror = (error) => {
+                npm
+                reject(error);
+            };
+        });
+    };
+
+    //import/sent cover photo
+
+    const updateCoverPhoto = async () => {
+        setLoading(true);
+        try {
+            const imageBase64 = await convertToBase64(image);
+
+            const data = {
+                base64: imageBase64,
+                type: 'cover',
+                entityId: user._id,
+            };
+
+            const response = await axios.post('https://green-api-nu.vercel.app/api/photos', data, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            console.log('Response data:', response.data);
+
+        } catch (error) {
+            setError("Error: " + (error.response?.data?.message || error.message));
+            console.error('Error response data:', error.response?.data);
+            console.error('Error response status:', error.response?.status);
+            console.error('Error response headers:', error.response?.headers);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
     return (
         <div className="flex flex-col  lg:flex-row mx-auto mt-5 mr-5 gap-8">
             <div className="w-1/4 ml-5">
@@ -44,6 +106,8 @@ function ProfilePage() {
                 <div className="h-48 shadow-xl shadow-gray-400 rounded-md overflow-hidden flex justify-center items-center">
                     <img src={img} alt="dogsfamily" />
                 </div>
+                <input type="file" name="file" accept='.jpg, .png|image/*' onChange={handleImage} />
+                <button onClick={updateCoverPhoto}>Submit</button>
                 <div className="absolute top-11 left-1">
                     <ProfileImage size={'big'} />
                 </div>

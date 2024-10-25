@@ -22,7 +22,6 @@ function Post({ filteredPosts, savedPosts, myPosts }) {
     const { users } = useSelector((state) => state.userStore);
     const { token } = useSelector((state) => state.userStore);
     const { user } = useSelector((state) => state.userStore);
-    const { posts } = useSelector((state) => state.postsStore);;
     const [comment, setComment] = useState({});
     const [commentsByPostId, setCommentsByPostId] = useState({});
     const location = useLocation();
@@ -118,7 +117,7 @@ function Post({ filteredPosts, savedPosts, myPosts }) {
         <div className="flex flex-col gap-5" >
             {
                 displayedPosts.length > 0 ? displayedPosts.map((post) => {
-                    const { createdAt, createdBy, description, likes, shares, _id } = post;
+                    const { createdAt, createdBy, description, likes, shares, _id, comments } = post;
                     const matchingUser = users.find(user => user._id === createdBy);
                     const formattedDate = new Date(createdAt).toLocaleString('en-GB', {
                         day: '2-digit',
@@ -183,7 +182,7 @@ function Post({ filteredPosts, savedPosts, myPosts }) {
                                 <button onClick={() => handleGetComments(post._id, token)} className="flex items-center gap-2">
                                     <FaRegCommentAlt size={30} className="text-blue-500 hover:text-blue-600" />
                                     <span className="font-semibold">
-                                        {commentsByPostId[post._id] ? commentsByPostId[post._id].length : 0}
+                                        {comments}
                                     </span>
                                 </button>
 
