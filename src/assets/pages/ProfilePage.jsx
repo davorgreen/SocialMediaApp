@@ -59,7 +59,6 @@ function ProfilePage() {
             };
 
             reader.onerror = (error) => {
-                npm
                 reject(error);
             };
         });
