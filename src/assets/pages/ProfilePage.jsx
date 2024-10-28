@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 //components
 import Sidebar from '../components/Sidebar';
 import ProfileImage from '../components/ProfileImage';
@@ -9,8 +9,9 @@ import { MdPostAdd } from "react-icons/md";
 import { IoIosInformationCircleOutline } from "react-icons/io";
 import { FaUserFriends } from "react-icons/fa";
 import { TbPhotoSquareRounded } from "react-icons/tb";
+import { IoImagesOutline } from "react-icons/io5";
 // image
-import img from '../images/6e0vct73g0n91.jpg';
+//import img from '../images/6e0vct73g0n91.jpg';
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import FriendsPage from "./FriendsPage";
@@ -20,7 +21,9 @@ import axios from "axios";
 function ProfilePage() {
     const { component } = useParams();
     const [image, setImage] = useState('');
+    const [photos, setPhotos] = useState([]);
     const [activeComponent, setActiveComponent] = useState(component || 'posts');
+    const [addCoverPhoto, setAddCoverPhoto] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const { user } = useSelector((state) => state.userStore);
@@ -40,61 +43,90 @@ function ProfilePage() {
         }
     };
 
-    //store cover photo
+    //add cover photo
+    const handleAddCoverPhoto = () => {
+        setAddCoverPhoto(prevState => !prevState);
+    }
 
+    //store cover photo
     const handleImage = (e) => {
         console.log(e.target.files[0]);
         setImage(e.target.files[0]);
     }
 
-    // function that converts a file (image) to Base64 format using FileReader API
+    // function to convert file to Base64 format
+    const getBase64 = (file, cb) => {
+        let reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function () {
+            cb(reader.result);
+        };
+        reader.onerror = function (error) {
+            console.log('Error: ', error);
+        };
+    };
 
-    const convertToBase64 = (file) => {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
+    // send cover photo
+    const updateCoverPhoto = () => {
+        setLoading(true);
+        getBase64(image, async (imageBase64) => {
+            try {
+                const data = {
+                    base64: imageBase64,
+                    type: 'cover',
+                    entityId: user._id,
+                };
 
-            reader.onload = () => {
-                resolve(reader.result);
-            };
+                const response = await axios.post('https://green-api-nu.vercel.app/api/photos', data, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
 
-            reader.onerror = (error) => {
-                reject(error);
-            };
+                console.log('Response data:', response.data);
+
+            } catch (error) {
+                setError("Error: " + (error.response?.data?.message || error.message));
+                console.error('Error response data:', error.response?.data);
+                console.error('Error response status:', error.response?.status);
+                console.error('Error response headers:', error.response?.headers);
+            } finally {
+                setLoading(false);
+            }
         });
     };
 
-    //import/sent cover photo
+    //get photos
+    useEffect(() => {
+        const getAllPhotos = async () => {
+            setLoading(true);
+            try {
+                const response = await axios.get(' https://green-api-nu.vercel.app/api/photos', {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
 
-    const updateCoverPhoto = async () => {
-        setLoading(true);
-        try {
-            const imageBase64 = await convertToBase64(image);
+                console.log('Response data:', response.data);
+                const photoData = response.data.map(photo => ({
+                    id: photo._id,
+                    base64: photo.base64,
+                    type: photo.type
+                }));
 
-            const data = {
-                base64: imageBase64,
-                type: 'cover',
-                entityId: user._id,
-            };
+                setPhotos(photoData);
+            } catch (error) {
+                setError("Error: " + (error.response?.data?.message || error.message));
+                console.error('Error response data:', error.response?.data);
+                console.error('Error response status:', error.response?.status);
+                console.error('Error response headers:', error.response?.headers);
+            } finally {
+                setLoading(false);
+            }
+        };
+        getAllPhotos();
 
-            const response = await axios.post('https://green-api-nu.vercel.app/api/photos', data, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-
-            console.log('Response data:', response.data);
-
-        } catch (error) {
-            setError("Error: " + (error.response?.data?.message || error.message));
-            console.error('Error response data:', error.response?.data);
-            console.error('Error response status:', error.response?.status);
-            console.error('Error response headers:', error.response?.headers);
-        } finally {
-            setLoading(false);
-        }
-    };
-
+    }, [])
 
     return (
         <div className="flex flex-col  lg:flex-row mx-auto mt-5 mr-5 gap-8">
@@ -103,10 +135,19 @@ function ProfilePage() {
             </div>
             <div className="md:w-3/4 h-32 pb-10 mt-5 relative">
                 <div className="h-48 shadow-xl shadow-gray-400 rounded-md overflow-hidden flex justify-center items-center">
-                    <img src={img} alt="dogsfamily" />
+                    {photos.length > 0 && photos ? photos
+                        .filter((photo) => photo.type === 'cover')
+                        .map((photo) => (
+                            <img
+                                key={photo.id}
+                                src={photo.base64}
+                                alt={photo.type}
+                            />
+                        )) : 'No cover photo'}
+                    <div onClick={handleAddCoverPhoto} className="absolute right-10"><IoImagesOutline size={50} color="blue" /></div>
                 </div>
-                <input type="file" name="file" accept='.jpg, .png|image/*' onChange={handleImage} />
-                <button onClick={updateCoverPhoto}>Submit</button>
+                {addCoverPhoto && <><input type="file" name="file" accept='.jpg, .png|image/*' onChange={handleImage} />
+                    <button className="px-6 py-3  bg-blue-500 rounded-xl text-white font-semibold mt-2" onClick={updateCoverPhoto}>Submit</button></>}
                 <div className="absolute top-11 left-1">
                     <ProfileImage size={'big'} />
                 </div>
