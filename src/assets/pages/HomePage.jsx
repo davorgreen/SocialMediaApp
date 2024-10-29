@@ -9,6 +9,7 @@ import { AllPosts } from '../../slices/PostsSlice';
 import axios from 'axios';
 import { allUsers, myFriends, mySuggestedFriends } from '../../slices/UserSlice';
 import { ThreeCircles } from 'react-loader-spinner';
+import { allOfPhotos, filteredPhotos } from '../../slices/PhotoSlice';
 
 
 
@@ -93,7 +94,32 @@ function HomePage() {
         getAllPosts();
     }, [dispatch, token]);
 
+    //get photos
+    useEffect(() => {
+        const getAllPhotos = async () => {
+            setLoading(true);
+            try {
+                const response = await axios.get('https://green-api-nu.vercel.app/api/photos', {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                dispatch(allOfPhotos(response.data));
+                dispatch(filteredPhotos(response.data));
+                /* const photoData = response.data.map(photo => ({
+                     id: photo._id,
+                     base64: photo.base64,
+                     type: photo.type
+                 }));*/
 
+            } catch (error) {
+                setError("Error: " + (error.response?.data?.message || error.message));
+            } finally {
+                setLoading(false);
+            }
+        };
+        getAllPhotos();
+    }, []);
 
     return (
         <div className="bg-gray-100 w-full mt-5">
