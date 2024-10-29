@@ -119,7 +119,7 @@ function HomePage() {
             }
         };
         getAllPhotos();
-    }, []);
+    }, [dispatch, token]);
 
     return (
         <div className="bg-gray-100 w-full mt-5">

@@ -2,7 +2,7 @@
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-function ProfileImage({ size }) {
+function ProfileImage({ size, isUserProfile }) {
     const { profilePhoto } = useSelector((state) => state.photoStore);
     const { user } = useSelector((state) => state.userStore);
 
@@ -15,21 +15,16 @@ function ProfileImage({ size }) {
         height = 'h-36'
     }
 
-    const filteredPhotos = profilePhoto.filter(photo => photo.entityId === user._id);
-    console.log("Filtered Photos:", filteredPhotos);
-
+    const userPhoto = profilePhoto.find(photo => photo.entityId === user._id);
     return (
         <Link to={'/profile'}>
             <div>
-                {filteredPhotos.length > 0 ? (
-                    filteredPhotos.map((photo, index) => (
-                        <img
-                            key={index}
-                            src={photo.base64}
-                            alt={`Profile photo`}
-                            className={`${width} ${height} rounded-full object-cover`}
-                        />
-                    ))
+                {userPhoto && isUserProfile ? (
+                    <img
+                        src={userPhoto.base64}
+                        alt="Profile photo"
+                        className={`${width} ${height} rounded-full object-cover`}
+                    />
                 ) : (
                     <div
                         className={`${width} ${height} rounded-full object-cover bg-gray-400`}
@@ -37,9 +32,7 @@ function ProfileImage({ size }) {
                 )}
             </div>
         </Link>
-
-
-    )
+    );
 }
 
 export default ProfileImage

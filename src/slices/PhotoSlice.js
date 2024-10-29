@@ -13,6 +13,7 @@ const PhotoSlice = createSlice({
     reducers: {
         allOfPhotos: (state, action) => {
             state.allPhotos = action.payload;
+            console.log(allOfPhotos)
         },
         filteredPhotos: (state, action) => {
             let photos = action.payload;

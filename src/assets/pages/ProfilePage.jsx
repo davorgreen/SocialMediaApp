@@ -30,6 +30,7 @@ function ProfilePage() {
     const { user } = useSelector((state) => state.userStore);
     const { token } = useSelector((state) => state.userStore);
     const { coverPhoto } = useSelector((state) => state.photoStore);
+    const [isUserProfile, setIsUserProfile] = useState(true);
 
 
 
@@ -127,7 +128,7 @@ function ProfilePage() {
                 </div>
 
                 <div onClick={handleAddProfilePhoto} className="absolute top-11 left-1 cursor-pointer">
-                    <ProfileImage size="big" />
+                    <ProfileImage isUserProfile={isUserProfile} size="big" />
                     <IoImagesOutline size={40} color="blue" className="absolute -bottom-2 -right-2" />
                 </div>
 
