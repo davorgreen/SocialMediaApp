@@ -9,7 +9,7 @@ import { AllPosts } from '../../slices/PostsSlice';
 import axios from 'axios';
 import { allUsers, myFriends, mySuggestedFriends } from '../../slices/UserSlice';
 import { ThreeCircles } from 'react-loader-spinner';
-import { allOfPhotos, filteredPhotos } from '../../slices/PhotoSlice';
+import { allOfPhotos, filteredPhotos, handleUsersPhotos } from '../../slices/PhotoSlice';
 
 
 
@@ -20,6 +20,7 @@ function HomePage() {
     const dispatch = useDispatch();
     const { token } = useSelector((state) => state.userStore);
     const { user } = useSelector((state) => state.userStore);
+    const { users } = useSelector((state) => state.userStore);
     const { posts } = useSelector((state) => state.postsStore);
     const { friends } = useSelector((state) => state.userStore);
 
@@ -94,7 +95,7 @@ function HomePage() {
         getAllPosts();
     }, [dispatch, token]);
 
-    //get photos
+    //get user photos 
     useEffect(() => {
         const getAllPhotos = async () => {
             setLoading(true);
@@ -120,6 +121,29 @@ function HomePage() {
         };
         getAllPhotos();
     }, [dispatch, token]);
+
+    //get users photo 
+    useEffect(() => {
+        const fetchUSersPhoto = async () => {
+            try {
+                const photos = await Promise.all(
+                    users.map(async (user) => {
+                        const response = await axios.get(`https://green-api-nu.vercel.app/api/photos/${user._id}`, {
+                            headers: {
+                                Authorization: `Bearer ${token}`
+                            }
+                        });
+                        return response.data.flat() || [];
+                    })
+                )
+                dispatch(handleUsersPhotos(photos));
+                console.log(photos)
+            } catch (error) {
+                setError('Error', error)
+            }
+        }
+        fetchUSersPhoto()
+    }, [dispatch, token, users]);
 
     return (
         <div className="bg-gray-100 w-full mt-5">
