@@ -41,7 +41,7 @@ function FriendsPage() {
                 <div className="flex justify-center gap-6 flex-wrap">
                     {suggestedFriends.map((el, index) => (
                         <div key={index} className="w-40 h-60 flex flex-col items-center gap-2 bg-blue-200 shadow-lg rounded-lg p-4 transition-transform transform hover:scale-105">
-                            <ProfileImage />
+                            <ProfileImage suggestedFriendId={el._id} />
                             <p className="text-xl font-semibold text-blue-500 text-center">{el.firstName} {el.lastName}</p>
                             <p className="text-sm font-semibold text-blue-500 text-center">{el.city}, {el.countryCode}</p>
                             <div className="mt-auto">

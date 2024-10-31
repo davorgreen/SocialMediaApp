@@ -23,10 +23,12 @@ function CreatePost() {
     const [people, setPeople] = useState('');
     const [showInput, setShowInput] = useState(false);
     const [selectedPhoto, setSelectedPhoto] = useState(null);
-    const { token } = useSelector((state) => state.userStore);
+    const { token, user } = useSelector((state) => state.userStore);
     const { friends } = useSelector((state) => state.userStore);
     const fileInputRef = useRef(null);
     const dispatch = useDispatch();
+
+
 
     function handleOpenFeelings() {
         setShowFeelings(!showFeelings);
@@ -76,9 +78,20 @@ function CreatePost() {
         fileInputRef.current.value = '';
     };
 
-    const handleSharePost = async (status) => {
-        if (!status.trim()) {
-            setError('Status cannot be empty');
+    // function to convert file to Base64 format
+    const getBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = (error) => reject(error);
+        });
+    };
+
+    //share post or photo
+    const handleSharePost = async (status, selectedPhoto) => {
+        if (!status.trim() && !selectedPhoto) {
+            setError('Status or Photo is required');
             return;
         }
 
@@ -87,38 +100,63 @@ function CreatePost() {
             return;
         }
 
-        //share post
-        const postData = {
-            description: status,
-        };
         setLoading(true);
+        setError('');
+
         try {
-            const response = await axios.post('https://green-api-nu.vercel.app/api/posts', postData, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
+            if (selectedPhoto) {
+                const imageBase64 = await getBase64(selectedPhoto);
+                const data = {
+                    base64: imageBase64,
+                    type: 'post',
+                    entityId: user._id,
+                };
+
+                try {
+                    const response = await axios.post('https://green-api-nu.vercel.app/api/photos', data, {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    });
+                    console.log('Photo uploaded successfully:', response.data);
+                } catch (error) {
+                    setError("Error uploading photo: " + (error.response?.data?.message || error.message));
+                    return;
                 }
-            });
-            dispatch(sharePost(response.data))
-            console.log(response.data)
-            console.log('Post shared successfully:', response.data);
+            }
+
+            if (status.trim()) {
+                const postData = {
+                    description: status,
+                };
+                const response = await axios.post('https://green-api-nu.vercel.app/api/posts', postData, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    }
+                });
+                dispatch(sharePost(response.data));
+                console.log('Post shared successfully:', response.data);
+            }
+
             setStatus('');
-            setSelectedPhoto('');
+            setSelectedPhoto(null);
             setPeople('');
             setEmoji('');
             setLocation('');
             setError('');
-        } catch (error) {
-            setError('Error', error);
 
+        } catch (error) {
+            setError("Error sharing post: " + (error.response?.data?.message || error.message));
         } finally {
             setLoading(false);
         }
     };
 
+
     return (
         <div className="flex flex-col bg-white shadow-lg rounded-lg p-6 mb-6">
             <div className="flex items-start gap-2">
-                <ProfileImage />
+                <ProfileImage isUserProfile={true} />
                 <textarea
                     placeholder="Share your status..."
                     className="flex-grow bg-gray-100 rounded-lg p-4 resize-none outline-none focus:ring-2 focus:ring-blue-500"
@@ -126,7 +164,7 @@ function CreatePost() {
                     value={status}
                     onChange={(e) => setStatus(e.target.value)}
                 />
-                <button onClick={() => handleSharePost(status)} className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 font-bold">Share</button>
+                <button onClick={() => handleSharePost(status, selectedPhoto)} className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 font-bold">Share</button>
             </div>
             <div className="flex flex-col gap-3 justify-center mt-4 md:flex-row">
                 <button onClick={() => setShowPeople(!showPeople)} className="flex items-center gap-2 bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 font-bold">
@@ -209,7 +247,7 @@ function CreatePost() {
                         <input
                             type="file"
                             ref={fileInputRef}
-                            accept="image/*"
+                            accept=".jpg, .png, image/*"
                             onChange={handlePhotoChange}
                         />
                     </div>

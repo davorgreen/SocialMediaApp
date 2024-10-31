@@ -112,7 +112,7 @@ function HomePage() {
                      base64: photo.base64,
                      type: photo.type
                  }));*/
-
+                console.log(response.data)
             } catch (error) {
                 setError("Error: " + (error.response?.data?.message || error.message));
             } finally {

@@ -3,7 +3,6 @@ import ProfileImage from "./ProfileImage";
 import { useState } from "react";
 import { IoIosMore, IoIosNotifications } from "react-icons/io";
 import { FaRegCommentAlt, FaRegHeart, FaRegTrashAlt, FaSave } from "react-icons/fa";
-import { BiHide } from "react-icons/bi";
 import { TbShare3 } from "react-icons/tb";
 import { IoImagesOutline } from "react-icons/io5";
 import image1 from '../images/golden-retriever-177213599-2000-a30830f4d2b24635a5d01b3c5c64b9ef.jpg'
@@ -130,7 +129,7 @@ function Post({ filteredPosts, savedPosts, myPosts }) {
                     return (
                         <div className="mt-2 bg-white shadow-lg rounded-lg p-8 mb-6 " key={_id}>
                             <div className="flex gap-3 mb-3 relative">
-                                <ProfileImage />
+                                <ProfileImage usersId={matchingUser._id} />
                                 <div>
                                     <p>
                                         <span className="font-bold text-blue-600 text-xl">
@@ -154,10 +153,6 @@ function Post({ filteredPosts, savedPosts, myPosts }) {
                                                 <button className="flex items-center gap-3 mt-2 text-xl font-semibold text-blue-500 hover:text-blue-600 transition-all transform hover:scale-110 cursor-pointer">
                                                     <IoIosNotifications size={30} color="#6495ED" />
                                                     Notifications
-                                                </button>
-                                                <button className="flex items-center gap-3 mt-2 text-xl font-semibold text-blue-500 hover:text-blue-600 transition-all transform hover:scale-110 cursor-pointer">
-                                                    <BiHide size={30} color="#6495ED" />
-                                                    Hide Post
                                                 </button>
                                                 <button className="flex items-center gap-3 mt-2 text-xl font-semibold text-blue-500 hover:text-blue-600 transition-all transform hover:scale-110 cursor-pointer">
                                                     <FaRegTrashAlt size={30} color="#6495ED" />

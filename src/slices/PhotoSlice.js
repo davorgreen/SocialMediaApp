@@ -34,7 +34,6 @@ const PhotoSlice = createSlice({
             localStorage.setItem('basic', JSON.stringify(basic));
         },
         handleUsersPhotos: (state, action) => {
-            console.log(action.payload)
             state.usersPhotos = action.payload;
             localStorage.setItem('usersPhotos', JSON.stringify(state.usersPhotos));
         }
