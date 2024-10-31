@@ -187,7 +187,7 @@ function Post({ filteredPosts, savedPosts, myPosts }) {
                                 </button>
                             </div>
                             <div className="flex items-start gap-5 mt-4">
-                                <ProfileImage />
+                                <ProfileImage usersId={user._id} />
                                 <div className="flex flex-col flex-grow">
                                     <input value={comment[post._id] || ''} onChange={(e) => setComment(prevState => ({
                                         ...prevState,
@@ -211,7 +211,7 @@ function Post({ filteredPosts, savedPosts, myPosts }) {
                                         return (
                                             <div key={el._id} className="flex gap-4 bg-white shadow-md rounded-lg p-4 border border-gray-200">
                                                 <div className="flex-row ml-4">
-                                                    <ProfileImage />
+                                                    <ProfileImage usersId={user._id} />
                                                     <p className="font-bold text-blue-600 text-xl">
                                                         {user.firstName} {user.lastName}
                                                     </p>
