@@ -5,7 +5,6 @@ import { IoIosMore, IoIosNotifications } from "react-icons/io";
 import { FaRegCommentAlt, FaRegHeart, FaRegTrashAlt, FaSave } from "react-icons/fa";
 import { TbShare3 } from "react-icons/tb";
 import { IoImagesOutline } from "react-icons/io5";
-import image1 from '../images/golden-retriever-177213599-2000-a30830f4d2b24635a5d01b3c5c64b9ef.jpg'
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { savePost } from "../../slices/PostsSlice";
@@ -13,7 +12,7 @@ import { savePost } from "../../slices/PostsSlice";
 
 
 
-function Post({ filteredPosts, savedPosts, myPosts }) {
+function Post({ filteredPosts, savedPosts, myPosts, photosOfPosts }) {
     const [dropDownMenu, setDropDownMenu] = useState(null);
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
@@ -25,7 +24,6 @@ function Post({ filteredPosts, savedPosts, myPosts }) {
     const [commentsByPostId, setCommentsByPostId] = useState({});
     const location = useLocation();
     const navigate = useNavigate();
-
 
     function openDropDownMenu(id) {
         setDropDownMenu(dropDownMenu === id ? null : id);
@@ -105,6 +103,7 @@ function Post({ filteredPosts, savedPosts, myPosts }) {
         }
     }
 
+
     const displayedPosts = location.pathname === '/savedposts'
         ? savedPosts
         : location.pathname === '/'
@@ -166,7 +165,17 @@ function Post({ filteredPosts, savedPosts, myPosts }) {
                             <div>
                                 <p className="text-lg">{description}</p>
                                 <div className="rounded-lg overflow-hidden mt-4">
-                                    <img src={image1} alt="dog" className="w-full h-auto object-cover" />
+                                    {photosOfPosts ?
+                                        (photosOfPosts.filter(photo => post._id === photo.entityId).map(photo => (
+                                            <img
+                                                key={photo._id}
+                                                src={photo.base64}
+                                                alt="dog"
+                                                className="w-full h-full object-cover"
+                                            />
+                                        ))) : (null)
+                                    }
+                                    { /*  < img src={image1} alt="dog" className="w-full h-auto object-cover" />*/}
                                 </div>
                             </div>
                             <div className="flex gap-8 items-center mt-6">

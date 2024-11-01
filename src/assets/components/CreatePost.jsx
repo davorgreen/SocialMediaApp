@@ -88,7 +88,7 @@ function CreatePost() {
         });
     };
 
-    //share post or photo
+    // share post or photo
     const handleSharePost = async (status, selectedPhoto) => {
         if (!status.trim() && !selectedPhoto) {
             setError('Status or Photo is required');
@@ -104,16 +104,40 @@ function CreatePost() {
         setError('');
 
         try {
-            if (selectedPhoto) {
+            let postId = null;
+            //status
+            if (status.trim()) {
+                const postData = {
+                    description: status,
+                };
+                try {
+                    const response = await axios.post('https://green-api-nu.vercel.app/api/posts', postData, {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        }
+                    });
+                    dispatch(sharePost(response.data));
+                    console.log('Post shared successfully:', response.data);
+                    postId = response.data._id;
+                } catch (error) {
+                    setError("Error sharing post: " + (error.response?.data?.message || error.message));
+                    return;
+                }
+            }
+
+            // photo
+            if (selectedPhoto && postId) {
                 const imageBase64 = await getBase64(selectedPhoto);
-                const data = {
+                const photoData = {
                     base64: imageBase64,
                     type: 'post',
-                    entityId: user._id,
+                    entityId: postId,
                 };
 
+                console.log('Sending photo data:', photoData);
+
                 try {
-                    const response = await axios.post('https://green-api-nu.vercel.app/api/photos', data, {
+                    const response = await axios.post('https://green-api-nu.vercel.app/api/photos', photoData, {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
@@ -125,25 +149,15 @@ function CreatePost() {
                 }
             }
 
-            if (status.trim()) {
-                const postData = {
-                    description: status,
-                };
-                const response = await axios.post('https://green-api-nu.vercel.app/api/posts', postData, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    }
-                });
-                dispatch(sharePost(response.data));
-                console.log('Post shared successfully:', response.data);
-            }
-
+            // reset
             setStatus('');
             setSelectedPhoto(null);
             setPeople('');
             setEmoji('');
             setLocation('');
             setError('');
+            fileInputRef.current.value = '';
+            setShowInput(false);
 
         } catch (error) {
             setError("Error sharing post: " + (error.response?.data?.message || error.message));
@@ -151,6 +165,8 @@ function CreatePost() {
             setLoading(false);
         }
     };
+
+
 
 
     return (

@@ -9,8 +9,7 @@ import { AllPosts } from '../../slices/PostsSlice';
 import axios from 'axios';
 import { allUsers, myFriends, mySuggestedFriends } from '../../slices/UserSlice';
 import { ThreeCircles } from 'react-loader-spinner';
-import { allOfPhotos, filteredPhotos, handleUsersPhotos } from '../../slices/PhotoSlice';
-
+import { allOfPhotos, filteredPhotos, handlePostsPhotos, handleUsersPhotos } from '../../slices/PhotoSlice';
 
 
 
@@ -18,6 +17,7 @@ function HomePage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const dispatch = useDispatch();
+    const [photosOfPosts, setPhotosofPosts] = useState([]);
     const { token } = useSelector((state) => state.userStore);
     const { user } = useSelector((state) => state.userStore);
     const { users } = useSelector((state) => state.userStore);
@@ -80,7 +80,7 @@ function HomePage() {
         const getAllPosts = async () => {
             setLoading(true);
             try {
-                const response = await axios.get('https://green-api-nu.vercel.app/api/posts?offset=0&limit=20', {
+                const response = await axios.get('https://green-api-nu.vercel.app/api/posts?offset=0&limit=50', {
                     headers: {
                         Authorization: `Bearer ${token}`
                     },
@@ -142,6 +142,35 @@ function HomePage() {
         fetchUSersPhoto()
     }, [token, dispatch, users]);
 
+
+    //get posts photo
+    useEffect(() => {
+        const fetchPostsPhoto = async () => {
+            setLoading(true);
+            try {
+                const postPhotos = await Promise.all(
+                    filteredPosts.map(async (post) => {
+                        const response = await axios.get(`https://green-api-nu.vercel.app/api/photos/${post._id}`, {
+                            headers: {
+                                Authorization: `Bearer ${token}`
+                            }
+                        });
+                        return response.data || [];
+                    })
+                );
+                setPhotosofPosts(postPhotos.flat());
+                dispatch(handlePostsPhotos(postPhotos.flat()))
+            } catch (error) {
+                setError('Došlo je do greške prilikom učitavanja slika.');
+                console.error(error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchPostsPhoto();
+
+    }, [filteredPosts, token, dispatch]);
+
     return (
         <div className="bg-gray-100 w-full mt-5">
             <Header />
@@ -163,7 +192,7 @@ function HomePage() {
                             ariaLabel="three-circles-loading"
                             wrapperStyle={{}}
                             wrapperClass=""
-                        /></div>) : (<Post filteredPosts={filteredPosts} />)}
+                        /></div>) : (<Post filteredPosts={filteredPosts} photosOfPosts={photosOfPosts} />)}
                     </div>
                 </div>
             </div>

@@ -7,6 +7,7 @@ import { useMemo } from "react";
 function SavedPosts() {
     const { posts } = useSelector((state) => state.postsStore);
     const { user } = useSelector((state) => state.userStore);
+    const { postsPhotos } = useSelector((state) => state.photoStore);
 
     const savedPosts = useMemo(() => {
         return posts.filter((post) => post.savedBy.includes(user._id));
@@ -18,7 +19,7 @@ function SavedPosts() {
                 <Sidebar />
             </div>
             <div className="w-full md:w-3/4">
-                <Post savedPosts={savedPosts} />
+                <Post savedPosts={savedPosts} photosOfPosts={postsPhotos} />
             </div>
         </div>
 
