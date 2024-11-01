@@ -107,12 +107,6 @@ function HomePage() {
                 });
                 dispatch(allOfPhotos(response.data));
                 dispatch(filteredPhotos(response.data));
-                /* const photoData = response.data.map(photo => ({
-                     id: photo._id,
-                     base64: photo.base64,
-                     type: photo.type
-                 }));*/
-                console.log(response.data)
             } catch (error) {
                 setError("Error: " + (error.response?.data?.message || error.message));
             } finally {
@@ -125,6 +119,7 @@ function HomePage() {
     //get users photo 
     useEffect(() => {
         const fetchUSersPhoto = async () => {
+            setLoading(true);
             try {
                 const photos = await Promise.all(
                     users.map(async (user) => {
@@ -133,17 +128,19 @@ function HomePage() {
                                 Authorization: `Bearer ${token}`
                             }
                         });
-                        return response.data.flat() || [];
+                        return response.data || [];
                     })
                 )
                 dispatch(handleUsersPhotos(photos));
-                console.log(photos)
             } catch (error) {
-                setError('Error', error)
+                setError('Error', error);
+                console.error(error);
+            } finally {
+                setLoading(false);
             }
         }
         fetchUSersPhoto()
-    }, [dispatch, token, users]);
+    }, [token, dispatch, users]);
 
     return (
         <div className="bg-gray-100 w-full mt-5">

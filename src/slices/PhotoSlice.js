@@ -9,7 +9,7 @@ const PhotoSlice = createSlice({
         profilePhoto: JSON.parse(localStorage.getItem('profile')) || [],
         coverPhoto: JSON.parse(localStorage.getItem('cover')) || [],
         basicPhoto: JSON.parse(localStorage.getItem('basic')) || [],
-        usersPhotos: JSON.parse(localStorage.getItem('usersPhotos')) || [],
+        usersPhotos: [],
     },
     reducers: {
         allOfPhotos: (state, action) => {
@@ -35,7 +35,7 @@ const PhotoSlice = createSlice({
         },
         handleUsersPhotos: (state, action) => {
             state.usersPhotos = action.payload;
-            localStorage.setItem('usersPhotos', JSON.stringify(state.usersPhotos));
+            // localStorage.setItem('usersPhotos', JSON.stringify(state.usersPhotos));
         }
 
     }

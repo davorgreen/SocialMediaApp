@@ -8,8 +8,11 @@ function ProfileImage({ size, isUserProfile, friendId, suggestedFriendId, usersI
 
 
     const myUserPhoto = profilePhoto.find(photo => photo.entityId === user._id && photo.type === 'profile');
-    console.log(myUserPhoto)
-    const friendPhoto = usersPhotos.flat().find(photo => photo.entityId === friendId || photo.entityId === suggestedFriendId || photo.entityId === usersId && photo.type === 'profile' && photo.base64);
+    const friendPhoto = usersPhotos.flat().find(photo =>
+        (photo.entityId === friendId || photo.entityId === suggestedFriendId || photo.entityId === usersId)
+        && photo.type === 'profile'
+        && photo.base64
+    );
 
 
     let width = 'w-12';
