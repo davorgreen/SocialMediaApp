@@ -4,6 +4,7 @@ import Sidebar from "../components/Sidebar"
 import { useMemo } from "react";
 
 
+
 function SavedPosts() {
     const { posts } = useSelector((state) => state.postsStore);
     const { user } = useSelector((state) => state.userStore);
@@ -22,7 +23,6 @@ function SavedPosts() {
                 <Post savedPosts={savedPosts} photosOfPosts={postsPhotos} />
             </div>
         </div>
-
     )
 }
 

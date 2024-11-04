@@ -1,13 +1,18 @@
 import { useDispatch, useSelector } from "react-redux";
 import ProfileImage from "./ProfileImage";
 import { useState } from "react";
-import { IoIosMore, IoIosNotifications } from "react-icons/io";
-import { FaRegCommentAlt, FaRegHeart, FaRegTrashAlt, FaSave } from "react-icons/fa";
 import { TbShare3 } from "react-icons/tb";
 import { IoImagesOutline } from "react-icons/io5";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { savePost } from "../../slices/PostsSlice";
+import { removePost, savePost } from "../../slices/PostsSlice";
+//icons
+import { MdDeleteForever } from "react-icons/md";
+import { IoIosMore, IoIosNotifications } from "react-icons/io";
+import { FaRegCommentAlt, FaRegHeart, FaRegTrashAlt, FaSave } from "react-icons/fa";
+//redux
+import { getComments, removeComment, sendComment } from "../../slices/CommentSlice";
+
 
 
 
@@ -21,9 +26,11 @@ function Post({ filteredPosts, savedPosts, myPosts, photosOfPosts }) {
     const { token } = useSelector((state) => state.userStore);
     const { user } = useSelector((state) => state.userStore);
     const [comment, setComment] = useState({});
-    const [commentsByPostId, setCommentsByPostId] = useState({});
+
     const location = useLocation();
     const navigate = useNavigate();
+
+    const commentsByPostId = useSelector((state) => state.commentStore.comment);
 
     function openDropDownMenu(id) {
         setDropDownMenu(dropDownMenu === id ? null : id);
@@ -69,6 +76,7 @@ function Post({ filteredPosts, savedPosts, myPosts, photosOfPosts }) {
             });
 
             console.log('response:', response.data);
+            dispatch(sendComment(response.data))
         } catch (error) {
             console.error('Error response:', error.response);
             setError('error', error);
@@ -91,10 +99,7 @@ function Post({ filteredPosts, savedPosts, myPosts, photosOfPosts }) {
                 }
             })
             console.log(response.data)
-            setCommentsByPostId((prevComments) => ({
-                ...prevComments,
-                [id]: response.data,
-            }));
+            dispatch(getComments({ [id]: response.data }));
         }
         catch (error) {
             setError('error', error)
@@ -103,6 +108,47 @@ function Post({ filteredPosts, savedPosts, myPosts, photosOfPosts }) {
         }
     }
 
+    //delete post
+    const handleDeletePost = async (id) => {
+        setLoading(true);
+        try {
+            const response = await axios.delete(`https://green-api-nu.vercel.app/api/posts/${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            )
+            console.log('Post deleted successfully:', response.data);
+            setDropDownMenu(null);
+            dispatch(removePost(id));
+        } catch (error) {
+            setError('Error: ' + (error.response?.data?.message || error.message));
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    //delete comment
+    const handledeleteComment = async (id) => {
+        setLoading(true);
+        try {
+            const response = await axios.delete(` https://green-api-nu.vercel.app/api/comments/${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            )
+            console.log('Post deleted successfully:', response.data);
+            dispatch(removeComment(id));
+        } catch (error) {
+            setError('Error: ' + (error.response?.data?.message || error.message));
+        } finally {
+            setLoading(false);
+        }
+
+    }
 
     const displayedPosts = location.pathname === '/savedposts'
         ? savedPosts
@@ -153,7 +199,7 @@ function Post({ filteredPosts, savedPosts, myPosts, photosOfPosts }) {
                                                     <IoIosNotifications size={30} color="#6495ED" />
                                                     Notifications
                                                 </button>
-                                                <button className="flex items-center gap-3 mt-2 text-xl font-semibold text-blue-500 hover:text-blue-600 transition-all transform hover:scale-110 cursor-pointer">
+                                                <button onClick={() => handleDeletePost(post._id)} className="flex items-center gap-3 mt-2 text-xl font-semibold text-blue-500 hover:text-blue-600 transition-all transform hover:scale-110 cursor-pointer">
                                                     <FaRegTrashAlt size={30} color="#6495ED" />
                                                     Delete Post
                                                 </button>
@@ -231,11 +277,15 @@ function Post({ filteredPosts, savedPosts, myPosts, photosOfPosts }) {
                                                     </p>
                                                     <p className=" mt-4 text-md text-gray-700">{new Date(el.createdAt).toLocaleString()}</p>
                                                 </div>
+                                                <div>
+                                                    <MdDeleteForever size={50} color="red" onClick={() => handledeleteComment(el._id)} />
+                                                </div>
                                             </div>
                                         );
                                     })}
                                 </div>
-                            )}
+                            )
+                            }
 
                         </div>
                     );

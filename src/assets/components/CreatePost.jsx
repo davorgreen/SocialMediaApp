@@ -175,7 +175,7 @@ function CreatePost() {
                 <ProfileImage isUserProfile={true} />
                 <textarea
                     placeholder="Share your status..."
-                    className="flex-grow bg-gray-100 rounded-lg p-4 resize-none outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full bg-gray-100 rounded-lg p-4 resize-none outline-none focus:ring-2 focus:ring-blue-500"
                     rows="3"
                     value={status}
                     onChange={(e) => setStatus(e.target.value)}
