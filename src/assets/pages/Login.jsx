@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { login } from '../../slices/UserSlice';
+import { getUser } from '../../slices/CombinedSlice';
 
 const Login = () => {
     const [error, setError] = useState('');
@@ -30,7 +31,8 @@ const Login = () => {
         try {
             const response = await axios.post('https://green-api-nu.vercel.app/api/users/login', values);
             const { token, user } = response.data;
-            dispatch(login({ token, user }))
+            dispatch(login({ token, user }));
+            dispatch(getUser(user));
             navigate('/');
         } catch (error) {
             setError(error.response.data.message);
