@@ -1,9 +1,10 @@
-
 import axios from "axios";
-import { useMemo, useState } from "react";
-import { IoImagesOutline } from "react-icons/io5";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { handleUsersPhotos } from "../../slices/PhotoSlice";
+//icons
+import { IoImagesOutline } from "react-icons/io5";
+import { addedStory, deleteStory } from "../../slices/PhotoSlice";
+
 
 function Story() {
     const [loading, setLoading] = useState(true);
@@ -11,33 +12,22 @@ function Story() {
     const [addStory, setAddStory] = useState(false);
     const [story, setStory] = useState(null);
     const { user, token, users } = useSelector((state) => state.userStore);
-    const { usersPhotos } = useSelector((state) => state.photoStore);
+    const { storyPhoto } = useSelector((state) => state.photoStore);
     const dispatch = useDispatch();
-
-
-    const storiesPhoto = useMemo(() => {
-        return usersPhotos.flat().filter((photo) =>
-            photo.type === 'story')
-    }, [usersPhotos])
-
-    console.log(storiesPhoto)
-    console.log(storiesPhoto)
 
     //save story
     const handleSaveStory = (e) => {
-        console.log(e.target.files[0]);
         setStory(e.target.files[0]);
     }
 
     // function to convert file to Base64 format
-    const getBase64 = (file, cb) => {
-        let reader = new FileReader();
+    const getBase64 = (file, callback) => {
+        const reader = new FileReader();
         reader.readAsDataURL(file);
-        reader.onload = function () {
-            cb(reader.result);
-        };
-        reader.onerror = function (error) {
-            console.log('Error: ', error);
+        reader.onload = () => callback(reader.result);
+        reader.onerror = (error) => {
+            console.error("Error reading file:", error);
+            callback(null);
         };
     };
 
@@ -45,22 +35,25 @@ function Story() {
     const updateStory = () => {
         if (!story) return;
         setLoading(true);
+
         getBase64(story, async (imageBase64) => {
             try {
+                if (!imageBase64) {
+                    throw new Error("Image conversion to base64 failed.");
+                }
                 const data = {
                     base64: imageBase64,
                     type: 'story',
                     entityId: user._id,
                 };
-
                 const response = await axios.post('https://green-api-nu.vercel.app/api/photos', data, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                console.log('Response data:', response.data);
-                dispatch(handleUsersPhotos(response.data))
+                dispatch(addedStory(response.data));
             } catch (error) {
+                console.error("Error:", error);
                 setError("Error: " + (error.response?.data?.message || error.message));
             } finally {
                 setLoading(false);
@@ -68,25 +61,44 @@ function Story() {
                 setStory(null);
             }
         });
+    };
+
+    //delete story
+    const handleDeleteStory = async (id) => {
+        setLoading(true);
+        try {
+            const response = await axios.delete(`https://green-api-nu.vercel.app/api/photos/${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            )
+            console.log('Post deleted successfully:', response.data);
+            dispatch(deleteStory(id))
+        } catch (error) {
+            setError('Error: ' + (error.response?.data?.message || error.message));
+        } finally {
+            setLoading(false);
+        }
     }
 
-
     return (
-
         <div className="container mx-auto flex-row w-3/4 justify-center items-center mt-8">
             <div className="flex gap-2 mb-6">
                 <IoImagesOutline size={50} className="text-blue-800" onClick={() => { setAddStory(prevState => !prevState) }} />
-                {storiesPhoto.map((el) => {
+                {storyPhoto.map((el, index) => {
                     const user = users.find(user => user._id === el.entityId);
-                    console.log(user);
-
                     return (
-                        <div key={el.id} className="relative group">
+                        <div key={index} className="relative group" onClick={() => handleDeleteStory(el._id)}>
                             <img
                                 src={el.base64}
                                 alt={el.type}
                                 className="w-80 h-80 object-cover rounded-xl transition-transform transform group-hover:scale-105 group-hover:shadow-2xl"
                             />
+                            <div className="absolute top-2 right-2 text-red-600 cursor-pointer" >
+                                <span className="text-2xl font-bold">X</span>
+                            </div>
                             <p className="absolute flex justify-start inset-0 text-center mt-1 ml-1 text-xl text-white font-bold">
                                 {user ? `${user.firstName} ${user.lastName}` : 'Unknown User'}
                             </p>
@@ -101,10 +113,6 @@ function Story() {
                 </button>
             </>}</div>
         </div >
-
-
-
-
     )
 }
 

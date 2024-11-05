@@ -11,6 +11,7 @@ const PhotoSlice = createSlice({
         basicPhoto: JSON.parse(localStorage.getItem('basic')) || [],
         usersPhotos: [],
         postsPhotos: [],
+        storyPhoto: [],
     },
     reducers: {
         allOfPhotos: (state, action) => {
@@ -39,10 +40,21 @@ const PhotoSlice = createSlice({
         },
         handlePostsPhotos: (state, action) => {
             state.postsPhotos = action.payload;
+        },
+        handleStoryPhoto: (state, action) => {
+            state.storyPhoto = action.payload.flat().filter((photo) =>
+                photo.type === 'story');
+        },
+        addedStory: (state, action) => {
+            state.storyPhoto.push(action.payload);
+        },
+        deleteStory: (state, action) => {
+            console.log('Brisanje storija sa ID:', action.payload);
+            state.storyPhoto = state.storyPhoto.filter(story => story._id !== action.payload);
         }
     }
 
 })
 
-export const { allOfPhotos, filteredPhotos, handleUsersPhotos, handlePostsPhotos } = PhotoSlice.actions;
+export const { allOfPhotos, filteredPhotos, handleUsersPhotos, handlePostsPhotos, handleStoryPhoto, addedStory, deleteStory } = PhotoSlice.actions;
 export default PhotoSlice.reducer;

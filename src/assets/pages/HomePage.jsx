@@ -9,7 +9,7 @@ import { AllPosts } from '../../slices/PostsSlice';
 import axios from 'axios';
 import { allUsers, myFriends, mySuggestedFriends } from '../../slices/UserSlice';
 import { ThreeCircles } from 'react-loader-spinner';
-import { allOfPhotos, filteredPhotos, handlePostsPhotos, handleUsersPhotos } from '../../slices/PhotoSlice';
+import { allOfPhotos, filteredPhotos, handlePostsPhotos, handleStoryPhoto, handleUsersPhotos } from '../../slices/PhotoSlice';
 
 
 
@@ -128,12 +128,13 @@ function HomePage() {
                                 Authorization: `Bearer ${token}`
                             }
                         });
-                        return response.data || [];
+                        return response.data.flat() || [];
                     })
                 )
                 dispatch(handleUsersPhotos(photos));
+                dispatch(handleStoryPhoto(photos))
             } catch (error) {
-                setError('Error', error);
+                setError("Error: " + (error.response?.data?.message || error.message));
                 console.error(error);
             } finally {
                 setLoading(false);
@@ -161,7 +162,7 @@ function HomePage() {
                 setPhotosofPosts(postPhotos.flat());
                 dispatch(handlePostsPhotos(postPhotos.flat()))
             } catch (error) {
-                setError('Došlo je do greške prilikom učitavanja slika.');
+                setError("Error: " + (error.response?.data?.message || error.message));
                 console.error(error);
             } finally {
                 setLoading(false);
