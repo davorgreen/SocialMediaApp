@@ -3,8 +3,8 @@ import Post from "../components/Post"
 import Sidebar from "../components/Sidebar"
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { getUserPosts } from "../../slices/CombinedSlice";
 import { ThreeCircles } from "react-loader-spinner";
+import { getUserSavedPosts } from "../../slices/CombinedSlice";
 
 
 
@@ -29,7 +29,7 @@ function SavedPosts() {
                         Authorization: `Bearer ${token}`
                     },
                 });
-                dispatch(getUserPosts(response.data));
+                dispatch(getUserSavedPosts(response.data));
             } catch (error) {
                 setError('Error: ' + error.message);
             } finally {
@@ -49,7 +49,7 @@ function SavedPosts() {
                     visible={loading}
                     height="100"
                     width="100"
-                    color="#4fa94d"
+                    color="#0981bd"
                     ariaLabel="three-circles-loading"
                     wrapperStyle={{}}
                     wrapperClass=""

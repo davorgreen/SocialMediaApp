@@ -9,6 +9,7 @@ import { getUser } from '../../slices/CombinedSlice';
 
 const Login = () => {
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -28,6 +29,8 @@ const Login = () => {
     });
 
     const onSubmit = async (values) => {
+        setError('');
+        setLoading(true);
         try {
             const response = await axios.post('https://green-api-nu.vercel.app/api/users/login', values);
             const { token, user } = response.data;
@@ -36,7 +39,8 @@ const Login = () => {
             navigate('/');
         } catch (error) {
             setError(error.response.data.message);
-            console.error('Error during login', error);
+        } finally {
+            setLoading(false);
         }
     };
 

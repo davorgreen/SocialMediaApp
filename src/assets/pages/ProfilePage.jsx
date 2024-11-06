@@ -22,7 +22,6 @@ function ProfilePage() {
     const { component } = useParams();
     const [image, setImage] = useState(null);
     const [imageType, setImageType] = useState('');
-    //   const [photos, setPhotos] = useState([]);
     const [activeComponent, setActiveComponent] = useState(component || 'posts');
     const [addPhoto, setAddPhoto] = useState(false);
     const [loading, setLoading] = useState(true);

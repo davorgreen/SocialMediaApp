@@ -128,7 +128,7 @@ function HomePage() {
                                 Authorization: `Bearer ${token}`
                             }
                         });
-                        return response.data.flat() || [];
+                        return response.data.flat();
                     })
                 )
                 dispatch(handleUsersPhotos(photos));
