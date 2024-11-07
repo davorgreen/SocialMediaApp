@@ -1,15 +1,21 @@
+//component
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import CreatePost from '../components/CreatePost';
 import Post from '../components/Post';
 import Story from '../components/Story';
-import { useMemo, useEffect, useState } from 'react';
+//hooks
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { AllPosts } from '../../slices/PostsSlice';
-import axios from 'axios';
-import { allUsers, myFriends, mySuggestedFriends } from '../../slices/UserSlice';
+//api
+import { fetchFriends, fetchPhotos, fetchPostPhoto, fetchPosts, fetchUsers, fetchUsersPhoto } from '../../services/api';
+//slice
+import { entirePosts, myFriends, mySuggestedFriends } from '../../slices/UserSlice';
+//spinner
 import { ThreeCircles } from 'react-loader-spinner';
+import { AllPosts } from '../../slices/PostsSlice';
 import { allOfPhotos, filteredPhotos, handlePostsPhotos, handleStoryPhoto, handleUsersPhotos } from '../../slices/PhotoSlice';
+
 
 
 
@@ -17,160 +23,108 @@ function HomePage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const dispatch = useDispatch();
-    const [photosOfPosts, setPhotosofPosts] = useState([]);
-    const { token } = useSelector((state) => state.userStore);
-    const { user } = useSelector((state) => state.userStore);
-    const { users } = useSelector((state) => state.userStore);
-    const { posts } = useSelector((state) => state.postsStore);
-    const { friends } = useSelector((state) => state.userStore);
+    const { token, users, myOrFriendsPosts } = useSelector((state) => state.userStore);
+    const { postsPhotos } = useSelector((state) => state.photoStore);
 
-    //filtered posts
-    const filteredPosts = useMemo(() => {
-        return posts
-            .filter(post =>
-                post.createdBy === user._id ||
-                friends.some(friend => friend._id === post.createdBy)
-            )
-            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    }, [user, friends, posts]);
 
-    //get friends
+    //friends
     useEffect(() => {
-        const friendsList = async () => {
-            setLoading(true);
+        const fetchFriendsData = async () => {
             try {
-                const response = await axios.get('https://green-api-nu.vercel.app/api/friends', {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    },
-                });
-                dispatch(myFriends(response.data));
+                const friendsResponse = await fetchFriends(token);
+                dispatch(myFriends(friendsResponse.data));
             } catch (error) {
                 setError('Error: ' + error.message);
-            } finally {
-                setLoading(false);
             }
         };
-        friendsList();
+        fetchFriendsData();
     }, [dispatch, token]);
 
-    //get all users
+    //all users
     useEffect(() => {
-        const usersList = async () => {
-            setLoading(true);
+        const fetchAllUsers = async () => {
             try {
-                const response = await axios.get('https://green-api-nu.vercel.app/api/users', {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    },
-                });
-                dispatch(allUsers(response.data));
-                dispatch(mySuggestedFriends(response.data));
+                const usersResponse = await fetchUsers(token);
+                dispatch(myFriends(usersResponse.data));
+                dispatch(mySuggestedFriends(usersResponse.data));
             } catch (error) {
                 setError('Error: ' + error.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-        usersList();
-    }, [dispatch, token]);
-
-    //get all posts
-    useEffect(() => {
-        const getAllPosts = async () => {
-            setLoading(true);
-            try {
-                const response = await axios.get('https://green-api-nu.vercel.app/api/posts?offset=0&limit=50', {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    },
-                });
-                dispatch(AllPosts(response.data));
-            } catch (error) {
-                setError('Error: ' + error.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-        getAllPosts();
-    }, [dispatch, token]);
-
-    //get user photos 
-    useEffect(() => {
-        const getAllPhotos = async () => {
-            setLoading(true);
-            try {
-                const response = await axios.get('https://green-api-nu.vercel.app/api/photos', {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-                dispatch(allOfPhotos(response.data));
-                dispatch(filteredPhotos(response.data));
-            } catch (error) {
-                setError("Error: " + (error.response?.data?.message || error.message));
-            } finally {
-                setLoading(false);
-            }
-        };
-        getAllPhotos();
-    }, [dispatch, token]);
-
-    //get users photo 
-    useEffect(() => {
-        const fetchUSersPhoto = async () => {
-            setLoading(true);
-            try {
-                const photos = await Promise.all(
-                    users.map(async (user) => {
-                        const response = await axios.get(`https://green-api-nu.vercel.app/api/photos/${user._id}`, {
-                            headers: {
-                                Authorization: `Bearer ${token}`
-                            }
-                        });
-                        return response.data.flat();
-                    })
-                )
-                dispatch(handleUsersPhotos(photos));
-                dispatch(handleStoryPhoto(photos))
-            } catch (error) {
-                setError("Error: " + (error.response?.data?.message || error.message));
-                console.error(error);
-            } finally {
-                setLoading(false);
             }
         }
-        fetchUSersPhoto()
-    }, [token, dispatch, users]);
+        fetchAllUsers();
+    }, [dispatch, token])
 
-
-    //get posts photo
+    //posts
     useEffect(() => {
-        const fetchPostsPhoto = async () => {
+        const fetchAllPosts = async () => {
+            try {
+                const postsResponse = await fetchPosts(token);
+                dispatch(AllPosts(postsResponse.data));
+                dispatch(entirePosts(postsResponse.data));
+            } catch (error) {
+                setError('Error: ' + error.message);
+            }
+        }
+        fetchAllPosts();
+    }, [dispatch, token])
+
+    //user photos
+    useEffect(() => {
+        const fetchUserPhotos = async () => {
             setLoading(true);
             try {
-                const postPhotos = await Promise.all(
-                    filteredPosts.map(async (post) => {
-                        const response = await axios.get(`https://green-api-nu.vercel.app/api/photos/${post._id}`, {
-                            headers: {
-                                Authorization: `Bearer ${token}`
-                            }
-                        });
-                        return response.data || [];
-                    })
-                );
-                setPhotosofPosts(postPhotos.flat());
-                dispatch(handlePostsPhotos(postPhotos.flat()))
+                const photosResponse = await fetchPhotos(token);
+                dispatch(allOfPhotos(photosResponse.data));
+                dispatch(filteredPhotos(photosResponse.data));
             } catch (error) {
-                setError("Error: " + (error.response?.data?.message || error.message));
-                console.error(error);
+                setError('Error fetching photos: ' + error.message);
             } finally {
                 setLoading(false);
             }
         };
-        fetchPostsPhoto();
+        fetchUserPhotos();
+    }, [dispatch, token]);
 
-    }, [filteredPosts, token, dispatch]);
+    //all photos of users
+    useEffect(() => {
+        const getUserPhotos = async () => {
+            setLoading(true);
+            try {
+                const userPhotos = await Promise.all(
+                    users.map(user => fetchUsersPhoto(user._id, token).then(res => res.data))
+                );
+                dispatch(handleUsersPhotos(userPhotos.flat()));
+                dispatch(handleStoryPhoto(userPhotos.flat()));
+            } catch (error) {
+                setError('Error fetching user photos: ' + error.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+        getUserPhotos();
+    }, [dispatch, token, users]);
+
+    //posts photos
+    useEffect(() => {
+        const getSpecificPosts = async () => {
+            setLoading(true);
+            try {
+                const mineOrFriendsPost = await Promise.all(
+                    myOrFriendsPosts.map(user => fetchPostPhoto(user._id, token).then(res => res.data))
+                );
+                dispatch(handlePostsPhotos(mineOrFriendsPost.flat()));
+            } catch (error) {
+                setError('Error fetching user photos: ' + error.message);
+            } finally {
+                setLoading(false);
+            }
+
+        }
+        getSpecificPosts()
+    }, [token, myOrFriendsPosts, dispatch])
+
+
+
 
     return (
         <div className="bg-gray-100 w-full mt-5">
@@ -193,7 +147,7 @@ function HomePage() {
                             ariaLabel="three-circles-loading"
                             wrapperStyle={{}}
                             wrapperClass=""
-                        /></div>) : (<Post filteredPosts={filteredPosts} photosOfPosts={photosOfPosts} />)}
+                        /></div>) : (<Post filteredPosts={myOrFriendsPosts} photosOfPosts={postsPhotos} />)}
                     </div>
                 </div>
             </div>

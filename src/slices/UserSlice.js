@@ -13,6 +13,7 @@ const UserSlice = createSlice({
         users: JSON.parse(localStorage.getItem('users')) || [],
         friends: JSON.parse(localStorage.getItem('friends')) || [],
         suggestedFriends: JSON.parse(localStorage.getItem('suggestedFriends')) || [],
+        myOrFriendsPosts: [],
     },
     reducers: {
         login: (state, action) => {
@@ -70,6 +71,12 @@ const UserSlice = createSlice({
             state.friends = result;
             localStorage.setItem('friends', JSON.stringify(state.friends));
         },
+        entirePosts: (state, action) => {
+            state.myOrFriendsPosts = action.payload.filter(post =>
+                post.createdBy === state.user._id || state.friends.some(friend => friend._id === post.createdBy)
+            ).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+        },
         addFriendToList: (state, action) => {
             const newFriend = action.payload;
             if (!state.friends.some(friend => friend._id === newFriend._id)) {
@@ -87,5 +94,5 @@ const UserSlice = createSlice({
 })
 
 
-export const { login, logout, checkAuth, allUsers, myFriends, mySuggestedFriends, addFriendToList, removeSuggestedFriend } = UserSlice.actions;
+export const { login, logout, checkAuth, allUsers, myFriends, mySuggestedFriends, addFriendToList, removeSuggestedFriend, entirePosts } = UserSlice.actions;
 export default UserSlice.reducer;
