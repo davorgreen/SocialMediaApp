@@ -12,6 +12,7 @@ const PhotoSlice = createSlice({
         usersPhotos: [],
         postsPhotos: [],
         storyPhoto: [],
+        userProfilePic: [],
     },
     reducers: {
         allOfPhotos: (state, action) => {
@@ -49,12 +50,21 @@ const PhotoSlice = createSlice({
             state.storyPhoto.push(action.payload);
         },
         deleteStory: (state, action) => {
-            console.log('Brisanje storija sa ID:', action.payload);
             state.storyPhoto = state.storyPhoto.filter(story => story._id !== action.payload);
+        },
+        userProfilePhoto: (state, action) => {
+            console.log(action.payload)
+            state.userProfilePic = action.payload.flat().filter((photo) => photo.type === 'userProfilePhoto');
+        },
+        addUserProfilePhoto: (state, action) => {
+            state.userProfilePic.push(action.payload);
+        },
+        deleteUserProfilePhoto: (state, action) => {
+            state.userProfilePic = state.userProfilePic.filter((picture) => picture._id !== action.payload);
         }
     }
 
 })
 
-export const { allOfPhotos, filteredPhotos, handleUsersPhotos, handlePostsPhotos, handleStoryPhoto, addedStory, deleteStory } = PhotoSlice.actions;
+export const { allOfPhotos, filteredPhotos, handleUsersPhotos, handlePostsPhotos, handleStoryPhoto, addedStory, deleteStory, userProfilePhoto, addUserProfilePhoto, deleteUserProfilePhoto } = PhotoSlice.actions;
 export default PhotoSlice.reducer;

@@ -1,19 +1,22 @@
-import { useDispatch, useSelector } from "react-redux"
 import Post from "../components/Post"
 import Sidebar from "../components/Sidebar"
+//hook
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { useDispatch, useSelector } from "react-redux"
+//spinner
 import { ThreeCircles } from "react-loader-spinner";
+//slices
+import { handlePostsPhotos, handleUsersPhotos } from "../../slices/PhotoSlice";
 import { getUserSavedPosts } from "../../slices/CombinedSlice";
-
-
+//api
+import { fetchPostPhoto, fetchPosts, fetchUsersPhoto } from "../../services/api";
 
 
 function SavedPosts() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const dispatch = useDispatch();
-    const { token } = useSelector((state) => state.userStore);
+    const { token, users } = useSelector((state) => state.userStore);
     const { postsPhotos } = useSelector((state) => state.photoStore);
     const { mySavedPosts } = useSelector((state) => state.combinedStore);
 
@@ -21,23 +24,59 @@ function SavedPosts() {
 
     //get all posts
     useEffect(() => {
-        const getAllPosts = async () => {
-            setLoading(true);
+        setLoading(true);
+        const fetchAllPosts = async () => {
             try {
-                const response = await axios.get('https://green-api-nu.vercel.app/api/posts?offset=0&limit=50', {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    },
-                });
-                dispatch(getUserSavedPosts(response.data));
+                const postsResponse = await fetchPosts(token);
+                dispatch(getUserSavedPosts(postsResponse.data));
+
             } catch (error) {
                 setError('Error: ' + error.message);
             } finally {
                 setLoading(false);
             }
+        }
+        fetchAllPosts();
+    }, [dispatch, token])
+
+
+    //all photos of users
+    useEffect(() => {
+        const getUserPhotos = async () => {
+            setLoading(true);
+            try {
+                const userPhotos = await Promise.all(
+                    users.map(user => fetchUsersPhoto(user._id, token).then(res => res.data))
+                );
+                dispatch(handleUsersPhotos(userPhotos.flat()));
+            } catch (error) {
+                setError('Error fetching user photos: ' + error.message);
+            } finally {
+                setLoading(false);
+            }
         };
-        getAllPosts();
-    }, [dispatch, token]);
+        getUserPhotos();
+    }, [dispatch, token, users]);
+
+
+    //posts photos
+    useEffect(() => {
+        const getSpecificPosts = async () => {
+            setLoading(true);
+            try {
+                const mineOrFriendsPost = await Promise.all(
+                    mySavedPosts.map(user => fetchPostPhoto(user._id, token).then(res => res.data))
+                );
+                dispatch(handlePostsPhotos(mineOrFriendsPost.flat()));
+            } catch (error) {
+                setError('Error fetching user photos: ' + error.message);
+            } finally {
+                setLoading(false);
+            }
+        }
+        getSpecificPosts()
+    }, [token, mySavedPosts, dispatch])
+
 
     return (
         <div className="flex flex-col lg:flex-row gap-6 w-full mt-10 px-4">

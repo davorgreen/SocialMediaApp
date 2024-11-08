@@ -1,10 +1,14 @@
-import { useDispatch, useSelector } from "react-redux"
 import Post from "../components/Post";
+//hook
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { getOnlyUserPosts } from "../../slices/CombinedSlice";
+import { useDispatch, useSelector } from "react-redux"
+//spinner
 import { ThreeCircles } from "react-loader-spinner";
-import { handlePostsPhotos } from "../../slices/PhotoSlice";
+//slices
+import { getOnlyUserPosts } from "../../slices/CombinedSlice";
+import { handlePostsPhotos, handleUsersPhotos } from "../../slices/PhotoSlice";
+//api
+import { fetchPostPhoto, fetchPosts, fetchUsersPhoto } from "../../services/api";
 
 
 function MyPostPage() {
@@ -12,29 +16,65 @@ function MyPostPage() {
     const [error, setError] = useState('');
     const dispatch = useDispatch();
     const { posts } = useSelector((state) => state.postsStore);
-    const { user, token } = useSelector((state) => state.userStore);
+    const { user, token, users } = useSelector((state) => state.userStore);
     const { postsPhotos } = useSelector((state) => state.photoStore);
     const { myPosts } = useSelector((state) => state.combinedStore);
 
     //get all posts
     useEffect(() => {
-        const getAllPosts = async () => {
-            setLoading(true);
+        setLoading(true);
+        const fetchAllPosts = async () => {
             try {
-                const response = await axios.get('https://green-api-nu.vercel.app/api/posts?offset=0&limit=50', {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    },
-                });
-                dispatch(getOnlyUserPosts(response.data));
+                const postsResponse = await fetchPosts(token);
+                dispatch(getOnlyUserPosts(postsResponse.data));
+
             } catch (error) {
                 setError('Error: ' + error.message);
             } finally {
                 setLoading(false);
             }
+        }
+        fetchAllPosts();
+    }, [dispatch, token])
+
+
+    //all photos of users
+    useEffect(() => {
+        const getUserPhotos = async () => {
+            setLoading(true);
+            try {
+                const userPhotos = await Promise.all(
+                    users.map(user => fetchUsersPhoto(user._id, token).then(res => res.data))
+                );
+                dispatch(handleUsersPhotos(userPhotos.flat()));
+            } catch (error) {
+                setError('Error fetching user photos: ' + error.message);
+            } finally {
+                setLoading(false);
+            }
         };
-        getAllPosts();
-    }, [dispatch, token]);
+        getUserPhotos();
+    }, [dispatch, token, users]);
+
+
+    //posts photos
+    useEffect(() => {
+        const getSpecificPosts = async () => {
+            setLoading(true);
+            try {
+                const mineOrFriendsPost = await Promise.all(
+                    myPosts.map(user => fetchPostPhoto(user._id, token).then(res => res.data))
+                );
+                dispatch(handlePostsPhotos(mineOrFriendsPost.flat()));
+            } catch (error) {
+                setError('Error fetching user photos: ' + error.message);
+            } finally {
+                setLoading(false);
+            }
+        }
+        getSpecificPosts()
+    }, [token, myPosts, dispatch])
+
 
     return (
         <div>{loading ? (<div className="flex items-center justify-center min-h-screen"><ThreeCircles

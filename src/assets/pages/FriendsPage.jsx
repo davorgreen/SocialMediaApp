@@ -1,16 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import ProfileImage from "../components/ProfileImage";
 import Friend from "../components/Friend";
 import { addFriendToList, removeSuggestedFriend } from "../../slices/UserSlice";
+import { fetchUsersPhoto } from "../../services/api";
+import { handleUsersPhotos } from "../../slices/PhotoSlice";
 
 function FriendsPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const { token } = useSelector((state) => state.userStore);
-    const { users } = useSelector((state) => state.userStore);
-    const { suggestedFriends } = useSelector((state) => state.userStore);
+    const { suggestedFriends, token, users } = useSelector((state) => state.userStore);
     const dispatch = useDispatch();
 
     //adding new friends
@@ -29,6 +29,24 @@ function FriendsPage() {
         }
         setLoading(false);
     }
+
+    //all photos of users
+    useEffect(() => {
+        const getUserPhotos = async () => {
+            setLoading(true);
+            try {
+                const userPhotos = await Promise.all(
+                    users.map(user => fetchUsersPhoto(user._id, token).then(res => res.data))
+                );
+                dispatch(handleUsersPhotos(userPhotos.flat()));
+            } catch (error) {
+                setError('Error fetching user photos: ' + error.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+        getUserPhotos();
+    }, [dispatch, token, users]);
 
     return (
         <div className="flex flex-col gap-5 items-center md:items-start bg-white shadow-lg rounded-lg p-6 mb-6">

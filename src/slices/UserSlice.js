@@ -48,6 +48,17 @@ const UserSlice = createSlice({
             state.users = action.payload;
             localStorage.setItem('users', JSON.stringify(state.users));
         },
+        myFriends: (state, action) => {
+            let filteredFriends = action.payload.map(friend => {
+                return friend.userOneId === state.user._id ? friend.userTwoId : friend.userOneId;
+            });
+            filteredFriends = [...new Set(filteredFriends)];
+
+
+            let result = state.users.filter(user => filteredFriends.includes(user._id));
+            state.friends = result;
+            localStorage.setItem('friends', JSON.stringify(state.friends));
+        },
         mySuggestedFriends: (state, action) => {
             let allSuggestedFriends = action.payload.filter(user => {
                 return (
@@ -55,21 +66,8 @@ const UserSlice = createSlice({
                     !state.friends.some(friend => friend._id === user._id)
                 );
             });
-
             state.suggestedFriends = allSuggestedFriends;
             localStorage.setItem('suggestedFriends', JSON.stringify(state.suggestedFriends));
-        },
-        myFriends: (state, action) => {
-            let filteredFriends = action.payload.map(friend => {
-                return friend.userOneId === state.user._id ? friend.userTwoId : friend.userOneId;
-            });
-            filteredFriends = filteredFriends.filter((value, index, self) => {
-                return self.indexOf(value) === index;
-            });
-
-            let result = state.users.filter(user => filteredFriends.includes(user._id));
-            state.friends = result;
-            localStorage.setItem('friends', JSON.stringify(state.friends));
         },
         entirePosts: (state, action) => {
             state.myOrFriendsPosts = action.payload.filter(post =>

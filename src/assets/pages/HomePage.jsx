@@ -11,12 +11,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchFriends, fetchPhotos, fetchPostPhoto, fetchPosts, fetchUsers, fetchUsersPhoto } from '../../services/api';
 //slice
 import { entirePosts, myFriends, mySuggestedFriends } from '../../slices/UserSlice';
-//spinner
-import { ThreeCircles } from 'react-loader-spinner';
 import { AllPosts } from '../../slices/PostsSlice';
 import { allOfPhotos, filteredPhotos, handlePostsPhotos, handleStoryPhoto, handleUsersPhotos } from '../../slices/PhotoSlice';
-
-
+//spinner
+import { ThreeCircles } from 'react-loader-spinner';
 
 
 function HomePage() {
@@ -27,25 +25,11 @@ function HomePage() {
     const { postsPhotos } = useSelector((state) => state.photoStore);
 
 
-    //friends
-    useEffect(() => {
-        const fetchFriendsData = async () => {
-            try {
-                const friendsResponse = await fetchFriends(token);
-                dispatch(myFriends(friendsResponse.data));
-            } catch (error) {
-                setError('Error: ' + error.message);
-            }
-        };
-        fetchFriendsData();
-    }, [dispatch, token]);
-
     //all users
     useEffect(() => {
         const fetchAllUsers = async () => {
             try {
                 const usersResponse = await fetchUsers(token);
-                dispatch(myFriends(usersResponse.data));
                 dispatch(mySuggestedFriends(usersResponse.data));
             } catch (error) {
                 setError('Error: ' + error.message);
@@ -53,6 +37,22 @@ function HomePage() {
         }
         fetchAllUsers();
     }, [dispatch, token])
+
+
+    //friends
+    useEffect(() => {
+        const fetchFriendsData = async () => {
+            try {
+                const friendsResponse = await fetchFriends(token);
+                dispatch(myFriends(friendsResponse.data));
+                dispatch
+            } catch (error) {
+                setError('Error: ' + error.message);
+            }
+        };
+        fetchFriendsData();
+    }, [dispatch, token]);
+
 
     //posts
     useEffect(() => {
