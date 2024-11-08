@@ -3,13 +3,14 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 //icons
 import { IoImagesOutline } from "react-icons/io5";
+import { MdDeleteForever } from "react-icons/md";
 //redux
 import { useDispatch, useSelector } from "react-redux";
 //api
 import { fetchPhotos } from "../../services/api";
 //slices
 import { addUserProfilePhoto, userProfilePhoto, deleteUserProfilePhoto } from "../../slices/PhotoSlice";
-import { MdDeleteForever } from "react-icons/md";
+
 
 function Photos() {
     const [loading, setLoading] = useState(true);

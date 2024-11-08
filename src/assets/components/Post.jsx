@@ -217,7 +217,7 @@ function Post({ filteredPosts, savedPosts, myPosts, photosOfPosts }) {
                                                 key={photo._id}
                                                 src={photo.base64}
                                                 alt="dog"
-                                                className="w-full h-full object-cover"
+                                                className="w-3/5 object-cover rounded-md"
                                             />
                                         ))) : (null)
                                     }
