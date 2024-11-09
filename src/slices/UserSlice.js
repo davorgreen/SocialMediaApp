@@ -75,6 +75,12 @@ const UserSlice = createSlice({
             ).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
         },
+        removePostsFromHomePage: (state, action) => {
+            state.myOrFriendsPosts = state.myOrFriendsPosts.filter(post => post._id !== action.payload);
+        },
+        addPosts: (state, action) => {
+            state.myOrFriendsPosts = [...state.myOrFriendsPosts, action.payload];
+        },
         addFriendToList: (state, action) => {
             const newFriend = action.payload;
             if (!state.friends.some(friend => friend._id === newFriend._id)) {
@@ -92,5 +98,5 @@ const UserSlice = createSlice({
 })
 
 
-export const { login, logout, checkAuth, allUsers, myFriends, mySuggestedFriends, addFriendToList, removeSuggestedFriend, entirePosts } = UserSlice.actions;
+export const { login, logout, checkAuth, allUsers, myFriends, mySuggestedFriends, addFriendToList, removeSuggestedFriend, entirePosts, removePostsFromHomePage, addPosts } = UserSlice.actions;
 export default UserSlice.reducer;

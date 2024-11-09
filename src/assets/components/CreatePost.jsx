@@ -9,6 +9,8 @@ import axios from "axios";
 import countries from '/src/data/countries.js';
 import { useDispatch, useSelector } from "react-redux";
 import { sharePost } from "../../slices/PostsSlice";
+import { addPosts } from "../../slices/UserSlice";
+import { addSharedPost } from "../../slices/CombinedSlice";
 
 function CreatePost() {
     const [status, setStatus] = useState('');
@@ -49,11 +51,13 @@ function CreatePost() {
     const handleLocationSelect = (country) => {
         setLocation(country);
         setStatus((prevStatus) => `${prevStatus} in ${country}`);
+        setShowLocation(false);
     };
 
     const handleEmojiSelect = (selectedEmoji) => {
         setEmoji(selectedEmoji);
         setStatus((prevStatus) => `${prevStatus} Felling ${selectedEmoji}`);
+        setShowFeelings(false);
     };
 
     const toggleInput = () => {
@@ -116,12 +120,14 @@ function CreatePost() {
                             Authorization: `Bearer ${token}`,
                         }
                     });
-                    dispatch(sharePost(response.data));
+                    //  dispatch(sharePost(response.data));
+                    dispatch(addPosts(response.data));
+                    //dispatch(addSharedPost(response.data));
                     console.log('Post shared successfully:', response.data);
                     postId = response.data._id;
+                    setStatus("");
                 } catch (error) {
                     setError("Error sharing post: " + (error.response?.data?.message || error.message));
-                    return;
                 }
             }
 
@@ -145,25 +151,28 @@ function CreatePost() {
                     console.log('Photo uploaded successfully:', response.data);
                 } catch (error) {
                     setError("Error uploading photo: " + (error.response?.data?.message || error.message));
-                    return;
                 }
             }
 
-            // reset
-            setStatus('');
-            setSelectedPhoto(null);
-            setPeople('');
-            setEmoji('');
-            setLocation('');
-            setError('');
-            fileInputRef.current.value = '';
-            setShowInput(false);
+
 
         } catch (error) {
             setError("Error sharing post: " + (error.response?.data?.message || error.message));
         } finally {
             setLoading(false);
         }
+        // reset
+        setStatus('');
+        setSelectedPhoto(null);
+        setPeople('');
+        setEmoji('');
+        setLocation('');
+        setError('');
+        setShowFeelings(false);
+        setShowLocation(false);
+        setShowPeople(false);
+        fileInputRef.current.value = '';
+        setShowInput(false);
     };
 
 

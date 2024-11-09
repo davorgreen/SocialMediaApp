@@ -1,4 +1,6 @@
+//react-router
 import { Route, BrowserRouter as Router, Routes, useLocation } from 'react-router-dom';
+//pages
 import HomePage from './assets/pages/HomePage';
 import ProfilePage from './assets/pages/ProfilePage';
 import NotFoundPage from './assets/pages/NotFoundPage';
@@ -9,11 +11,13 @@ import Notification from './assets/pages/Notification';
 import Register from './assets/pages/Register';
 import Login from './assets/pages/Login';
 import ProtectedRoute from './assets/pages/ProtectedRoute';
+import FriendsPage from './assets/pages/FriendsPage';
+import MyPostPage from './assets/pages/MyPostPage';
+//hooks
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { checkAuth } from './slices/UserSlice';
-import FriendsPage from './assets/pages/FriendsPage';
-import MyPostPage from './assets/pages/MyPostPage';
+
 
 function App() {
   function AuthChecker() {

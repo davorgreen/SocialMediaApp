@@ -1,5 +1,7 @@
+//formik
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+//hook
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -62,7 +64,6 @@ const Registration = () => {
         };
         try {
             const response = await axios.post('https://green-api-nu.vercel.app/api/users/register', dataToSend);
-            console.log(response.data);
             resetForm();
             navigate('/login');
         } catch (error) {

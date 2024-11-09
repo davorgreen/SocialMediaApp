@@ -124,8 +124,6 @@ function HomePage() {
     }, [token, myOrFriendsPosts, dispatch])
 
 
-
-
     return (
         <div className="bg-gray-100 w-full mt-5">
             <Header />

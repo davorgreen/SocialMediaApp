@@ -10,10 +10,7 @@ const PostsSlice = createSlice({
             state.posts = action.payload;
         },
         sharePost: (state, action) => {
-            const postExists = state.posts.some(post => post._id === action.payload._id);
-            if (!postExists) {
-                state.posts.push(action.payload);
-            }
+            state.posts = state.posts.push(action.payload);
         },
         savePost: (state, action) => {
             const updatedPosts = state.posts.map(post => {

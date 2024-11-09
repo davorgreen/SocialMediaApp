@@ -1,17 +1,24 @@
+//hooks for redux
 import { useDispatch, useSelector } from "react-redux";
+//component
 import ProfileImage from "./ProfileImage";
+//hooks
 import { useState } from "react";
-import { TbShare3 } from "react-icons/tb";
-import { IoImagesOutline } from "react-icons/io5";
 import { useLocation, useNavigate } from "react-router-dom";
+//axios
 import axios from "axios";
+//slices
 import { removePost, savePost } from "../../slices/PostsSlice";
 //icons
+import { TbShare3 } from "react-icons/tb";
 import { MdDeleteForever } from "react-icons/md";
+import { IoImagesOutline } from "react-icons/io5";
 import { IoIosMore, IoIosNotifications } from "react-icons/io";
 import { FaRegCommentAlt, FaRegHeart, FaRegTrashAlt, FaSave } from "react-icons/fa";
 //redux
 import { getComments, removeComment, sendComment } from "../../slices/CommentSlice";
+import { removePostFromProfile } from "../../slices/CombinedSlice";
+import { removePostsFromHomePage } from "../../slices/UserSlice";
 
 
 
@@ -122,6 +129,8 @@ function Post({ filteredPosts, savedPosts, myPosts, photosOfPosts }) {
             console.log('Post deleted successfully:', response.data);
             setDropDownMenu(null);
             dispatch(removePost(id));
+            dispatch(removePostFromProfile(id));
+            dispatch(removePostsFromHomePage(id));
         } catch (error) {
             setError('Error: ' + (error.response?.data?.message || error.message));
         } finally {
@@ -149,6 +158,7 @@ function Post({ filteredPosts, savedPosts, myPosts, photosOfPosts }) {
         }
 
     }
+
 
     const displayedPosts = location.pathname === '/savedposts'
         ? savedPosts
