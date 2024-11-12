@@ -120,9 +120,9 @@ function CreatePost() {
                             Authorization: `Bearer ${token}`,
                         }
                     });
-                    //  dispatch(sharePost(response.data));
+                    dispatch(sharePost(response.data));
                     dispatch(addPosts(response.data));
-                    //dispatch(addSharedPost(response.data));
+                    dispatch(addSharedPost(response.data));
                     console.log('Post shared successfully:', response.data);
                     postId = response.data._id;
                     setStatus("");
@@ -154,8 +154,6 @@ function CreatePost() {
                 }
             }
 
-
-
         } catch (error) {
             setError("Error sharing post: " + (error.response?.data?.message || error.message));
         } finally {
@@ -171,7 +169,7 @@ function CreatePost() {
         setShowFeelings(false);
         setShowLocation(false);
         setShowPeople(false);
-        fileInputRef.current.value = '';
+        //fileInputRef.current.value = '';
         setShowInput(false);
     };
 

@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 
 
+
 const CombinedSlice = createSlice({
     name: 'combined',
     initialState: {
@@ -21,14 +22,13 @@ const CombinedSlice = createSlice({
         getOnlyUserPosts: (state, action) => {
             state.myPosts = action.payload.filter((post) => post.createdBy === state.user._id).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         },
-        addSharedPost: (state, action) => {
-            state.mySavedPosts = [...state.mySavedPosts, action.payload];
-            state.myPosts = [...state.myPosts, action.payload];
-        },
         removePostFromProfile: (state, action) => {
-            state.mySavedPosts = state.mySavedPosts.filter(post => post._id !== action.payload);
             state.myPosts = state.myPosts.filter(post => post._id !== action.payload);
         },
+        addSharedPost: (state, action) => {
+            console.log(action.payload)
+            state.myPosts = [...state.myPosts, action.payload];
+        }
 
     }
 

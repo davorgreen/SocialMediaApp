@@ -16,7 +16,7 @@ import { IoImagesOutline } from "react-icons/io5";
 import { IoIosMore, IoIosNotifications } from "react-icons/io";
 import { FaRegCommentAlt, FaRegHeart, FaRegTrashAlt, FaSave } from "react-icons/fa";
 //redux
-import { getComments, removeComment, sendComment } from "../../slices/CommentSlice";
+import { getComments, removeComment, sendComment } from "../../slices/CommentShareLikesSlice";
 import { removePostFromProfile } from "../../slices/CombinedSlice";
 import { removePostsFromHomePage } from "../../slices/UserSlice";
 
@@ -37,7 +37,7 @@ function Post({ filteredPosts, savedPosts, myPosts, photosOfPosts }) {
     const location = useLocation();
     const navigate = useNavigate();
 
-    const commentsByPostId = useSelector((state) => state.commentStore.comment);
+    const commentsByPostId = useSelector((state) => state.commentShareLikesStore.comment);
 
     function openDropDownMenu(id) {
         setDropDownMenu(dropDownMenu === id ? null : id);
@@ -53,7 +53,7 @@ function Post({ filteredPosts, savedPosts, myPosts, photosOfPosts }) {
                 headers: { Authorization: `Bearer ${token}` }
             });
             console.log(response.data)
-            dispatch(savePost({ post: response.data, userId: user._id }));
+            dispatch(savePost(response.data));
         } catch (error) {
             setError('Error', error);
         } finally {
@@ -159,6 +159,41 @@ function Post({ filteredPosts, savedPosts, myPosts, photosOfPosts }) {
 
     }
 
+    //add like
+    const handleAddLike = async (id, token) => {
+        setLoading(true);
+        try {
+            const response = await axios.put(`https://green-api-nu.vercel.app/api/posts/${id}/like`, {}, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            console.log(response.data);
+        } catch (error) {
+            setError('Error', error)
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    //add share
+    const handleAddShare = async (id, token) => {
+        setLoading(true);
+        try {
+            const response = await axios.put(`https://green-api-nu.vercel.app/api/posts/${id}`, {
+                'shares': +1
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            console.log(response.data);
+        } catch (error) {
+            setError('Error', error)
+        } finally {
+            setLoading(false);
+        }
+    }
 
     const displayedPosts = location.pathname === '/savedposts'
         ? savedPosts
@@ -203,7 +238,7 @@ function Post({ filteredPosts, savedPosts, myPosts, photosOfPosts }) {
                                             <div className="absolute right-0 bg-white shadow-lg rounded-md p-5">
                                                 <button onClick={() => handleSendPost(post, token)} className="flex items-center gap-3 mt-2 text-xl font-semibold text-blue-500 hover:text-blue-600 transition-all transform hover:scale-110 cursor-pointer">
                                                     <FaSave size={30} color="#6495ED" />
-                                                    {post.savedBy.includes(user._id) ? 'Saved Post' : 'Save Post'}
+                                                    {post.savedBy.includes(user._id) ? 'UnSave Post' : 'Save Post'}
                                                 </button>
                                                 <button className="flex items-center gap-3 mt-2 text-xl font-semibold text-blue-500 hover:text-blue-600 transition-all transform hover:scale-110 cursor-pointer">
                                                     <IoIosNotifications size={30} color="#6495ED" />
@@ -235,7 +270,7 @@ function Post({ filteredPosts, savedPosts, myPosts, photosOfPosts }) {
                                 </div>
                             </div>
                             <div className="flex gap-8 items-center mt-6">
-                                <button className="flex items-center gap-2">
+                                <button className="flex items-center gap-2" onClick={() => handleAddLike(post._id, token)}>
                                     <FaRegHeart size={30} className="text-blue-500 hover:text-blue-600" />
                                     <span className="font-semibold">{likes}</span>
                                 </button>
@@ -246,7 +281,7 @@ function Post({ filteredPosts, savedPosts, myPosts, photosOfPosts }) {
                                     </span>
                                 </button>
 
-                                <button className="flex items-center gap-2">
+                                <button className="flex items-center gap-2" onClick={() => handleAddShare(post._id, token)}>
                                     <TbShare3 size={30} className="text-blue-500 hover:text-blue-600" />
                                     <span className="font-semibold">{shares}</span>
                                 </button>

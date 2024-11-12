@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 
 
-const CommentSlice = createSlice({
+const CommentShareLikesSlice = createSlice({
     name: 'comment',
     initialState: {
         comment: [],
@@ -21,5 +21,5 @@ const CommentSlice = createSlice({
     }
 })
 
-export const { getComments, sendComment, removeComment } = CommentSlice.actions;
-export default CommentSlice.reducer;
+export const { getComments, sendComment, removeComment } = CommentShareLikesSlice.actions;
+export default CommentShareLikesSlice.reducer;

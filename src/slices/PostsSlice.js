@@ -10,15 +10,10 @@ const PostsSlice = createSlice({
             state.posts = action.payload;
         },
         sharePost: (state, action) => {
-            state.posts = state.posts.push(action.payload);
+            state.posts = [...state.posts, action.payload];
         },
         savePost: (state, action) => {
-            const updatedPosts = state.posts.map(post => {
-                return post._id === action.payload.post._id
-                    ? { ...post, savedBy: [...post.savedBy, action.payload.userId] }
-                    : post;
-            });
-            state.posts = updatedPosts;
+            state.posts = [...state.posts, action.payload];
         },
         removePost: (state, action) => {
             state.posts = state.posts.filter(post => post._id !== action.payload);
