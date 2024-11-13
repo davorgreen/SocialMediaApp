@@ -82,6 +82,20 @@ const UserSlice = createSlice({
             console.log(action.payload)
             state.myOrFriendsPosts = [...state.myOrFriendsPosts, action.payload];
         },
+        addShares: (state, action) => {
+            const { postId, newShares } = action.payload;
+            state.myOrFriendsPosts = state.myOrFriendsPosts.map(post => {
+                return post._id === postId ? { ...post, shares: newShares } : post
+            });
+        },
+        addLikes: (state, action) => {
+            const { postId, userId } = action.payload;
+            state.myOrFriendsPosts = state.myOrFriendsPosts.map(post => {
+                return post._Id === postId ? {
+                    ...post, likes: post.likes.includes(userId) ? post.likes : [...post.likes, userId]
+                } : post
+            })
+        },
         addFriendToList: (state, action) => {
             const newFriend = action.payload;
             if (!state.friends.some(friend => friend._id === newFriend._id)) {
@@ -99,5 +113,5 @@ const UserSlice = createSlice({
 })
 
 
-export const { login, logout, checkAuth, allUsers, myFriends, mySuggestedFriends, addFriendToList, removeSuggestedFriend, entirePosts, removePostsFromHomePage, addPosts } = UserSlice.actions;
+export const { login, logout, checkAuth, allUsers, myFriends, mySuggestedFriends, addFriendToList, removeSuggestedFriend, entirePosts, removePostsFromHomePage, addPosts, addShares, addLikes } = UserSlice.actions;
 export default UserSlice.reducer;

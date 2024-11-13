@@ -28,11 +28,37 @@ const CombinedSlice = createSlice({
         addSharedPost: (state, action) => {
             console.log(action.payload)
             state.myPosts = [...state.myPosts, action.payload];
+        },
+        addedShares: (state, action) => {
+            const { postId, newShares } = action.payload;
+            state.mySavedPosts = state.mySavedPosts.map(post => {
+                return post._id === postId ? { ...post, shares: newShares } : post
+            }
+
+            );
+            state.myPosts = state.myPosts.map(post => {
+                return post._id === postId ? { ...post, shares: newShares } : post
+            }
+            );
+        },
+        addedLike: (state, action) => {
+            const { postId, userId } = action.payload;
+            state.myPosts = state.myPosts.map(post => {
+                return post._Id === postId ? {
+                    ...post, likes: post.likes.includes(userId) ? post.likes : [...post.likes, userId]
+                } : post
+            })
+
+            state.mySavedPosts = state.mySavedPosts.map(post => {
+                return post._Id === postId ? {
+                    ...post, likes: post.likes.includes(userId) ? post.likes : [...post.likes, userId]
+                } : post
+            })
         }
 
     }
 
 })
 
-export const { getUser, getUserSavedPosts, getOnlyUserPosts, removePostFromProfile, addSharedPost } = CombinedSlice.actions;
+export const { getUser, getUserSavedPosts, getOnlyUserPosts, removePostFromProfile, addSharedPost, addedShares, addedLike } = CombinedSlice.actions;
 export default CombinedSlice.reducer;

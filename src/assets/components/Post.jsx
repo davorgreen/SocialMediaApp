@@ -9,19 +9,15 @@ import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 //slices
 import { removePost, savePost } from "../../slices/PostsSlice";
+import { getComments, removeComment, sendComment } from "../../slices/CommentShareLikesSlice";
+import { addedLike, addedShares, removePostFromProfile } from "../../slices/CombinedSlice";
+import { addLikes, addShares, removePostsFromHomePage } from "../../slices/UserSlice";
 //icons
 import { TbShare3 } from "react-icons/tb";
 import { MdDeleteForever } from "react-icons/md";
 import { IoImagesOutline } from "react-icons/io5";
 import { IoIosMore, IoIosNotifications } from "react-icons/io";
 import { FaRegCommentAlt, FaRegHeart, FaRegTrashAlt, FaSave } from "react-icons/fa";
-//redux
-import { getComments, removeComment, sendComment } from "../../slices/CommentShareLikesSlice";
-import { removePostFromProfile } from "../../slices/CombinedSlice";
-import { removePostsFromHomePage } from "../../slices/UserSlice";
-
-
-
 
 
 function Post({ filteredPosts, savedPosts, myPosts, photosOfPosts }) {
@@ -163,31 +159,41 @@ function Post({ filteredPosts, savedPosts, myPosts, photosOfPosts }) {
     const handleAddLike = async (id, token) => {
         setLoading(true);
         try {
+
             const response = await axios.put(`https://green-api-nu.vercel.app/api/posts/${id}/like`, {}, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             })
-            console.log(response.data);
+            console.log(response);
+
+            //  const userId = user._id;
+            //  dispatch(addLikes({ postId: id, userId }));
+            // dispatch(addedLike({ postId: id, userId }));
         } catch (error) {
-            setError('Error', error)
+            console.error('Server Error:', error.response.data);
+            console.error('Status Code:', error.response.status);
+            console.error('Headers:', error.response.headers);
         } finally {
             setLoading(false);
         }
     }
 
     //add share
-    const handleAddShare = async (id, token) => {
+    const handleAddShare = async (id, token, shares) => {
         setLoading(true);
         try {
+            const updateShares = shares + 1;
             const response = await axios.put(`https://green-api-nu.vercel.app/api/posts/${id}`, {
-                'shares': +1
+                'shares': updateShares
             }, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             })
             console.log(response.data);
+            dispatch(addShares({ postId: id, newShares: updateShares }));
+            dispatch(addedShares({ postId: id, newShares: updateShares }));
         } catch (error) {
             setError('Error', error)
         } finally {
@@ -207,6 +213,7 @@ function Post({ filteredPosts, savedPosts, myPosts, photosOfPosts }) {
             {
                 displayedPosts.length > 0 ? displayedPosts.map((post) => {
                     const { createdAt, createdBy, description, likes, shares, _id, comments } = post;
+                    const likeCount = Array.isArray(likes) ? likes.length : 0;
                     const matchingUser = users.find(user => user._id === createdBy);
                     const formattedDate = new Date(createdAt).toLocaleString('en-GB', {
                         day: '2-digit',
@@ -272,7 +279,7 @@ function Post({ filteredPosts, savedPosts, myPosts, photosOfPosts }) {
                             <div className="flex gap-8 items-center mt-6">
                                 <button className="flex items-center gap-2" onClick={() => handleAddLike(post._id, token)}>
                                     <FaRegHeart size={30} className="text-blue-500 hover:text-blue-600" />
-                                    <span className="font-semibold">{likes}</span>
+                                    <span className="font-semibold">{likeCount}</span>
                                 </button>
                                 <button onClick={() => handleGetComments(post._id, token)} className="flex items-center gap-2">
                                     <FaRegCommentAlt size={30} className="text-blue-500 hover:text-blue-600" />
@@ -281,7 +288,7 @@ function Post({ filteredPosts, savedPosts, myPosts, photosOfPosts }) {
                                     </span>
                                 </button>
 
-                                <button className="flex items-center gap-2" onClick={() => handleAddShare(post._id, token)}>
+                                <button className="flex items-center gap-2" onClick={() => handleAddShare(post._id, token, post.shares)}>
                                     <TbShare3 size={30} className="text-blue-500 hover:text-blue-600" />
                                     <span className="font-semibold">{shares}</span>
                                 </button>
