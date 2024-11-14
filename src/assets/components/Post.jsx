@@ -165,11 +165,11 @@ function Post({ filteredPosts, savedPosts, myPosts, photosOfPosts }) {
                     Authorization: `Bearer ${token}`
                 }
             })
-            console.log(response);
+            console.log(response.data);
 
-            //  const userId = user._id;
-            //  dispatch(addLikes({ postId: id, userId }));
-            // dispatch(addedLike({ postId: id, userId }));
+            const userId = user._id;
+            dispatch(addLikes({ postId: id, userId }));
+            dispatch(addedLike({ postId: id, userId }));
         } catch (error) {
             console.error('Server Error:', error.response.data);
             console.error('Status Code:', error.response.status);
