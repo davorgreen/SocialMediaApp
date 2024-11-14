@@ -91,10 +91,17 @@ const UserSlice = createSlice({
         addLikes: (state, action) => {
             const { postId, userId } = action.payload;
             state.myOrFriendsPosts = state.myOrFriendsPosts.map(post => {
-                return post._Id === postId ? {
-                    ...post, likes: post.likes.includes(userId) ? post.likes : [...post.likes, userId]
-                } : post
-            })
+                if (post._id === postId) {
+                    const isLiked = post.likes.includes(userId);
+                    return {
+                        ...post,
+                        likes: isLiked
+                            ? post.likes.filter(id => id !== userId)
+                            : [...post.likes, userId]
+                    };
+                }
+                return post;
+            });
         },
         addFriendToList: (state, action) => {
             const newFriend = action.payload;
