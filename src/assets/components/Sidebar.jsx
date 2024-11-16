@@ -32,10 +32,10 @@ function Sidebar() {
                 <FaSave size={30} />
                 Saved Posts
             </p></Link>
-            <Link to={'/notifications'}><p className={`${currentPath === '/notifications' ? active : nonActive}`}>
+            {/* <Link to={'/notifications'}><p className={`${currentPath === '/notifications' ? active : nonActive}`}>
                 <IoIosNotifications size={30} />
                 Notifications
-            </p></Link>
+            </p></Link>*/}
             <Link onClick={() => dispatch(logout())}><p className={`${nonActive} hover:flex hover:text-xl hover:gap-3 hover:font-semibold hover:cursor-pointer hover:bg-blue-500 hover:text-white hover:px-4 hover:py-2 hover:rounded-lg hover:shadow-md hover:ring-2 hover:ring-blue-500 hover:ring-offset-2 hover:transform hover:scale-105 hover:transition-transform hover:duration-300`}>
                 <IoLogOutSharp size={30} />
                 Logout

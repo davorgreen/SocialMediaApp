@@ -4,7 +4,7 @@ import { MdEmojiEmotions } from "react-icons/md";
 import { MdOutlineAddAPhoto } from "react-icons/md";
 import { FaRegTimesCircle } from "react-icons/fa";
 import ProfileImage from "./ProfileImage";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import countries from '/src/data/countries.js';
 import { useDispatch, useSelector } from "react-redux";
@@ -172,8 +172,6 @@ function CreatePost() {
         //fileInputRef.current.value = '';
         setShowInput(false);
     };
-
-
 
 
     return (

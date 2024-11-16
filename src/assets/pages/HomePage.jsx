@@ -81,7 +81,7 @@ function HomePage() {
     }, [myOrFriendsPosts, postsPhotos]);
 
     return (
-        <div className="bg-gray-100 w-full mt-5">
+        <div className="bg-gray-100  mt-5">
             {loading ? (<div className="flex items-center justify-center min-h-screen"><ThreeCircles
                 visible={loading}
                 height="100"
@@ -94,14 +94,14 @@ function HomePage() {
                 <Header />
                 <Story />
                 <div className="flex flex-col mx-auto gap-8 lg:flex-row px-4">
-                    <div className="md:w-1/3 w-full lg:max-w-md">
+                    <div className="md:w-1/3 lg:max-w-md w-full">
                         <Sidebar />
                     </div>
-                    <div className="sm:ml-10 mr-6 mt-10">
-                        <div className="w-full bg-white p-6 rounded-lg shadow-lg mb-6">
+                    <div className="sm:ml-10 lg:ml-6 lg:mr-10 mt-6">
+                        <div className="lg:w-full p-6 rounded-lg shadow-lg mb-6">
                             <CreatePost />
                         </div>
-                        <div>{renderedPosts} </div>
+                        <div className="lg:w-full p-6 rounded-lg shadow-lg mb-6">{renderedPosts} </div>
                     </div>
                 </div>
             </React.Suspense>

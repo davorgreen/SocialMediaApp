@@ -79,7 +79,6 @@ const UserSlice = createSlice({
             state.myOrFriendsPosts = state.myOrFriendsPosts.filter(post => post._id !== action.payload);
         },
         addPosts: (state, action) => {
-            console.log(action.payload)
             state.myOrFriendsPosts = [...state.myOrFriendsPosts, action.payload];
         },
         addShares: (state, action) => {

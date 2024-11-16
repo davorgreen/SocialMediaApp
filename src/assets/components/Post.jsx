@@ -247,10 +247,10 @@ function Post({ filteredPosts, savedPosts, myPosts, photosOfPosts }) {
                                                     <FaSave size={30} color="#6495ED" />
                                                     {post.savedBy.includes(user._id) ? 'UnSave Post' : 'Save Post'}
                                                 </button>
-                                                <button className="flex items-center gap-3 mt-2 text-xl font-semibold text-blue-500 hover:text-blue-600 transition-all transform hover:scale-110 cursor-pointer">
+                                                {/*  <button className="flex items-center gap-3 mt-2 text-xl font-semibold text-blue-500 hover:text-blue-600 transition-all transform hover:scale-110 cursor-pointer">
                                                     <IoIosNotifications size={30} color="#6495ED" />
                                                     Notifications
-                                                </button>
+                                                </button>*/}
                                                 <button onClick={() => handleDeletePost(post._id)} className="flex items-center gap-3 mt-2 text-xl font-semibold text-blue-500 hover:text-blue-600 transition-all transform hover:scale-110 cursor-pointer">
                                                     <FaRegTrashAlt size={30} color="#6495ED" />
                                                     Delete Post
@@ -269,7 +269,7 @@ function Post({ filteredPosts, savedPosts, myPosts, photosOfPosts }) {
                                                 key={photo._id}
                                                 src={photo.base64}
                                                 alt="dog"
-                                                className="w-3/5 object-cover rounded-md"
+                                                className="w-2/3 object-cover rounded-md"
                                             />
                                         ))) : (null)
                                     }
