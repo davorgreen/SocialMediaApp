@@ -29,6 +29,7 @@ function Post({ filteredPosts, savedPosts, myPosts, photosOfPosts }) {
     const { token } = useSelector((state) => state.userStore);
     const { user } = useSelector((state) => state.userStore);
     const [comment, setComment] = useState({});
+    const [showLikes, setShowLikes] = useState(null);
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -37,6 +38,10 @@ function Post({ filteredPosts, savedPosts, myPosts, photosOfPosts }) {
 
     function openDropDownMenu(id) {
         setDropDownMenu(dropDownMenu === id ? null : id);
+    }
+
+    function handleOpenModalLikes(id) {
+        setShowLikes(showLikes === id ? null : id);
     }
 
 
@@ -214,6 +219,7 @@ function Post({ filteredPosts, savedPosts, myPosts, photosOfPosts }) {
                 displayedPosts.length > 0 ? displayedPosts.map((post) => {
                     const { createdAt, createdBy, description, likes, shares, _id, comments } = post;
                     const likeCount = Array.isArray(likes) ? likes.length : 0;
+                    const whoLikes = Array.isArray(likes) ? users.filter(user => likes.includes(user._id)).map(user => user) : 'Nobody likes';
                     const matchingUser = users.find(user => user._id === createdBy);
                     const formattedDate = new Date(createdAt).toLocaleString('en-GB', {
                         day: '2-digit',
@@ -277,10 +283,27 @@ function Post({ filteredPosts, savedPosts, myPosts, photosOfPosts }) {
                                 </div>
                             </div>
                             <div className="flex gap-8 items-center mt-6">
-                                <button className="flex items-center gap-2" onClick={() => handleAddLike(post._id, token)}>
-                                    <FaRegHeart size={30} className="text-blue-500 hover:text-blue-600" />
-                                    <span className="font-semibold">{likeCount}</span>
-                                </button>
+                                <div className="flex items-center gap-2 relative">
+                                    <button onClick={() => handleAddLike(post._id, token)}>
+                                        <FaRegHeart size={30} className="text-blue-500 hover:text-blue-600" />
+                                    </button>
+                                    <button onClick={() => handleOpenModalLikes(post._id)}>
+                                        <span className="font-semibold">{likeCount}</span>
+                                    </button>
+                                    {showLikes === post._id && (
+                                        <div className="absolute top-12 left-12 bg-white px-4 py-2 border shadow-lg h-auto overflow-auto">
+                                            {whoLikes.length > 0 ? (
+                                                whoLikes.map((user, index) => (
+                                                    <div key={index} className="flex flex-row w-44 items-center gap-10">
+                                                        <span className="font-semibold text-blue-500 w-full">{user.firstName} {user.lastName}</span>
+                                                    </div>
+                                                ))
+                                            ) : (
+                                                <p className="font-bold text-blue-500">Nobody likes this post.</p>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
                                 <button onClick={() => handleGetComments(post._id, token)} className="flex items-center gap-2">
                                     <FaRegCommentAlt size={30} className="text-blue-500 hover:text-blue-600" />
                                     <span className="font-semibold">
