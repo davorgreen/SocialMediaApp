@@ -15,65 +15,38 @@ function MyPostPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const dispatch = useDispatch();
-    const { posts } = useSelector((state) => state.postsStore);
-    const { user, token, users } = useSelector((state) => state.userStore);
-    const { postsPhotos } = useSelector((state) => state.photoStore);
-    const { myPosts } = useSelector((state) => state.combinedStore);
+    const { token, users } = useSelector((state) => state.userStore);
 
-    //get all posts
+
     useEffect(() => {
-        setLoading(true);
-        const fetchAllPosts = async () => {
-            try {
-                const postsResponse = await fetchPosts(token);
-                dispatch(getOnlyUserPosts(postsResponse.data));
-
-            } catch (error) {
-                setError('Error: ' + error.message);
-            } finally {
-                setLoading(false);
-            }
-        }
-        fetchAllPosts();
-    }, [dispatch, token])
-
-
-    //all photos of users
-    useEffect(() => {
-        const getUserPhotos = async () => {
+        const fetchData = async () => {
             setLoading(true);
             try {
+
+                const postsResponse = await fetchPosts(token);
+                const posts = postsResponse.data;
+
+                const postsPhotos = await Promise.all(
+                    posts.map(post => fetchPostPhoto(post._id, token).then(res => res.data))
+                );
+
                 const userPhotos = await Promise.all(
                     users.map(user => fetchUsersPhoto(user._id, token).then(res => res.data))
                 );
+
+
+                dispatch(getOnlyUserPosts(posts));
+                dispatch(handlePostsPhotos(postsPhotos.flat()));
                 dispatch(handleUsersPhotos(userPhotos.flat()));
             } catch (error) {
-                setError('Error fetching user photos: ' + error.message);
+                setError('Error fetching data: ' + error.message);
             } finally {
                 setLoading(false);
             }
         };
-        getUserPhotos();
+
+        fetchData();
     }, [dispatch, token, users]);
-
-
-    //posts photos
-    useEffect(() => {
-        const getSpecificPosts = async () => {
-            setLoading(true);
-            try {
-                const mineOrFriendsPost = await Promise.all(
-                    myPosts.map(user => fetchPostPhoto(user._id, token).then(res => res.data))
-                );
-                dispatch(handlePostsPhotos(mineOrFriendsPost.flat()));
-            } catch (error) {
-                setError('Error fetching user photos: ' + error.message);
-            } finally {
-                setLoading(false);
-            }
-        }
-        getSpecificPosts()
-    }, [token, myPosts, dispatch])
 
 
     return (
@@ -85,7 +58,7 @@ function MyPostPage() {
             ariaLabel="three-circles-loading"
             wrapperStyle={{}}
             wrapperClass=""
-        /></div>) : <Post myPosts={myPosts} photosOfPosts={postsPhotos} />}</div>
+        /></div>) : <Post />}</div>
     )
 }
 

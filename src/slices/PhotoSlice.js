@@ -40,6 +40,7 @@ const PhotoSlice = createSlice({
             state.usersPhotos = action.payload;
         },
         handlePostsPhotos: (state, action) => {
+            console.log(action.payload)
             state.postsPhotos = action.payload;
         },
         handleStoryPhoto: (state, action) => {

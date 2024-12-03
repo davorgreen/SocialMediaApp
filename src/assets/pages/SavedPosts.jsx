@@ -17,65 +17,35 @@ function SavedPosts() {
     const [error, setError] = useState('');
     const dispatch = useDispatch();
     const { token, users } = useSelector((state) => state.userStore);
-    const { postsPhotos } = useSelector((state) => state.photoStore);
-    const { mySavedPosts } = useSelector((state) => state.combinedStore);
 
-
-
-    //get all posts
     useEffect(() => {
-        setLoading(true);
-        const fetchAllPosts = async () => {
-            try {
-                const postsResponse = await fetchPosts(token);
-                dispatch(getUserSavedPosts(postsResponse.data));
-
-            } catch (error) {
-                setError('Error: ' + error.message);
-            } finally {
-                setLoading(false);
-            }
-        }
-        fetchAllPosts();
-    }, [dispatch, token])
-
-
-    //all photos of users
-    useEffect(() => {
-        const getUserPhotos = async () => {
+        const fetchData = async () => {
             setLoading(true);
             try {
-                const userPhotos = await Promise.all(
+                const postsResponse = await fetchPosts(token);
+                const posts = postsResponse.data;
+                console.log(posts)
+                const postsPhotos = await Promise.all(
+                    posts.map(post => fetchPostPhoto(post._id, token).then(res => res.data))
+                );
+
+                const usersPhotos = await Promise.all(
                     users.map(user => fetchUsersPhoto(user._id, token).then(res => res.data))
                 );
-                dispatch(handleUsersPhotos(userPhotos.flat()));
+
+                dispatch(getUserSavedPosts(posts));
+                dispatch(handlePostsPhotos(postsPhotos.flat()));
+                dispatch(handleUsersPhotos(usersPhotos.flat()));
             } catch (error) {
-                setError('Error fetching user photos: ' + error.message);
+                setError('Error fetching data: ' + error.message);
             } finally {
                 setLoading(false);
             }
         };
-        getUserPhotos();
+
+        fetchData();
     }, [dispatch, token, users]);
 
-
-    //posts photos
-    useEffect(() => {
-        const getSpecificPosts = async () => {
-            setLoading(true);
-            try {
-                const mineOrFriendsPost = await Promise.all(
-                    mySavedPosts.map(user => fetchPostPhoto(user._id, token).then(res => res.data))
-                );
-                dispatch(handlePostsPhotos(mineOrFriendsPost.flat()));
-            } catch (error) {
-                setError('Error fetching user photos: ' + error.message);
-            } finally {
-                setLoading(false);
-            }
-        }
-        getSpecificPosts()
-    }, [token, mySavedPosts, dispatch])
 
 
     return (
@@ -92,7 +62,7 @@ function SavedPosts() {
                     ariaLabel="three-circles-loading"
                     wrapperStyle={{}}
                     wrapperClass=""
-                /></div>) : (<Post savedPosts={mySavedPosts} photosOfPosts={postsPhotos} />)
+                /></div>) : (<Post />)
             }
 
             </div>

@@ -175,13 +175,12 @@ function CreatePost() {
 
 
     return (
-        <div className="flex flex-col bg-white shadow-lg rounded-lg p-6 mb-6">
+        <div className="flex flex-col bg-white shadow-lg  rounded-lg p-6 mb-6 w-screen">
             <div className="flex items-start gap-2">
                 <ProfileImage isUserProfile={true} />
                 <textarea
                     placeholder="Share your status..."
                     className="w-full bg-gray-100 rounded-lg p-4 resize-none outline-none focus:ring-2 focus:ring-blue-500"
-                    rows="3"
                     value={status}
                     onChange={(e) => setStatus(e.target.value)}
                 />
