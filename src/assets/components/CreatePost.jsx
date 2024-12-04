@@ -175,7 +175,7 @@ function CreatePost() {
 
 
     return (
-        <div className="flex flex-col bg-white shadow-lg  rounded-lg p-6 mb-6 w-screen">
+        <div className="flex flex-col bg-white shadow-lg  rounded-lg p-6 mb-6">
             <div className="flex items-start gap-2">
                 <ProfileImage isUserProfile={true} />
                 <textarea

@@ -21,7 +21,7 @@ function HomePage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const dispatch = useDispatch();
-    const { token, myOrFriendsPosts } = useSelector((state) => state.userStore);
+    const { token, myOrFriendsPosts, users } = useSelector((state) => state.userStore);
     const { postsPhotos } = useSelector((state) => state.photoStore);
 
 
@@ -41,23 +41,27 @@ function HomePage() {
             dispatch(AllPosts(postsResponse.data));
             dispatch(entirePosts(postsResponse.data));
 
-            //user photos
-            const photosResponse = await fetchPhotos(token);
-            dispatch(allOfPhotos(photosResponse.data));
-            dispatch(filteredPhotos(photosResponse.data));
-
-            //all users photos
-            const userPhotos = await Promise.all(
-                usersResponse.data.map(user => fetchUsersPhoto(user._id, token).then(res => res.data))
-            );
-            dispatch(handleUsersPhotos(userPhotos.flat()));
-            dispatch(handleStoryPhoto(userPhotos.flat()));
-
             //specific posts photos
             const mineOrFriendsPost = await Promise.all(
                 postsResponse.data.map(post => fetchPostPhoto(post._id, token).then(res => res.data))
             );
             dispatch(handlePostsPhotos(mineOrFriendsPost.flat()));
+
+            //user photos
+            const photosResponse = await fetchPhotos(token);
+            dispatch(allOfPhotos(photosResponse.data));
+            dispatch(filteredPhotos(photosResponse.data));
+
+
+            //all users photos
+            const userPhotos = await Promise.all(
+                usersResponse.data.map(user => fetchUsersPhoto(user._id, token).then(res => res.data))
+            );
+            console.log(userPhotos.data)
+
+            dispatch(handleUsersPhotos(userPhotos.data.flat()));
+            dispatch(handleStoryPhoto(userPhotos.data.flat()));
+
 
         } catch (error) {
             setError('Error: ' + error.message);
@@ -72,13 +76,13 @@ function HomePage() {
     }, [fetchData]);
 
 
-    const renderedPosts = useMemo(() => {
-        return myOrFriendsPosts && myOrFriendsPosts.length > 0 ? (
-            <Post filteredPosts={myOrFriendsPosts} photosOfPosts={postsPhotos} />
-        ) : (
-            <p className="text-center text-gray-500">No posts available</p>
-        );
-    }, [myOrFriendsPosts, postsPhotos]);
+    /* const renderedPosts = useMemo(() => {
+         return myOrFriendsPosts && myOrFriendsPosts.length > 0 ? (
+             <Post />
+         ) : (
+             <p className="text-center text-gray-500">No posts available</p>
+         );
+     }, [myOrFriendsPosts, postsPhotos]);*/
 
     return (
         <div className="bg-gray-100  mt-5">
@@ -101,7 +105,7 @@ function HomePage() {
                         <div className="lg:w-full p-6 rounded-lg shadow-lg mb-6">
                             <CreatePost />
                         </div>
-                        <div className="lg:w-full p-6 rounded-lg shadow-lg mb-6">{renderedPosts} </div>
+                        <div className="lg:w-full p-6 rounded-lg shadow-lg mb-6"><Post /></div>
                     </div>
                 </div>
             </React.Suspense>

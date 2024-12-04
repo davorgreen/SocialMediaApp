@@ -20,17 +20,14 @@ import { IoIosMore, IoIosNotifications } from "react-icons/io";
 import { FaRegCommentAlt, FaRegHeart, FaRegTrashAlt, FaSave } from "react-icons/fa";
 
 
-function Post({ filteredPosts }) {
+function Post() {
     const [dropDownMenu, setDropDownMenu] = useState(null);
-    const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-    const { users } = useSelector((state) => state.userStore);
-    const { token } = useSelector((state) => state.userStore);
-    const { user } = useSelector((state) => state.userStore);
-    const { posts } = useSelector((state) => state.postsStore);
     const [comment, setComment] = useState({});
     const [showLikes, setShowLikes] = useState(null);
+    const dispatch = useDispatch();
+    const { user, myOrFriendsPosts, token, users } = useSelector((state) => state.userStore);
     const { mySavedPosts, myPosts } = useSelector((state) => state.combinedStore);
     const photosOfPosts = useSelector((state) => state.photoStore.postsPhotos);
 
@@ -213,7 +210,7 @@ function Post({ filteredPosts }) {
     const displayedPosts = location.pathname === '/savedposts'
         ? mySavedPosts
         : location.pathname === '/'
-            ? filteredPosts
+            ? myOrFriendsPosts
             : myPosts;
 
 

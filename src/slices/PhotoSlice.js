@@ -37,13 +37,14 @@ const PhotoSlice = createSlice({
             localStorage.setItem('basic', JSON.stringify(basic));
         },
         handleUsersPhotos: (state, action) => {
+            console.log(action.payload)
             state.usersPhotos = action.payload;
         },
         handlePostsPhotos: (state, action) => {
-            console.log(action.payload)
             state.postsPhotos = action.payload;
         },
         handleStoryPhoto: (state, action) => {
+            console.log(action.payload)
             state.storyPhoto = action.payload.flat().filter((photo) =>
                 photo.type === 'story');
         },

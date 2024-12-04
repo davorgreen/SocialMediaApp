@@ -14,7 +14,7 @@ function Story() {
     const { user, token, users } = useSelector((state) => state.userStore);
     const { storyPhoto } = useSelector((state) => state.photoStore);
     const dispatch = useDispatch();
-
+    console.log(storyPhoto)
     //save story
     const handleSaveStory = (e) => {
         setStory(e.target.files[0]);
