@@ -12,7 +12,7 @@ function FriendsPage() {
     const [error, setError] = useState('');
     const { suggestedFriends, token, users } = useSelector((state) => state.userStore);
     const dispatch = useDispatch();
-
+    console.log(users)
     //adding new friends
     const handleAddFriend = async (friend) => {
         setLoading(true);
@@ -29,6 +29,25 @@ function FriendsPage() {
         }
         setLoading(false);
     }
+
+
+    useEffect(() => {
+        const getFriends = async () => {
+
+            //users
+            const usersResponse = await fetchUsers(token);
+            dispatch(allUsers(usersResponse.data));
+
+            //friends
+            const friendsResponse = await fetchFriends(token);
+            dispatch(myFriends(friendsResponse.data));
+
+            dispatch(mySuggestedFriends(usersResponse.data));
+
+        }
+        getFriends()
+    }, [])
+
 
     //all photos of users
     useEffect(() => {
@@ -47,23 +66,6 @@ function FriendsPage() {
         };
         getUserPhotos();
     }, [dispatch, token, users]);
-
-    useEffect(() => {
-        const getFriends = async () => {
-
-            //users
-            const usersResponse = await fetchUsers(token);
-            dispatch(allUsers(usersResponse.data));
-
-            //friends
-            const friendsResponse = await fetchFriends(token);
-            dispatch(myFriends(friendsResponse.data));
-
-            dispatch(mySuggestedFriends(usersResponse.data));
-
-        }
-        getFriends()
-    }, [])
 
     return (
         <div className="flex flex-col gap-5 items-center md:items-start bg-white shadow-lg rounded-lg p-6 mb-6">

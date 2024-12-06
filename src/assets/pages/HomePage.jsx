@@ -21,60 +21,62 @@ function HomePage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const dispatch = useDispatch();
-    const { token, myOrFriendsPosts, users, user, } = useSelector((state) => state.userStore);
-    const { postsPhotos } = useSelector((state) => state.photoStore);
+    const { token, user } = useSelector((state) => state.userStore);
+
 
 
     //fetch all data
-    useEffect(() => {
-        const fetch = async () => {
-            try {
-                //users
-                const usersResponse = await fetchUsers(token);
-                dispatch(allUsers(usersResponse.data));
+    const fetchData = useCallback(async () => {
+        try {
+            //users
+            const usersResponse = await fetchUsers(token);
+            dispatch(allUsers(usersResponse.data));
 
 
-                //friends
-                const friendsResponse = await fetchFriends(token);
-                dispatch(myFriends(friendsResponse.data));
+            //friends
+            const friendsResponse = await fetchFriends(token);
+            dispatch(myFriends(friendsResponse.data));
 
-                dispatch(mySuggestedFriends(usersResponse.data));
+            dispatch(mySuggestedFriends(usersResponse.data));
 
-                //posts
-                const postsResponse = await fetchPosts(token);
-                dispatch(AllPosts(postsResponse.data));
-                dispatch(entirePosts(postsResponse.data));
+            //posts
+            const postsResponse = await fetchPosts(token);
+            dispatch(AllPosts(postsResponse.data));
+            dispatch(entirePosts(postsResponse.data));
 
-                //specific posts photos
-                const mineOrFriendsPost = await Promise.all(
-                    postsResponse.data.map(post => fetchPostPhoto(post._id, token).then(res => res.data))
-                );
-                const specificPostsPhotos = mineOrFriendsPost.flat();
-                dispatch(handlePostsPhotos(specificPostsPhotos));
+            //specific posts photos
+            const mineOrFriendsPost = await Promise.all(
+                postsResponse.data.map(post => fetchPostPhoto(post._id, token).then(res => res.data))
+            );
+            const specificPostsPhotos = mineOrFriendsPost.flat();
+            dispatch(handlePostsPhotos(specificPostsPhotos));
 
-                //user photos
-                const photosResponse = await fetchPhotos(user._id, token);
-                dispatch(filteredPhotos(photosResponse.data))
-                dispatch(allOfPhotos(photosResponse.data))
+            //user photos
+            const photosResponse = await fetchPhotos(user._id, token);
+            dispatch(filteredPhotos(photosResponse.data))
+            dispatch(allOfPhotos(photosResponse.data))
 
-                //all users photos
-                const allUsersPhotos = await Promise.all(
-                    usersResponse.data.map(user =>
-                        fetchUsersPhoto(user._id, token).then(res => res.data)))
-                const specificUserPhotos = allUsersPhotos.flat();
-                dispatch(handleUsersPhotos(specificUserPhotos));
-                dispatch(handleStoryPhoto(specificUserPhotos));
+            //all users photos
+            const allUsersPhotos = await Promise.all(
+                usersResponse.data.map(user =>
+                    fetchUsersPhoto(user._id, token).then(res => res.data)))
+            const specificUserPhotos = allUsersPhotos.flat();
+            dispatch(handleUsersPhotos(specificUserPhotos));
+            dispatch(handleStoryPhoto(specificUserPhotos));
 
-
-
-            } catch (error) {
-                setError('Error: ' + error.message);
-            } finally {
-                setLoading(false);
-            }
+        } catch (error) {
+            setError('Error: ' + error.message);
+        } finally {
+            setLoading(false);
         }
-        fetch()
-    }, []);
+    }, [user, dispatch, token])
+
+
+
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
+
 
 
     /* const renderedPosts = useMemo(() => {

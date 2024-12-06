@@ -105,13 +105,11 @@ const UserSlice = createSlice({
             const newFriend = action.payload;
             if (!state.friends.some(friend => friend._id === newFriend._id)) {
                 state.friends.push(newFriend);
-                localStorage.setItem('friends', JSON.stringify(state.friends));
             }
         },
         removeSuggestedFriend: (state, action) => {
             const friendId = action.payload;
             state.suggestedFriends = state.suggestedFriends.filter(friend => friend._id !== friendId);
-            localStorage.setItem('suggestedFriends', JSON.stringify(state.suggestedFriends));
         },
     },
 

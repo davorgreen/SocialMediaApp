@@ -5,7 +5,6 @@ function ProfileImage({ size, isUserProfile, friendId, suggestedFriendId, usersI
     const { profilePhoto } = useSelector((state) => state.photoStore);
     const { user } = useSelector((state) => state.userStore);
     const { usersPhotos } = useSelector((state) => state.photoStore);
-    console.log(usersPhotos)
     const myUserPhoto = profilePhoto.find(photo => photo.entityId === user._id && photo.type === 'profile');
     const friendPhoto = usersPhotos.find(photo =>
         (photo.entityId === friendId || photo.entityId === suggestedFriendId || photo.entityId === usersId)

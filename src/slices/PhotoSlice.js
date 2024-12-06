@@ -8,7 +8,7 @@ const PhotoSlice = createSlice({
         allPhotos: [],
         profilePhoto: JSON.parse(localStorage.getItem('profile')) || [],
         coverPhoto: JSON.parse(localStorage.getItem('cover')) || [],
-        basicPhoto: JSON.parse(localStorage.getItem('basic')) || [],
+        basicPhoto: [],
         usersPhotos: [],
         postsPhotos: [],
         storyPhoto: [],
@@ -34,7 +34,7 @@ const PhotoSlice = createSlice({
             //basic
             const basic = photos.filter((photo) => photo.type === 'basic');
             state.basicPhoto = basic;
-            localStorage.setItem('basic', JSON.stringify(basic));
+
         },
         handleUsersPhotos: (state, action) => {
             console.log(action.payload)
