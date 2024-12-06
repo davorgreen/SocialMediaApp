@@ -243,7 +243,7 @@ function Post() {
                                     </p>
                                     <p className="text-md font-semibold text-gray-500">{formattedDate}</p>
                                 </div>
-                                <div className="absolute right-10">
+                                <div className="absolute right-5 top-8 md:right-10 md:top-0">
                                     <button onClick={() => openDropDownMenu(_id)}>
                                         <IoIosMore size={40} />
                                     </button>
@@ -268,13 +268,13 @@ function Post() {
                                 </div>
                             </div>
                             <div>
-                                <p className="text-lg">{description}</p>
+                                <p className="text-lg break-words">{description}</p>
                                 <div className="rounded-lg overflow-hidden mt-4">
                                     {photosOfPosts ?
                                         (photosOfPosts.filter(photo => post._id === photo.entityId).map(photo => (
                                             <img
                                                 key={photo._id}
-                                                src={photo.base64}
+                                                src={photo.url}
                                                 alt="dog"
                                                 className="w-2/3 object-cover rounded-md"
                                             />

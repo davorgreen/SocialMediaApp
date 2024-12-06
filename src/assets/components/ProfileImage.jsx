@@ -5,15 +5,14 @@ function ProfileImage({ size, isUserProfile, friendId, suggestedFriendId, usersI
     const { profilePhoto } = useSelector((state) => state.photoStore);
     const { user } = useSelector((state) => state.userStore);
     const { usersPhotos } = useSelector((state) => state.photoStore);
-
     console.log(usersPhotos)
     const myUserPhoto = profilePhoto.find(photo => photo.entityId === user._id && photo.type === 'profile');
-    /*const friendPhoto = usersPhotos.flat().find(photo =>
+    const friendPhoto = usersPhotos.find(photo =>
         (photo.entityId === friendId || photo.entityId === suggestedFriendId || photo.entityId === usersId)
         && photo.type === 'profile'
         && photo.base64
-    );*/
-    const friendPhoto = profilePhoto.find(photo => (photo.entityId === friendId || photo.entityId === suggestedFriendId || photo.entityId === usersId))
+    );
+
 
     let width = 'w-12';
     let height = 'h-14';
@@ -28,7 +27,7 @@ function ProfileImage({ size, isUserProfile, friendId, suggestedFriendId, usersI
                 {isUserProfile ? (
                     myUserPhoto ? (
                         <img
-                            src={myUserPhoto.base64}
+                            src={myUserPhoto.url}
                             alt={myUserPhoto.type}
                             className={`${width} ${height} rounded-full object-cover`}
                         />
@@ -38,7 +37,7 @@ function ProfileImage({ size, isUserProfile, friendId, suggestedFriendId, usersI
                 ) : (
                     friendPhoto ? (
                         <img
-                            src={friendPhoto.base64}
+                            src={friendPhoto.url}
                             alt={friendPhoto.type}
                             className={`${width} ${height} rounded-full object-cover`}
                         />

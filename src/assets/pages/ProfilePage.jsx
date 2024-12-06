@@ -116,7 +116,7 @@ function ProfilePage() {
                 <div className="h-48 shadow-xl shadow-gray-400 rounded-md overflow-hidden flex justify-center items-center">
                     {coverPhoto.length > 0 ? (
                         coverPhoto.map((photo, index) => (
-                            <img key={index} src={photo.base64} alt="Cover" />
+                            <img key={index} src={photo.url} alt="Cover" />
                         ))
                     ) : (
                         'No cover photo'

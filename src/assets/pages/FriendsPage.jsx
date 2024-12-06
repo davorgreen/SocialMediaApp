@@ -3,8 +3,8 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import ProfileImage from "../components/ProfileImage";
 import Friend from "../components/Friend";
-import { addFriendToList, removeSuggestedFriend } from "../../slices/UserSlice";
-import { fetchUsersPhoto } from "../../services/api";
+import { addFriendToList, allUsers, myFriends, mySuggestedFriends, removeSuggestedFriend } from "../../slices/UserSlice";
+import { fetchFriends, fetchUsers, fetchUsersPhoto } from "../../services/api";
 import { handleUsersPhotos } from "../../slices/PhotoSlice";
 
 function FriendsPage() {
@@ -47,6 +47,23 @@ function FriendsPage() {
         };
         getUserPhotos();
     }, [dispatch, token, users]);
+
+    useEffect(() => {
+        const getFriends = async () => {
+
+            //users
+            const usersResponse = await fetchUsers(token);
+            dispatch(allUsers(usersResponse.data));
+
+            //friends
+            const friendsResponse = await fetchFriends(token);
+            dispatch(myFriends(friendsResponse.data));
+
+            dispatch(mySuggestedFriends(usersResponse.data));
+
+        }
+        getFriends()
+    }, [])
 
     return (
         <div className="flex flex-col gap-5 items-center md:items-start bg-white shadow-lg rounded-lg p-6 mb-6">

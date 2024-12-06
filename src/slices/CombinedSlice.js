@@ -12,6 +12,7 @@ const CombinedSlice = createSlice({
     },
     reducers: {
         getUser: (state, action) => {
+            console.log(action.payload)
             state.user = action.payload;
         },
         getUserSavedPosts: (state, action) => {

@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 //api
 import { fetchFriends, fetchPhotos, fetchPostPhoto, fetchPosts, fetchUsers, fetchUsersPhoto } from '../../services/api';
 //slice
-import { entirePosts, myFriends, mySuggestedFriends } from '../../slices/UserSlice';
+import { allUsers, entirePosts, myFriends, mySuggestedFriends } from '../../slices/UserSlice';
 import { AllPosts } from '../../slices/PostsSlice';
 import { allOfPhotos, filteredPhotos, handlePostsPhotos, handleStoryPhoto, handleUsersPhotos } from '../../slices/PhotoSlice';
 //spinner
@@ -21,59 +21,60 @@ function HomePage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const dispatch = useDispatch();
-    const { token, myOrFriendsPosts, users } = useSelector((state) => state.userStore);
+    const { token, myOrFriendsPosts, users, user, } = useSelector((state) => state.userStore);
     const { postsPhotos } = useSelector((state) => state.photoStore);
 
 
     //fetch all data
-    const fetchData = useCallback(async () => {
-        try {
-            //users
-            const usersResponse = await fetchUsers(token);
-            dispatch(mySuggestedFriends(usersResponse.data));
-
-            //friends
-            const friendsResponse = await fetchFriends(token);
-            dispatch(myFriends(friendsResponse.data));
-
-            //posts
-            const postsResponse = await fetchPosts(token);
-            dispatch(AllPosts(postsResponse.data));
-            dispatch(entirePosts(postsResponse.data));
-
-            //specific posts photos
-            const mineOrFriendsPost = await Promise.all(
-                postsResponse.data.map(post => fetchPostPhoto(post._id, token).then(res => res.data))
-            );
-            dispatch(handlePostsPhotos(mineOrFriendsPost.flat()));
-
-            //user photos
-            const photosResponse = await fetchPhotos(token);
-            dispatch(allOfPhotos(photosResponse.data));
-            dispatch(filteredPhotos(photosResponse.data));
-
-
-            //all users photos
-            const userPhotos = await Promise.all(
-                usersResponse.data.map(user => fetchUsersPhoto(user._id, token).then(res => res.data))
-            );
-            console.log(userPhotos.data)
-
-            dispatch(handleUsersPhotos(userPhotos.data.flat()));
-            dispatch(handleStoryPhoto(userPhotos.data.flat()));
-
-
-        } catch (error) {
-            setError('Error: ' + error.message);
-        } finally {
-            setLoading(false);
-        }
-    }, [dispatch, token]);
-
-
     useEffect(() => {
-        fetchData();
-    }, [fetchData]);
+        const fetch = async () => {
+            try {
+                //users
+                const usersResponse = await fetchUsers(token);
+                dispatch(allUsers(usersResponse.data));
+
+
+                //friends
+                const friendsResponse = await fetchFriends(token);
+                dispatch(myFriends(friendsResponse.data));
+
+                dispatch(mySuggestedFriends(usersResponse.data));
+
+                //posts
+                const postsResponse = await fetchPosts(token);
+                dispatch(AllPosts(postsResponse.data));
+                dispatch(entirePosts(postsResponse.data));
+
+                //specific posts photos
+                const mineOrFriendsPost = await Promise.all(
+                    postsResponse.data.map(post => fetchPostPhoto(post._id, token).then(res => res.data))
+                );
+                const specificPostsPhotos = mineOrFriendsPost.flat();
+                dispatch(handlePostsPhotos(specificPostsPhotos));
+
+                //user photos
+                const photosResponse = await fetchPhotos(user._id, token);
+                dispatch(filteredPhotos(photosResponse.data))
+                dispatch(allOfPhotos(photosResponse.data))
+
+                //all users photos
+                const allUsersPhotos = await Promise.all(
+                    usersResponse.data.map(user =>
+                        fetchUsersPhoto(user._id, token).then(res => res.data)))
+                const specificUserPhotos = allUsersPhotos.flat();
+                dispatch(handleUsersPhotos(specificUserPhotos));
+                dispatch(handleStoryPhoto(specificUserPhotos));
+
+
+
+            } catch (error) {
+                setError('Error: ' + error.message);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetch()
+    }, []);
 
 
     /* const renderedPosts = useMemo(() => {
@@ -86,7 +87,7 @@ function HomePage() {
 
     return (
         <div className="bg-gray-100  mt-5">
-            {loading ? (<div className="flex items-center justify-center min-h-screen"><ThreeCircles
+            {loading ? (<div className="flex items-center justify-center h-screen"><ThreeCircles
                 visible={loading}
                 height="100"
                 width="100"
@@ -97,18 +98,20 @@ function HomePage() {
             /></div>) : (<> <React.Suspense fallback={<div>Loading...</div>}>
                 <Header />
                 <Story />
-                <div className="flex flex-col mx-auto gap-8 lg:flex-row px-4">
-                    <div className="md:w-1/3 lg:max-w-md w-full">
-                        <Sidebar />
-                    </div>
-                    <div className="sm:ml-10 lg:ml-6 lg:mr-10 mt-6">
+            </React.Suspense>
+                <div className="flex flex-col mx-auto gap-8 lg:flex-row px-4 w-full">
+                    <React.Suspense fallback={<div>Loading...</div>}>
+                        <div className="md:w-1/3 lg:max-w-md w-1/3">
+                            <Sidebar />
+                        </div>
+                    </React.Suspense>
+                    <div className="sm:ml-10 lg:ml-6 lg:mr-10 mt-6 w-2/3">
                         <div className="lg:w-full p-6 rounded-lg shadow-lg mb-6">
                             <CreatePost />
                         </div>
                         <div className="lg:w-full p-6 rounded-lg shadow-lg mb-6"><Post /></div>
                     </div>
                 </div>
-            </React.Suspense>
             </>)
             }
         </div >

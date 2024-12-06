@@ -4,15 +4,17 @@ import { jwtDecode } from "jwt-decode";
 
 
 
+
+
 const UserSlice = createSlice({
     name: 'user',
     initialState: {
         token: localStorage.getItem('token') || null,
         isAuth: localStorage.getItem('token') || false,
         user: JSON.parse(localStorage.getItem('user')) || null,
-        users: JSON.parse(localStorage.getItem('users')) || [],
-        friends: JSON.parse(localStorage.getItem('friends')) || [],
-        suggestedFriends: JSON.parse(localStorage.getItem('suggestedFriends')) || [],
+        users: [],
+        friends: [],
+        suggestedFriends: [],
         myOrFriendsPosts: [],
     },
     reducers: {
@@ -46,7 +48,6 @@ const UserSlice = createSlice({
         },
         allUsers: (state, action) => {
             state.users = action.payload;
-            localStorage.setItem('users', JSON.stringify(state.users));
         },
         myFriends: (state, action) => {
             let filteredFriends = action.payload.map(friend => {
@@ -57,7 +58,6 @@ const UserSlice = createSlice({
 
             let result = state.users.filter(user => filteredFriends.includes(user._id));
             state.friends = result;
-            localStorage.setItem('friends', JSON.stringify(state.friends));
         },
         mySuggestedFriends: (state, action) => {
             let allSuggestedFriends = action.payload.filter(user => {
@@ -67,7 +67,6 @@ const UserSlice = createSlice({
                 );
             });
             state.suggestedFriends = allSuggestedFriends;
-            localStorage.setItem('suggestedFriends', JSON.stringify(state.suggestedFriends));
         },
         entirePosts: (state, action) => {
             state.myOrFriendsPosts = action.payload.filter(post =>

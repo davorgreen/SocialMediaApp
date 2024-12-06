@@ -13,8 +13,8 @@ function Story() {
     const [story, setStory] = useState(null);
     const { user, token, users } = useSelector((state) => state.userStore);
     const { storyPhoto } = useSelector((state) => state.photoStore);
+
     const dispatch = useDispatch();
-    console.log(storyPhoto)
     //save story
     const handleSaveStory = (e) => {
         setStory(e.target.files[0]);
@@ -92,7 +92,7 @@ function Story() {
                     return (
                         <div key={index} className="relative group" onClick={() => handleDeleteStory(el._id)}>
                             <img
-                                src={el.base64}
+                                src={el.url}
                                 alt={el.type}
                                 className="w-80 h-80 object-cover rounded-xl transition-transform transform group-hover:scale-105 group-hover:shadow-2xl"
                             />

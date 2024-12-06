@@ -7,7 +7,7 @@ import { MdDeleteForever } from "react-icons/md";
 //redux
 import { useDispatch, useSelector } from "react-redux";
 //api
-import { fetchPhotos } from "../../services/api";
+//import { fetchPhotos } from "../../services/api";
 //slices
 import { addUserProfilePhoto, userProfilePhoto, deleteUserProfilePhoto } from "../../slices/PhotoSlice";
 
@@ -122,7 +122,7 @@ function Photos() {
             <div className="grid grid-cols-2 w-full h-full gap-4">
                 {userProfilePic.length > 0 ?
                     userProfilePic.map((picture) => {
-                        return <div key={picture._id}><img src={picture.base64} alt={picture.type} className="w-full h-96 object-cover rounded-md" />
+                        return <div key={picture._id}><img src={picture.url} alt={picture.type} className="w-full h-96 object-cover rounded-md" />
                             <div>
                                 <MdDeleteForever size={50} color="red" onClick={() => handleDeleteUserProfilePicture(picture._id)} />
                             </div>

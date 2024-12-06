@@ -26,7 +26,7 @@ function SavedPosts() {
                 const posts = postsResponse.data;
                 console.log(posts)
                 const postsPhotos = await Promise.all(
-                    posts.map(post => fetchPostPhoto(post._id, token).then(res => res.data))
+                    posts.map(post => fetchPostPhoto(post._id, token).then(res => console.log(res.data)))
                 );
 
                 const usersPhotos = await Promise.all(
