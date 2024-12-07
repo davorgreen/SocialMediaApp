@@ -9,7 +9,6 @@ function ProfileImage({ size, isUserProfile, friendId, suggestedFriendId, usersI
     const friendPhoto = usersPhotos.find(photo =>
         (photo.entityId === friendId || photo.entityId === suggestedFriendId || photo.entityId === usersId)
         && photo.type === 'profile'
-        && photo.base64
     );
 
 

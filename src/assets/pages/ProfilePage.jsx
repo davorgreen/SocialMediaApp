@@ -3,20 +3,24 @@ import Sidebar from '../components/Sidebar';
 import ProfileImage from '../components/ProfileImage';
 import Photos from '../components/Photos';
 import About from '../components/About';
+import FriendsPage from "./FriendsPage";
+import MyPostPage from "./MyPostPage";
 // icons
-import { MdPostAdd } from "react-icons/md";
+import { MdPostAdd, MdDeleteForever } from "react-icons/md";
 import { IoIosInformationCircleOutline } from "react-icons/io";
 import { FaUserFriends } from "react-icons/fa";
 import { TbPhotoSquareRounded } from "react-icons/tb";
 import { IoImagesOutline } from "react-icons/io5";
 // image
 //import img from '../images/6e0vct73g0n91.jpg';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
-import FriendsPage from "./FriendsPage";
-import MyPostPage from "./MyPostPage";
+import { useDispatch, useSelector } from "react-redux";
+//api
 import axios from "axios";
+import { fetchPhotos } from '../../services/api';
+//redux
+import { filteredPhotos, updateCoverPhoto, updateProfilePhoto } from '../../slices/PhotoSlice';
 
 function ProfilePage() {
     const { component } = useParams();
@@ -30,7 +34,7 @@ function ProfilePage() {
     const { token } = useSelector((state) => state.userStore);
     const { coverPhoto } = useSelector((state) => state.photoStore);
     const [isUserProfile, setIsUserProfile] = useState(true);
-
+    const dispatch = useDispatch();
 
 
     const renderComponent = () => {
@@ -93,7 +97,8 @@ function ProfilePage() {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-
+                console.log(imageType)
+                // imageType === 'profile' ? dispatch(updateProfilePhoto(response.data)) : dispatch(updateCoverPhoto(response.data))
                 console.log('Response data:', response.data);
             } catch (error) {
                 setError("Error: " + (error.response?.data?.message || error.message));
@@ -106,6 +111,24 @@ function ProfilePage() {
     };
 
 
+    //user photos
+    useEffect(() => {
+        const fetchUserPhotos = async () => {
+            setLoading(true);
+            try {
+                const photosResponse = await fetchPhotos(user._id, token);
+                console.log(photosResponse.data)
+                dispatch(filteredPhotos(photosResponse.data));
+            } catch (error) {
+                setError('Error fetching photos: ' + error.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchUserPhotos();
+
+    }, []);
 
     return (
         <div className="flex flex-col lg:flex-row mx-auto mt-5 mr-5 gap-8">
@@ -132,12 +155,13 @@ function ProfilePage() {
                 </div>
 
                 {addPhoto && (
-                    <>
+                    <div className='flex items-center justify-start'>
                         <input type="file" name="file" accept=".jpg, .png, image/*" onChange={handleImage} />
                         <button className="px-6 py-3 bg-blue-500 rounded-xl text-white font-semibold mt-2" onClick={updatePhoto}>
                             Submit
                         </button>
-                    </>
+                        <button><MdDeleteForever size={50} color='red' /></button>
+                    </div>
                 )}
 
                 <div className="p-1 absolute top-0 left-0">

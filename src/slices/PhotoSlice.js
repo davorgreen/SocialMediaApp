@@ -63,10 +63,18 @@ const PhotoSlice = createSlice({
         },
         deleteUserProfilePhoto: (state, action) => {
             state.userProfilePic = state.userProfilePic.filter((picture) => picture._id !== action.payload);
+        },
+        updateCoverPhoto: (state, action) => {
+            state.coverPhoto = action.payload;
+            localStorage.setItem('cover', JSON.stringify(action.payload));
+        },
+        updateProfilePhoto: (state, action) => {
+            state.profilePhoto.push(action.payload);
+            localStorage.setItem('profile', JSON.stringify(action.payload));
         }
     }
 
 })
 
-export const { allOfPhotos, filteredPhotos, handleUsersPhotos, handlePostsPhotos, handleStoryPhoto, addedStory, deleteStory, userProfilePhoto, addUserProfilePhoto, deleteUserProfilePhoto } = PhotoSlice.actions;
+export const { allOfPhotos, filteredPhotos, handleUsersPhotos, handlePostsPhotos, handleStoryPhoto, addedStory, deleteStory, userProfilePhoto, addUserProfilePhoto, deleteUserProfilePhoto, updateCoverPhoto, updateProfilePhoto } = PhotoSlice.actions;
 export default PhotoSlice.reducer;

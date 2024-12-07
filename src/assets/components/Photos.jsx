@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 //import { fetchPhotos } from "../../services/api";
 //slices
 import { addUserProfilePhoto, userProfilePhoto, deleteUserProfilePhoto } from "../../slices/PhotoSlice";
+import { fetchPhotos } from "../../services/api";
 
 
 function Photos() {
@@ -81,7 +82,7 @@ function Photos() {
         const fetchUserPhotos = async () => {
             setLoading(true);
             try {
-                const photosResponse = await fetchPhotos(token);
+                const photosResponse = await fetchPhotos(user._id, token);
                 console.log(photosResponse.data)
                 dispatch(userProfilePhoto(photosResponse.data));
             } catch (error) {
@@ -93,7 +94,7 @@ function Photos() {
 
         fetchUserPhotos();
 
-    }, [dispatch, token]);
+    }, [dispatch, token, user]);
 
 
     const handleDeleteUserProfilePicture = async (id) => {

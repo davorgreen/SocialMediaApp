@@ -31,7 +31,6 @@ function Post() {
     const { mySavedPosts, myPosts } = useSelector((state) => state.combinedStore);
     const photosOfPosts = useSelector((state) => state.photoStore.postsPhotos);
 
-
     const location = useLocation();
     const navigate = useNavigate();
 
