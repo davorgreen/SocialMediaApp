@@ -12,11 +12,9 @@ const CombinedSlice = createSlice({
     },
     reducers: {
         getUser: (state, action) => {
-            console.log(action.payload)
             state.user = action.payload;
         },
         getUserSavedPosts: (state, action) => {
-            console.log(action.payload)
             state.mySavedPosts = action.payload.filter((post) => post.savedBy.includes(state.user._id)).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));;
         },
         getOnlyUserPosts: (state, action) => {
@@ -26,8 +24,7 @@ const CombinedSlice = createSlice({
             state.myPosts = state.myPosts.filter(post => post._id !== action.payload);
         },
         addSharedPost: (state, action) => {
-            console.log(action.payload)
-            state.myPosts = [...state.myPosts, action.payload];
+            state.myPosts = [action.payload, ...state.myPosts];
         },
         addedShares: (state, action) => {
             const { postId, newShares } = action.payload;

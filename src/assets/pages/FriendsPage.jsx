@@ -12,7 +12,7 @@ function FriendsPage() {
     const [error, setError] = useState('');
     const { suggestedFriends, token, users } = useSelector((state) => state.userStore);
     const dispatch = useDispatch();
-    console.log(users)
+
     //adding new friends
     const handleAddFriend = async (friend) => {
         setLoading(true);
@@ -31,40 +31,32 @@ function FriendsPage() {
     }
 
 
+    //all of users
     useEffect(() => {
-        const getFriends = async () => {
-
-            //users
-            const usersResponse = await fetchUsers(token);
-            dispatch(allUsers(usersResponse.data));
-
-            //friends
-            const friendsResponse = await fetchFriends(token);
-            dispatch(myFriends(friendsResponse.data));
-
-            dispatch(mySuggestedFriends(usersResponse.data));
-
-        }
-        getFriends()
-    }, [])
-
-
-    //all photos of users
-    useEffect(() => {
-        const getUserPhotos = async () => {
+        const getAllOfUser = async () => {
             setLoading(true);
             try {
+                //users
+                const usersResponse = await fetchUsers(token);
+                dispatch(allUsers(usersResponse.data));
+
+                //friends
+                const friendsResponse = await fetchFriends(token);
+                dispatch(myFriends(friendsResponse.data));
+
+                dispatch(mySuggestedFriends(usersResponse.data));
+
                 const userPhotos = await Promise.all(
                     users.map(user => fetchUsersPhoto(user._id, token).then(res => res.data))
                 );
                 dispatch(handleUsersPhotos(userPhotos.flat()));
             } catch (error) {
-                setError('Error fetching user photos: ' + error.message);
+                setError('Error fetching: ' + error.message);
             } finally {
                 setLoading(false);
             }
         };
-        getUserPhotos();
+        getAllOfUser();
     }, [dispatch, token, users]);
 
     return (

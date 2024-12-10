@@ -111,24 +111,24 @@ function ProfilePage() {
     };
 
 
-    //user photos
-    useEffect(() => {
-        const fetchUserPhotos = async () => {
-            setLoading(true);
-            try {
-                const photosResponse = await fetchPhotos(user._id, token);
-                console.log(photosResponse.data)
-                dispatch(filteredPhotos(photosResponse.data));
-            } catch (error) {
-                setError('Error fetching photos: ' + error.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchUserPhotos();
-
-    }, []);
+    /*  //user photos
+      useEffect(() => {
+          const fetchUserPhotos = async () => {
+              setLoading(true);
+              try {
+                  const photosResponse = await fetchPhotos(user._id, token);
+                  console.log(photosResponse.data)
+                  dispatch(filteredPhotos(photosResponse.data));
+              } catch (error) {
+                  setError('Error fetching photos: ' + error.message);
+              } finally {
+                  setLoading(false);
+              }
+          };
+  
+          fetchUserPhotos();
+  
+      }, []);*/
 
     return (
         <div className="flex flex-col lg:flex-row mx-auto mt-5 mr-5 gap-8">

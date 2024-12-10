@@ -7,9 +7,10 @@ import { useDispatch, useSelector } from "react-redux"
 import { ThreeCircles } from "react-loader-spinner";
 //slices
 import { handlePostsPhotos, handleUsersPhotos } from "../../slices/PhotoSlice";
-import { getUserSavedPosts } from "../../slices/CombinedSlice";
+import { getOnlyUserPosts, getUserSavedPosts } from "../../slices/CombinedSlice";
 //api
-import { fetchPostPhoto, fetchPosts, fetchUsersPhoto } from "../../services/api";
+import { fetchPostPhoto, fetchPosts, fetchUsers, fetchUsersPhoto } from "../../services/api";
+import { allUsers } from "../../slices/UserSlice";
 
 
 function SavedPosts() {
@@ -17,25 +18,32 @@ function SavedPosts() {
     const [error, setError] = useState('');
     const dispatch = useDispatch();
     const { token, users } = useSelector((state) => state.userStore);
+    console.log(users)
 
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
             try {
+                //users
+                const usersResponse = await fetchUsers(token);
+                dispatch(allUsers(usersResponse.data));
+                //posts
                 const postsResponse = await fetchPosts(token);
                 const posts = postsResponse.data;
-                console.log(posts)
+                //photos of posts
                 const postsPhotos = await Promise.all(
-                    posts.map(post => fetchPostPhoto(post._id, token).then(res => console.log(res.data)))
+                    posts.map(post => fetchPostPhoto(post._id, token).then(res => res.data))
+                );
+                //user photos
+                const userPhotos = await Promise.all(
+                    usersResponse.data.map(user => fetchUsersPhoto(user._id, token).then(res => res.data))
                 );
 
-                const usersPhotos = await Promise.all(
-                    users.map(user => fetchUsersPhoto(user._id, token).then(res => res.data))
-                );
 
+                dispatch(getOnlyUserPosts(posts));
                 dispatch(getUserSavedPosts(posts));
                 dispatch(handlePostsPhotos(postsPhotos.flat()));
-                dispatch(handleUsersPhotos(usersPhotos.flat()));
+                dispatch(handleUsersPhotos(userPhotos.flat()));
             } catch (error) {
                 setError('Error fetching data: ' + error.message);
             } finally {
@@ -44,7 +52,7 @@ function SavedPosts() {
         };
 
         fetchData();
-    }, [dispatch, token, users]);
+    }, [dispatch, token]);
 
 
 

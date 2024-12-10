@@ -53,7 +53,6 @@ function Post() {
             const response = await axios.put(`https://green-api-nu.vercel.app/api/posts/${post._id}/save`, {}, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            console.log(response.data)
             dispatch(savePost(response.data));
         } catch (error) {
             setError('Error', error);
@@ -116,6 +115,27 @@ function Post() {
         }
     }
 
+    //delete comment
+    const handledeleteComment = async (id) => {
+        setLoading(true);
+        try {
+            const response = await axios.delete(` https://green-api-nu.vercel.app/api/comments/${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            )
+            console.log('Post deleted successfully:', response.data);
+            dispatch(removeComment(id));
+        } catch (error) {
+            setError('Error: ' + (error.response?.data?.message || error.message));
+        } finally {
+            setLoading(false);
+        }
+
+    }
+
     //delete post
     const handleDeletePost = async (id) => {
         setLoading(true);
@@ -139,26 +159,6 @@ function Post() {
         }
     }
 
-    //delete comment
-    const handledeleteComment = async (id) => {
-        setLoading(true);
-        try {
-            const response = await axios.delete(` https://green-api-nu.vercel.app/api/comments/${id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            )
-            console.log('Post deleted successfully:', response.data);
-            dispatch(removeComment(id));
-        } catch (error) {
-            setError('Error: ' + (error.response?.data?.message || error.message));
-        } finally {
-            setLoading(false);
-        }
-
-    }
 
     //add like
     const handleAddLike = async (id, token) => {

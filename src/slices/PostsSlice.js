@@ -11,11 +11,11 @@ const PostsSlice = createSlice({
         },
         sharePost: (state, action) => {
             console.log(action.payload)
-            state.posts = [...state.posts, action.payload];
+            state.posts = [action.payload, ...state.posts];
             console.log(state.posts)
         },
         savePost: (state, action) => {
-            state.posts = [...state.posts, action.payload];
+            state.posts = [action.payload, ...state.myPosts];
         },
         removePost: (state, action) => {
             state.posts = state.posts.filter(post => post._id !== action.payload);

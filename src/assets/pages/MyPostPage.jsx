@@ -22,14 +22,14 @@ function MyPostPage() {
         const fetchData = async () => {
             setLoading(true);
             try {
-
+                //posts
                 const postsResponse = await fetchPosts(token);
                 const posts = postsResponse.data;
-
+                //photos of posts
                 const postsPhotos = await Promise.all(
                     posts.map(post => fetchPostPhoto(post._id, token).then(res => res.data))
                 );
-
+                //user photos
                 const userPhotos = await Promise.all(
                     users.map(user => fetchUsersPhoto(user._id, token).then(res => res.data))
                 );

@@ -31,7 +31,6 @@ function Photos() {
 
     //set image
     const handleImage = (e) => {
-        console.log(e.target.files[0]);
         setImage(e.target.files[0]);
     }
 
@@ -64,7 +63,6 @@ function Photos() {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                console.log('Response data:', response.data);
                 dispatch(addUserProfilePhoto(response.data));
             } catch (error) {
                 setError("Error: " + (error.response?.data?.message || error.message));
@@ -83,7 +81,6 @@ function Photos() {
             setLoading(true);
             try {
                 const photosResponse = await fetchPhotos(user._id, token);
-                console.log(photosResponse.data)
                 dispatch(userProfilePhoto(photosResponse.data));
             } catch (error) {
                 setError('Error fetching photos: ' + error.message);
@@ -107,7 +104,6 @@ function Photos() {
                     }
                 }
             )
-            console.log('Post deleted successfully:', response.data);
             dispatch(deleteUserProfilePhoto(id));
         } catch (error) {
             setError('Error: ' + (error.response?.data?.message || error.message));

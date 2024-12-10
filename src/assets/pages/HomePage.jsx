@@ -1,9 +1,6 @@
 //component
-import Header from '../components/Header';
-import Sidebar from '../components/Sidebar';
 import CreatePost from '../components/CreatePost';
 import Post from '../components/Post';
-import Story from '../components/Story';
 //hooks
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,7 +13,9 @@ import { allOfPhotos, filteredPhotos, handlePostsPhotos, handleStoryPhoto, handl
 //spinner
 import { ThreeCircles } from 'react-loader-spinner';
 
-
+const Header = React.lazy(() => import('../components/Header'));
+const Sidebar = React.lazy(() => import('../components/Sidebar'));
+const Story = React.lazy(() => import('../components/Story'));
 function HomePage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
