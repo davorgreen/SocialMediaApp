@@ -2,7 +2,7 @@
 import CreatePost from '../components/CreatePost';
 import Post from '../components/Post';
 //hooks
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 //api
 import { fetchFriends, fetchPhotos, fetchPostPhoto, fetchPosts, fetchUsers, fetchUsersPhoto } from '../../services/api';
@@ -12,6 +12,7 @@ import { AllPosts } from '../../slices/PostsSlice';
 import { allOfPhotos, filteredPhotos, handlePostsPhotos, handleStoryPhoto, handleUsersPhotos } from '../../slices/PhotoSlice';
 //spinner
 import { ThreeCircles } from 'react-loader-spinner';
+
 
 const Header = React.lazy(() => import('../components/Header'));
 const Sidebar = React.lazy(() => import('../components/Sidebar'));
@@ -52,6 +53,7 @@ function HomePage() {
 
             //user photos
             const photosResponse = await fetchPhotos(user._id, token);
+            console.log(photosResponse.data)
             dispatch(filteredPhotos(photosResponse.data))
             dispatch(allOfPhotos(photosResponse.data))
 
@@ -60,6 +62,7 @@ function HomePage() {
                 usersResponse.data.map(user =>
                     fetchUsersPhoto(user._id, token).then(res => res.data)))
             const specificUserPhotos = allUsersPhotos.flat();
+            console.log(allUsersPhotos)
             dispatch(handleUsersPhotos(specificUserPhotos));
             dispatch(handleStoryPhoto(specificUserPhotos));
 
@@ -76,15 +79,6 @@ function HomePage() {
         fetchData();
     }, [fetchData]);
 
-
-
-    /* const renderedPosts = useMemo(() => {
-         return myOrFriendsPosts && myOrFriendsPosts.length > 0 ? (
-             <Post />
-         ) : (
-             <p className="text-center text-gray-500">No posts available</p>
-         );
-     }, [myOrFriendsPosts, postsPhotos]);*/
 
     return (
         <div className="bg-gray-100  mt-5">

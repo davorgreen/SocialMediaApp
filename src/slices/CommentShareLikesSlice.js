@@ -2,24 +2,31 @@ import { createSlice } from "@reduxjs/toolkit";
 
 
 
-
 const CommentShareLikesSlice = createSlice({
     name: 'comment',
     initialState: {
-        comment: [],
+        commentsByPostId: {},
     },
     reducers: {
         getComments: (state, action) => {
-            state.comment = action.payload;
+            const { postId, comments } = action.payload;
+            state.commentsByPostId[postId] = comments;
         },
         sendComment: (state, action) => {
-            state.comment = action.payload;
+            const { postId, comment } = action.payload;
+            if (!state.commentsByPostId[postId]) {
+                state.commentsByPostId[postId] = [];
+            }
+            state.commentsByPostId[postId].push(comment);
+
         },
         removeComment: (state, action) => {
-            state.comment = state.comment.filter(comm => comm._id !== action.payload);
+            const { postId, commentId } = action.payload;
+            state.commentsByPostId[postId] = state.commentsByPostId[postId].filter(comment => comment._id !== commentId);
+
         }
     }
-})
+});
 
 export const { getComments, sendComment, removeComment } = CommentShareLikesSlice.actions;
 export default CommentShareLikesSlice.reducer;

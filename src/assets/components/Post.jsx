@@ -34,8 +34,8 @@ function Post() {
     const location = useLocation();
     const navigate = useNavigate();
 
-    const commentsByPostId = useSelector((state) => state.commentShareLikesStore.comment);
-
+    const commentsByPostId = useSelector((state) => state.commentShareLikesStore.commentsByPostId);
+    console.log(commentsByPostId)
     function openDropDownMenu(id) {
         setDropDownMenu(dropDownMenu === id ? null : id);
     }
@@ -83,7 +83,7 @@ function Post() {
             });
 
             console.log('response:', response.data);
-            dispatch(sendComment(response.data))
+            dispatch(sendComment({ postId, comment: response.data }));
         } catch (error) {
             console.error('Error response:', error.response);
             setError('error', error);
@@ -106,7 +106,7 @@ function Post() {
                 }
             })
             console.log(response.data)
-            dispatch(getComments({ [id]: response.data }));
+            dispatch(getComments({ postId: id, comments: response.data }));
         }
         catch (error) {
             setError('error', error)
@@ -116,7 +116,7 @@ function Post() {
     }
 
     //delete comment
-    const handledeleteComment = async (id) => {
+    const handledeleteComment = async (id, postId) => {
         setLoading(true);
         try {
             const response = await axios.delete(` https://green-api-nu.vercel.app/api/comments/${id}`,
@@ -127,7 +127,7 @@ function Post() {
                 }
             )
             console.log('Post deleted successfully:', response.data);
-            dispatch(removeComment(id));
+            dispatch(removeComment({ postId, commentId: id }));
         } catch (error) {
             setError('Error: ' + (error.response?.data?.message || error.message));
         } finally {
@@ -217,7 +217,7 @@ function Post() {
         <div className="flex flex-col gap-5" >
             {
                 displayedPosts.length > 0 ? displayedPosts.map((post) => {
-                    const { createdAt, createdBy, description, likes, shares, _id, comments } = post;
+                    const { createdAt, createdBy, description, likes, shares, _id } = post;
                     const likeCount = Array.isArray(likes) ? likes.length : 0;
                     const whoLikes = Array.isArray(likes) ? users.filter(user => likes.includes(user._id)).map(user => user) : 'Nobody likes';
                     const matchingUser = users.find(user => user._id === createdBy);
@@ -307,7 +307,7 @@ function Post() {
                                 <button onClick={() => handleGetComments(post._id, token)} className="flex items-center gap-2">
                                     <FaRegCommentAlt size={30} className="text-blue-500 hover:text-blue-600" />
                                     <span className="font-semibold">
-                                        {comments}
+                                        {commentsByPostId[post._id] ? commentsByPostId[post._id].length : post.comments}
                                     </span>
                                 </button>
 
@@ -347,13 +347,13 @@ function Post() {
                                                     </p>
                                                 </div>
                                                 <div>
-                                                    <p className="text-xl text-black">
+                                                    <p className="text-xl text-black break-all">
                                                         {el.description}
                                                     </p>
                                                     <p className=" mt-4 text-md text-gray-700">{new Date(el.createdAt).toLocaleString()}</p>
                                                 </div>
                                                 <div>
-                                                    <MdDeleteForever size={50} color="red" onClick={() => handledeleteComment(el._id)} />
+                                                    <MdDeleteForever size={50} color="red" onClick={() => handledeleteComment(el._id, post._id)} />
                                                 </div>
                                             </div>
                                         );
