@@ -3,7 +3,7 @@ import UserSlice from "../slices/UserSlice";
 import PostsSlice from "../slices/PostsSlice";
 import PhotoSlice from "../slices/PhotoSlice";
 import CombinedSlice from '../slices/CombinedSlice'
-import CommentShareLikesSlice from '../slices/CommentShareLikesSlice'
+import CommentSlice from '../slices/CommentShareLikesSlice'
 
 
 
@@ -12,7 +12,7 @@ const store = configureStore({
         userStore: UserSlice,
         postsStore: PostsSlice,
         photoStore: PhotoSlice,
-        commentShareLikesStore: CommentShareLikesSlice,
+        commentShareLikesStore: CommentSlice,
         combinedStore: CombinedSlice,
     },
 })

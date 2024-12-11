@@ -22,6 +22,23 @@ function Photos() {
     const { user, token } = useSelector((state) => state.userStore);
     const { userProfilePic } = useSelector((state) => state.photoStore);
     const dispatch = useDispatch();
+    //user photos
+    useEffect(() => {
+        const fetchUserPhotos = async () => {
+            setLoading(true);
+            try {
+                const photosResponse = await fetchPhotos(user._id, token);
+                dispatch(userProfilePhoto(photosResponse.data));
+            } catch (error) {
+                setError('Error fetching photos: ' + error.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchUserPhotos();
+
+    }, [dispatch, token, user]);
 
     //add type and open input
     const handleAddUserProfilePhoto = () => {
@@ -75,25 +92,6 @@ function Photos() {
     }
 
 
-    //user photos
-    useEffect(() => {
-        const fetchUserPhotos = async () => {
-            setLoading(true);
-            try {
-                const photosResponse = await fetchPhotos(user._id, token);
-                dispatch(userProfilePhoto(photosResponse.data));
-            } catch (error) {
-                setError('Error fetching photos: ' + error.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchUserPhotos();
-
-    }, [dispatch, token, user]);
-
-
     const handleDeleteUserProfilePicture = async (id) => {
         setLoading(true);
         try {
@@ -104,6 +102,7 @@ function Photos() {
                     }
                 }
             )
+
             dispatch(deleteUserProfilePhoto(id));
         } catch (error) {
             setError('Error: ' + (error.response?.data?.message || error.message));

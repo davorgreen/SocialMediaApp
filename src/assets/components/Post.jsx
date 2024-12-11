@@ -217,10 +217,11 @@ function Post() {
         <div className="flex flex-col gap-5" >
             {
                 displayedPosts.length > 0 ? displayedPosts.map((post) => {
-                    const { createdAt, createdBy, description, likes, shares, _id } = post;
+                    const { createdAt, createdBy, description, likes, shares, _id, comments } = post;
                     const likeCount = Array.isArray(likes) ? likes.length : 0;
                     const whoLikes = Array.isArray(likes) ? users.filter(user => likes.includes(user._id)).map(user => user) : 'Nobody likes';
                     const matchingUser = users.find(user => user._id === createdBy);
+                    console.log(users)
                     const formattedDate = new Date(createdAt).toLocaleString('en-GB', {
                         day: '2-digit',
                         month: '2-digit',
@@ -307,7 +308,7 @@ function Post() {
                                 <button onClick={() => handleGetComments(post._id, token)} className="flex items-center gap-2">
                                     <FaRegCommentAlt size={30} className="text-blue-500 hover:text-blue-600" />
                                     <span className="font-semibold">
-                                        {commentsByPostId[post._id] ? commentsByPostId[post._id].length : post.comments}
+                                        {commentsByPostId[post._id] ? commentsByPostId[post._id].length : comments}
                                     </span>
                                 </button>
 
@@ -343,7 +344,7 @@ function Post() {
                                                 <div className="flex-row ml-4">
                                                     <ProfileImage usersId={user._id} />
                                                     <p className="font-bold text-blue-600 text-xl">
-                                                        {user.firstName} {user.lastName}
+                                                        {user ? `${user.firstName} ${user.lastName}` : 'Unknown user'}
                                                     </p>
                                                 </div>
                                                 <div>

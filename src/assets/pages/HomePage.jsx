@@ -23,14 +23,13 @@ function HomePage() {
     const dispatch = useDispatch();
     const { token, user } = useSelector((state) => state.userStore);
 
-
-
     //fetch all data
     const fetchData = useCallback(async () => {
         try {
             //users
             const usersResponse = await fetchUsers(token);
             dispatch(allUsers(usersResponse.data));
+
 
 
             //friends
