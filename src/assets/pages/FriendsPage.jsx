@@ -1,11 +1,17 @@
+//hooks
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
+//axios
+import axios from "axios";
+//components
 import ProfileImage from "../components/ProfileImage";
 import Friend from "../components/Friend";
+//redux
 import { addFriendToList, allUsers, myFriends, mySuggestedFriends, removeSuggestedFriend } from "../../slices/UserSlice";
-import { fetchFriends, fetchUsers, fetchUsersPhoto } from "../../services/api";
 import { handleUsersPhotos } from "../../slices/PhotoSlice";
+//api
+import { fetchFriends, fetchUsers, fetchUsersPhoto } from "../../services/api";
+
 
 function FriendsPage() {
     const [loading, setLoading] = useState(true);

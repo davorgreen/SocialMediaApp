@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom"
+//components
 import Sidebar from "../components/Sidebar"
 import ProfileImage from "../components/ProfileImage"
 

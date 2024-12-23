@@ -6,8 +6,8 @@ const PhotoSlice = createSlice({
     name: 'photo',
     initialState: {
         allPhotos: [],
-        profilePhoto: JSON.parse(localStorage.getItem('profile')) || [],
-        coverPhoto: JSON.parse(localStorage.getItem('cover')) || [],
+        profilePhoto: [],
+        coverPhoto: [],
         basicPhoto: [],
         usersPhotos: [],
         postsPhotos: [],
@@ -24,12 +24,12 @@ const PhotoSlice = createSlice({
             //cover
             const coverProfile = photos.filter((photo) => photo.type === 'cover');
             state.coverPhoto = coverProfile;
-            localStorage.setItem('cover', JSON.stringify(coverProfile));
+
 
             //profile
             const profilePhotos = photos.filter((photo) => photo.type === 'profile');
             state.profilePhoto = profilePhotos;
-            localStorage.setItem('profile', JSON.stringify(profilePhotos));
+
 
             //basic
             const basic = photos.filter((photo) => photo.type === 'basic');
@@ -43,7 +43,7 @@ const PhotoSlice = createSlice({
             state.postsPhotos = action.payload;
         },
         handleStoryPhoto: (state, action) => {
-            state.storyPhoto = action.payload.flat().filter((photo) =>
+            state.storyPhoto = action.payload.filter((photo) =>
                 photo.type === 'story');
         },
         addedStory: (state, action) => {
@@ -53,11 +53,10 @@ const PhotoSlice = createSlice({
             state.storyPhoto = state.storyPhoto.filter(story => story._id !== action.payload);
         },
         userProfilePhoto: (state, action) => {
-            console.log(action.payload)
             state.userProfilePic = action.payload.flat().filter((photo) => photo.type === 'userProfilePhoto');
         },
         addUserProfilePhoto: (state, action) => {
-            state.userProfilePic.push(action.payload);
+            state.userProfilePic = [...state.userProfilePic, action.payload];
         },
         deleteUserProfilePhoto: (state, action) => {
             state.userProfilePic = state.userProfilePic.filter((picture) => picture._id !== action.payload);
@@ -69,10 +68,13 @@ const PhotoSlice = createSlice({
         updateProfilePhoto: (state, action) => {
             state.profilePhoto.push(action.payload);
             localStorage.setItem('profile', JSON.stringify(action.payload));
-        }
+        },
+        addPostPhoto: (state, action) => {
+            state.postsPhotos = [...state.postsPhotos, action.payload];
+        },
     }
 
 })
 
-export const { allOfPhotos, filteredPhotos, handleUsersPhotos, handlePostsPhotos, handleStoryPhoto, addedStory, deleteStory, userProfilePhoto, addUserProfilePhoto, deleteUserProfilePhoto, updateCoverPhoto, updateProfilePhoto } = PhotoSlice.actions;
+export const { allOfPhotos, filteredPhotos, handleUsersPhotos, handlePostsPhotos, handleStoryPhoto, addedStory, deleteStory, userProfilePhoto, addUserProfilePhoto, deleteUserProfilePhoto, updateCoverPhoto, updateProfilePhoto, addPostPhoto, myStoryPhoto } = PhotoSlice.actions;
 export default PhotoSlice.reducer;

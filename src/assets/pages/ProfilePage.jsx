@@ -64,7 +64,7 @@ function ProfilePage() {
 
     //store photo
     const handleImage = (e) => {
-        console.log(e.target.files[0]);
+        // console.log(e.target.files[0]);
         setImage(e.target.files[0]);
     }
 
@@ -97,7 +97,7 @@ function ProfilePage() {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                console.log(imageType)
+                //  console.log(imageType)
                 // imageType === 'profile' ? dispatch(updateProfilePhoto(response.data)) : dispatch(updateCoverPhoto(response.data))
                 console.log('Response data:', response.data);
             } catch (error) {
@@ -111,24 +111,22 @@ function ProfilePage() {
     };
 
 
-    /*  //user photos
-      useEffect(() => {
-          const fetchUserPhotos = async () => {
-              setLoading(true);
-              try {
-                  const photosResponse = await fetchPhotos(user._id, token);
-                  console.log(photosResponse.data)
-                  dispatch(filteredPhotos(photosResponse.data));
-              } catch (error) {
-                  setError('Error fetching photos: ' + error.message);
-              } finally {
-                  setLoading(false);
-              }
-          };
-  
-          fetchUserPhotos();
-  
-      }, []);*/
+    //user photos
+    useEffect(() => {
+        const fetchUserPhotos = async () => {
+            setLoading(true);
+            try {
+                const photosResponse = await fetchPhotos(user._id, token);
+                dispatch(filteredPhotos(photosResponse.data));
+            } catch (error) {
+                setError('Error fetching photos: ' + error.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchUserPhotos();
+    }, [dispatch, user._id, token, coverPhoto]);
 
     return (
         <div className="flex flex-col lg:flex-row mx-auto mt-5 mr-5 gap-8">

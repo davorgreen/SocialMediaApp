@@ -7,7 +7,7 @@ const api = axios.create({
 });
 //users
 export const fetchUsers = (token) => {
-    return api.get('/users', {
+    return api.get('/users?offset=0&limit=50', {
         headers: { Authorization: `Bearer ${token}` },
     });
 };
@@ -26,13 +26,6 @@ export const fetchPosts = (token) => {
     });
 };
 
-//user photos
-export const fetchPhotos = (id, token) => {
-    return api.get(`/photos/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-    });
-};
-
 //posts photos
 export const fetchPostPhoto = (postId, token) => {
     return api.get(`/photos/${postId}`, {
@@ -40,9 +33,16 @@ export const fetchPostPhoto = (postId, token) => {
     });
 };
 
+//user photos
+export const fetchPhotos = (id, token) => {
+    return api.get(`/photos/${id}?offset=0&limit=100`, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+};
+
 //users photos
 export const fetchUsersPhoto = (userId, token) => {
-    return api.get(`/photos/${userId}`, {
+    return api.get(`/photos/${userId}?offset=0&limit=100`, {
         headers: { Authorization: `Bearer ${token}` },
     });
 };

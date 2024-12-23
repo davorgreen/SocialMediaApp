@@ -4,6 +4,7 @@ import { FaSave } from "react-icons/fa";
 import { IoIosNotifications } from "react-icons/io";
 import { IoLogOutSharp } from "react-icons/io5";
 import SponsorshipsMember from "./SponsorshipsMember";
+//hooks
 import { Link, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logout } from "../../slices/UserSlice";

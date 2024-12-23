@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
+
 function ProfileImage({ size, isUserProfile, friendId, suggestedFriendId, usersId }) {
     const { profilePhoto } = useSelector((state) => state.photoStore);
     const { user } = useSelector((state) => state.userStore);

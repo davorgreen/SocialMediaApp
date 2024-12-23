@@ -10,9 +10,7 @@ const PostsSlice = createSlice({
             state.posts = action.payload;
         },
         sharePost: (state, action) => {
-            console.log(action.payload)
             state.posts = [action.payload, ...state.posts];
-            console.log(state.posts)
         },
         savePost: (state, action) => {
             state.posts = [action.payload, ...state.myPosts];

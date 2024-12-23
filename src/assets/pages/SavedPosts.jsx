@@ -18,7 +18,6 @@ function SavedPosts() {
     const [error, setError] = useState('');
     const dispatch = useDispatch();
     const { token, users } = useSelector((state) => state.userStore);
-    console.log(users)
 
     useEffect(() => {
         const fetchData = async () => {

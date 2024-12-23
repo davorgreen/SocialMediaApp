@@ -11,6 +11,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { sharePost } from "../../slices/PostsSlice";
 import { addPosts } from "../../slices/UserSlice";
 import { addSharedPost } from "../../slices/CombinedSlice";
+import { addPostPhoto } from "../../slices/PhotoSlice";
+
 
 function CreatePost() {
     const [status, setStatus] = useState('');
@@ -123,7 +125,7 @@ function CreatePost() {
                     dispatch(sharePost(response.data));
                     dispatch(addPosts(response.data));
                     dispatch(addSharedPost(response.data));
-                    console.log('Post shared successfully:', response.data);
+                    //    console.log('Post shared successfully:', response.data);
                     postId = response.data._id;
                     setStatus("");
                 } catch (error) {
@@ -140,7 +142,7 @@ function CreatePost() {
                     entityId: postId,
                 };
 
-                console.log('Sending photo data:', photoData);
+                //  console.log('Sending photo data:', photoData);
 
                 try {
                     const response = await axios.post('https://green-api-nu.vercel.app/api/photos', photoData, {
@@ -148,7 +150,10 @@ function CreatePost() {
                             Authorization: `Bearer ${token}`,
                         },
                     });
-                    console.log('Photo uploaded successfully:', response.data);
+                    if (photoData) {
+                        dispatch(addPostPhoto(response.data));
+                    }
+                    //  console.log('Photo uploaded successfully:', response.data);
                 } catch (error) {
                     setError("Error uploading photo: " + (error.response?.data?.message || error.message));
                 }

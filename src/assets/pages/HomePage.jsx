@@ -30,12 +30,9 @@ function HomePage() {
             const usersResponse = await fetchUsers(token);
             dispatch(allUsers(usersResponse.data));
 
-
-
             //friends
             const friendsResponse = await fetchFriends(token);
             dispatch(myFriends(friendsResponse.data));
-
             dispatch(mySuggestedFriends(usersResponse.data));
 
             //posts
@@ -52,19 +49,19 @@ function HomePage() {
 
             //user photos
             const photosResponse = await fetchPhotos(user._id, token);
-            console.log(photosResponse.data)
             dispatch(filteredPhotos(photosResponse.data))
             dispatch(allOfPhotos(photosResponse.data))
+            console.log(photosResponse.data)
 
             //all users photos
             const allUsersPhotos = await Promise.all(
                 usersResponse.data.map(user =>
                     fetchUsersPhoto(user._id, token).then(res => res.data)))
             const specificUserPhotos = allUsersPhotos.flat();
-            console.log(allUsersPhotos)
             dispatch(handleUsersPhotos(specificUserPhotos));
             dispatch(handleStoryPhoto(specificUserPhotos));
-
+            dispatch(allOfPhotos(specificUserPhotos))
+            console.log(specificUserPhotos)
         } catch (error) {
             setError('Error: ' + error.message);
         } finally {

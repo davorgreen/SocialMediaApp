@@ -12,8 +12,7 @@ function Story() {
     const [addStory, setAddStory] = useState(false);
     const [story, setStory] = useState(null);
     const { user, token, users } = useSelector((state) => state.userStore);
-    const { storyPhoto } = useSelector((state) => state.photoStore);
-
+    const { storyPhoto, myStory } = useSelector((state) => state.photoStore);
     const dispatch = useDispatch();
     //save story
     const handleSaveStory = (e) => {
@@ -26,7 +25,7 @@ function Story() {
         reader.readAsDataURL(file);
         reader.onload = () => callback(reader.result);
         reader.onerror = (error) => {
-            console.error("Error reading file:", error);
+            // console.error("Error reading file:", error);
             callback(null);
         };
     };
@@ -74,7 +73,7 @@ function Story() {
                     }
                 }
             )
-            console.log('Post deleted successfully:', response.data);
+            //  console.log('Post deleted successfully:', response.data);
             dispatch(deleteStory(id))
         } catch (error) {
             setError('Error: ' + (error.response?.data?.message || error.message));

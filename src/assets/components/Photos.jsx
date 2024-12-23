@@ -38,7 +38,7 @@ function Photos() {
 
         fetchUserPhotos();
 
-    }, [dispatch, token, user]);
+    }, [dispatch, user._id, token]);
 
     //add type and open input
     const handleAddUserProfilePhoto = () => {
@@ -80,6 +80,7 @@ function Photos() {
                         Authorization: `Bearer ${token}`,
                     },
                 });
+                //  console.log(response.data.url)
                 dispatch(addUserProfilePhoto(response.data));
             } catch (error) {
                 setError("Error: " + (error.response?.data?.message || error.message));

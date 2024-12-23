@@ -35,7 +35,6 @@ function Post() {
     const navigate = useNavigate();
 
     const commentsByPostId = useSelector((state) => state.commentShareLikesStore.commentsByPostId);
-    console.log(commentsByPostId)
     function openDropDownMenu(id) {
         setDropDownMenu(dropDownMenu === id ? null : id);
     }
@@ -71,21 +70,21 @@ function Post() {
             type: 'post'
         };
         if (!addedComment) {
-            console.error("Comment is empty or undefined for post:", postId);
+            //    console.error("Comment is empty or undefined for post:", postId);
             return;
         }
 
         setLoading(true);
         try {
-            console.log('Sending data:', data);
+            //  console.log('Sending data:', data);
             const response = await axios.post('https://green-api-nu.vercel.app/api/comments', data, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
-            console.log('response:', response.data);
+            //    console.log('response:', response.data);
             dispatch(sendComment({ postId, comment: response.data }));
         } catch (error) {
-            console.error('Error response:', error.response);
+            // console.error('Error response:', error.response);
             setError('error', error);
         } finally {
             setLoading(false);
@@ -105,7 +104,7 @@ function Post() {
                     Authorization: `Bearer ${token}`
                 }
             })
-            console.log(response.data)
+            //   console.log(response.data)
             dispatch(getComments({ postId: id, comments: response.data }));
         }
         catch (error) {
@@ -126,7 +125,7 @@ function Post() {
                     }
                 }
             )
-            console.log('Post deleted successfully:', response.data);
+            //    console.log('Post deleted successfully:', response.data);
             dispatch(removeComment({ postId, commentId: id }));
         } catch (error) {
             setError('Error: ' + (error.response?.data?.message || error.message));
@@ -147,7 +146,7 @@ function Post() {
                     }
                 }
             )
-            console.log('Post deleted successfully:', response.data);
+            //   console.log('Post deleted successfully:', response.data);
             setDropDownMenu(null);
             dispatch(removePost(id));
             dispatch(removePostFromProfile(id));
@@ -170,15 +169,13 @@ function Post() {
                     Authorization: `Bearer ${token}`
                 }
             })
-            console.log(response.data);
-
             const userId = user._id;
             dispatch(addLikes({ postId: id, userId }));
             dispatch(addedLike({ postId: id, userId }));
         } catch (error) {
-            console.error('Server Error:', error.response.data);
-            console.error('Status Code:', error.response.status);
-            console.error('Headers:', error.response.headers);
+            //  console.error('Server Error:', error.response.data);
+            //    console.error('Status Code:', error.response.status);
+            //  console.error('Headers:', error.response.headers);
         } finally {
             setLoading(false);
         }
@@ -196,7 +193,6 @@ function Post() {
                     Authorization: `Bearer ${token}`
                 }
             })
-            console.log(response.data);
             dispatch(addShares({ postId: id, newShares: updateShares }));
             dispatch(addedShares({ postId: id, newShares: updateShares }));
         } catch (error) {
@@ -221,7 +217,6 @@ function Post() {
                     const likeCount = Array.isArray(likes) ? likes.length : 0;
                     const whoLikes = Array.isArray(likes) ? users.filter(user => likes.includes(user._id)).map(user => user) : 'Nobody likes';
                     const matchingUser = users.find(user => user._id === createdBy);
-                    console.log(users)
                     const formattedDate = new Date(createdAt).toLocaleString('en-GB', {
                         day: '2-digit',
                         month: '2-digit',
@@ -276,7 +271,7 @@ function Post() {
                                                 key={photo._id}
                                                 src={photo.url}
                                                 alt="dog"
-                                                className="w-2/3 object-cover rounded-md"
+                                                className="w-2/3 h-96 object-cover rounded-md"
                                             />
                                         ))) : (null)
                                     }

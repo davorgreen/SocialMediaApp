@@ -3,7 +3,6 @@ import { useSelector } from "react-redux"
 
 function About() {
     const { user } = useSelector((state) => state.userStore);
-    console.log(user)
     return (
         <div className="flex flex-col gap-5 bg-white shadow-lg rounded-lg p-6 mb-6">
             <h2 className="text-2xl mb-2 font-bold text-blue-500">About me</h2>
