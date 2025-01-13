@@ -244,7 +244,7 @@ function CreatePost() {
                 showPeople && (
                     <div className="mt-4">
                         <h6 className="font-semibold">Friends</h6>
-                        <div className="grid grid-cols-5 gap-4">
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                             {friends && friends.length > 0 ? (
                                 friends.map((friend, index) => (
                                     <button

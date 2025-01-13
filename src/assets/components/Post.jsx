@@ -238,7 +238,7 @@ function Post() {
                                     </p>
                                     <p className="text-md font-semibold text-gray-500">{formattedDate}</p>
                                 </div>
-                                <div className="absolute right-5 top-8 md:right-10 md:top-0">
+                                <div className="absolute right-5 top-10 md:right-10 md:top-0">
                                     <button onClick={() => openDropDownMenu(_id)}>
                                         <IoIosMore size={40} />
                                     </button>
